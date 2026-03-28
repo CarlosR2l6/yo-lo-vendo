@@ -101,9 +101,8 @@ body {
   text-decoration: none;
 }
 
-/* REGISTRO: texto debajo del botón */
 .links-single {
-  margin-top: 25px;   /* 👈 ESTO ES LO QUE DA EL ESPACIO */
+  margin-top: 25px; 
   font-size: 13px;
   color: #eafff5;
 }
