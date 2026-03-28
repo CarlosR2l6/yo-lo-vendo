@@ -100,3 +100,20 @@ body {
   font-size: 13px;
   text-decoration: none;
 }
+
+/* REGISTRO: texto debajo del botón */
+.links-single {
+  margin-top: 25px;   /* 👈 ESTO ES LO QUE DA EL ESPACIO */
+  font-size: 13px;
+  color: #eafff5;
+}
+
+.links-single a {
+  color: #9fffd8;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.links-single a:hover {
+  text-decoration: underline;
+}
