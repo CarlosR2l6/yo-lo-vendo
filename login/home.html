@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio | Yo Lo Vendo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark: #0b3d2e;
+      --green-mid: #1fbf75;
+      --green-light: #34d399;
+      --green-pale: #eafff5;
+      --yellow: #e6d44c;
+      --yellow-dark: #7a6a00;
+      --card-bg: rgba(255,255,255,0.07);
+      --card-border: rgba(52,211,153,0.2);
+      --text-main: #eafff5;
+      --text-muted: #9fffd8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
+      min-height: 100vh;
+      color: var(--text-main);
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11,61,46,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .nav-logo .yo { color: #fff; }
+    .nav-logo .lo { color: #fff; font-weight: 400; }
+    .nav-logo .vendo { color: var(--yellow); text-shadow: 0 2px 0 var(--yellow-dark); }
+
+    .search-wrap {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 18px 10px 42px;
+      border-radius: 50px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-wrap input::placeholder { color: var(--text-muted); }
+    .search-wrap input:focus { border-color: var(--green-light); }
+    .search-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      opacity: 0.6;
+    }
+
+    .nav-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-publish {
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 9px 18px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .btn-publish:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52,211,153,0.4);
+    }
+
+    .avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-light), var(--yellow));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 15px; color: #063521;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .categories {
+      display: flex;
+      gap: 10px;
+      padding: 16px 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .categories::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1.5px solid var(--card-border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      background: var(--green-mid);
+      color: #063521;
+      border-color: var(--green-mid);
+    }
+
+    .main-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(31,191,117,0.2), rgba(230,212,76,0.1));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .hero-text h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .hero-text h2 span { color: var(--yellow); }
+    .hero-text p {
+      color: var(--text-muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+    .hero-emoji { font-size: 64px; }
+
+    .section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+      border-color: var(--green-light);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      position: relative;
+    }
+
+    .badge-tipo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 50px;
+    }
+    .badge-venta  { background: var(--green-mid); color: #063521; }
+    .badge-trueque { background: var(--yellow); color: var(--yellow-dark); }
+
+    .card-body { padding: 12px 14px 14px; }
+    .card-name {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-price {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--green-light);
+    }
+    .card-price.trueque { color: var(--yellow); font-size: 13px; }
+    .btn-contact {
+      background: rgba(52,211,153,0.15);
+      border: 1px solid var(--green-light);
+      color: var(--green-light);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-contact:hover { background: var(--green-light); color: #063521; }
+
+    .seller-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .seller-avatar {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-light), var(--yellow));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; color: #063521;
+    }
+    .seller-name { font-size: 11px; color: var(--text-muted); }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: linear-gradient(160deg, #0f4a32, #0b3d2e);
+      border: 1px solid var(--green-light);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .modal h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .modal input,
+    .modal textarea,
+    .modal select {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.07);
+      color: var(--text-main);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal input:focus,
+    .modal textarea:focus,
+    .modal select:focus { border-color: var(--green-light); }
+    .modal textarea { resize: vertical; min-height: 90px; }
+    .modal select option { background: #0b3d2e; }
+
+    .tipo-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .tipo-btn {
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid var(--card-border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tipo-btn.selected-venta {
+      border-color: var(--green-light);
+      background: rgba(52,211,153,0.15);
+      color: var(--green-light);
+    }
+    .tipo-btn.selected-trueque {
+      border-color: var(--yellow);
+      background: rgba(230,212,76,0.1);
+      color: var(--yellow);
+    }
+
+    .upload-area {
+      border: 2px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .upload-area:hover { border-color: var(--green-light); }
+    .upload-area p { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .btn-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--card-border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-save {
+      flex: 2;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn-save:hover { transform: translateY(-2px); }
+
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: rgba(11,61,46,0.97);
+      border-top: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      padding: 10px 0 18px;
+      z-index: 100;
+    }
+    .bnav-inner {
+      display: flex;
+      justify-content: space-around;
+    }
+    .bnav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .bnav-item.active { color: var(--green-light); }
+    .bnav-icon { font-size: 22px; }
+    .bnav-publish {
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521 !important;
+      padding: 10px 22px;
+      border-radius: 50px;
+      margin-top: -18px;
+      box-shadow: 0 4px 20px rgba(52,211,153,0.5);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .big-icon { font-size: 64px; margin-bottom: 12px; }
+    .empty-state p { font-size: 15px; }
+
+    @media (max-width: 640px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero-emoji { font-size: 48px; }
+      .bottom-nav { display: block; }
+      .btn-publish { display: none; }
+      .main-wrap { padding-bottom: 90px; }
+      nav { gap: 10px; }
+      .nav-logo { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span>
+  </div>
+  <div class="search-wrap">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Buscar productos, libros, ropa..." oninput="filterProducts()">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-publish" onclick="openModal()">+ Publicar</button>
+    <div class="avatar" onclick="window.location.href='profile.html'">E</div>
+  </div>
+</nav>
+
+<div class="categories">
+  <button class="cat-btn active" onclick="filterCategory('todos', this)">🏠 Todos</button>
+  <button class="cat-btn" onclick="filterCategory('tecnologia', this)">💻 Tecnología</button>
+  <button class="cat-btn" onclick="filterCategory('libros', this)">📚 Libros</button>
+  <button class="cat-btn" onclick="filterCategory('ropa', this)">👕 Ropa</button>
+  <button class="cat-btn" onclick="filterCategory('videojuegos', this)">🎮 Videojuegos</button>
+  <button class="cat-btn" onclick="filterCategory('accesorios', this)">🎧 Accesorios</button>
+  <button class="cat-btn" onclick="filterCategory('otros', this)">📦 Otros</button>
+</div>
+
+<div class="main-wrap">
+  <div class="hero">
+    <div class="hero-text">
+      <h2>Intercambia, vende y gana<br><span>sin complicaciones 🚀</span></h2>
+      <p>Plataforma exclusiva para estudiantes del INTEP · Usa tu correo institucional</p>
+    </div>
+    <div class="hero-emoji">🤝</div>
+  </div>
+
+  <div class="section-title">🔥 Publicaciones recientes</div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="big-icon">📭</div>
+    <p>No hay resultados para tu búsqueda.</p>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <div class="bnav-inner">
+    <div class="bnav-item active">
+      <span class="bnav-icon">🏠</span><span>Inicio</span>
+    </div>
+    <div class="bnav-item">
+      <span class="bnav-icon">🔍</span><span>Buscar</span>
+    </div>
+    <div class="bnav-item bnav-publish" onclick="openModal()">
+      <span class="bnav-icon">＋</span><span>Publicar</span>
+    </div>
+    <div class="bnav-item">
+      <span class="bnav-icon">💬</span><span>Chats</span>
+    </div>
+    <div class="bnav-item">
+      <span class="bnav-icon">👤</span><span>Perfil</span>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <h2>📦 Nueva publicación</h2>
+
+    <label>Tipo de publicación</label>
+    <div class="tipo-row">
+      <button class="tipo-btn selected-venta" id="btnVenta" onclick="selectTipo('venta')">💰 Venta</button>
+      <button class="tipo-btn" id="btnTrueque" onclick="selectTipo('trueque')">🔄 Trueque</button>
+    </div>
+
+    <label>Nombre del producto</label>
+    <input type="text" id="prodNombre" placeholder="Ej: Laptop HP 15 pulgadas">
+
+    <label>Categoría</label>
+    <select id="prodCategoria">
+      <option value="tecnologia">💻 Tecnología</option>
+      <option value="libros">📚 Libros</option>
+      <option value="ropa">👕 Ropa</option>
+      <option value="videojuegos">🎮 Videojuegos</option>
+      <option value="accesorios">🎧 Accesorios</option>
+      <option value="otros">📦 Otros</option>
+    </select>
+
+    <label>Descripción</label>
+    <textarea id="prodDesc" placeholder="Describe el estado, características y cualquier detalle importante..."></textarea>
+
+    <div id="precioWrap">
+      <label>Precio (COP)</label>
+      <input type="number" id="prodPrecio" placeholder="Ej: 150000">
+    </div>
+
+    <div id="truequeWrap" style="display:none;">
+      <label>¿Qué deseas a cambio?</label>
+      <input type="text" id="prodTrueque" placeholder="Ej: Libros de cálculo, audífonos...">
+    </div>
+
+    <label>Imagen del producto</label>
+    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+      <div style="font-size:32px">📷</div>
+      <p>Toca para subir una foto</p>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+    </div>
+    <img id="previewImg" style="display:none; width:100%; border-radius:10px; margin-bottom:16px; max-height:180px; object-fit:cover;">
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="publishProduct()">Publicar ahora ✅</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let products = [
+    { id:1, nombre:'Laptop HP 15"', desc:'En buen estado, cargador incluido, 8GB RAM.', precio:850000, tipo:'venta', categoria:'tecnologia', emoji:'💻', vendedor:'Carlos M.' },
+    { id:2, nombre:'Audífonos Sony', desc:'Bluetooth, cancelación de ruido, caja original.', precio:220000, tipo:'venta', categoria:'accesorios', emoji:'🎧', vendedor:'Laura P.' },
+    { id:3, nombre:'Cálculo Integral', desc:'Libro Larson 9a edición, sin rayones.', precio:0, tipo:'trueque', categoria:'libros', emoji:'📚', vendedor:'Miguel R.', trueque:'Libros de física o $35.000' },
+    { id:4, nombre:'Control PS5', desc:'Usado 3 meses, perfecto estado.', precio:180000, tipo:'venta', categoria:'videojuegos', emoji:'🎮', vendedor:'Sofía G.' },
+    { id:5, nombre:'Sudadera INTEP', desc:'Talla M, nueva, nunca usada.', precio:65000, tipo:'venta', categoria:'ropa', emoji:'👕', vendedor:'Andrés T.' },
+    { id:6, nombre:'Mouse Logitech', desc:'Inalámbrico, pila incluida, funciona perfecto.', precio:0, tipo:'trueque', categoria:'tecnologia', emoji:'🖱️', vendedor:'Valentina C.', trueque:'Teclado o calculadora científica' },
+    { id:7, nombre:'Mochila Nike', desc:'Poco uso, varios compartimentos, color negro.', precio:95000, tipo:'venta', categoria:'otros', emoji:'🎒', vendedor:'David L.' },
+    { id:8, nombre:'Calculadora Casio', desc:'fx-991EX, perfecta para ingeniería.', precio:120000, tipo:'venta', categoria:'tecnologia', emoji:'🔢', vendedor:'Mariana V.' },
+  ];
+
+  let currentCategory = 'todos';
+  let currentTipo = 'venta';
+
+  function renderProducts(list) {
+    const grid = document.getElementById('productGrid');
+    const empty = document.getElementById('emptyState');
+    grid.innerHTML = '';
+    if (list.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    list.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.style.animationDelay = `${i * 0.05}s`;
+      const initials = p.vendedor.split(' ').map(w=>w[0]).join('').toUpperCase();
+      const precioHtml = p.tipo === 'venta'
+        ? `<span class="card-price">$${p.precio.toLocaleString('es-CO')}</span>`
+        : `<span class="card-price trueque">🔄 Trueque</span>`;
+      card.innerHTML = `
+        <div class="card-img">
+          ${p.emoji}
+          <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+        </div>
+        <div class="card-body">
+          <div class="seller-row">
+            <div class="seller-avatar">${initials}</div>
+            <span class="seller-name">${p.vendedor}</span>
+          </div>
+          <div class="card-name">${p.nombre}</div>
+          <div class="card-desc">${p.tipo === 'trueque' ? '🔄 ' + p.trueque : p.desc}</div>
+          <div class="card-footer">
+            ${precioHtml}
+            <button class="btn-contact">Contactar</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function getFiltered() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    return products.filter(p => {
+      const matchCat = currentCategory === 'todos' || p.categoria === currentCategory;
+      const matchSearch = p.nombre.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
+      return matchCat && matchSearch;
+    });
+  }
+
+  function filterProducts() { renderProducts(getFiltered()); }
+
+  function filterCategory(cat, btn) {
+    currentCategory = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterProducts();
+  }
+
+  function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function selectTipo(tipo) {
+    currentTipo = tipo;
+    document.getElementById('btnVenta').className = 'tipo-btn' + (tipo==='venta' ? ' selected-venta' : '');
+    document.getElementById('btnTrueque').className = 'tipo-btn' + (tipo==='trueque' ? ' selected-trueque' : '');
+    document.getElementById('precioWrap').style.display = tipo === 'venta' ? 'block' : 'none';
+    document.getElementById('truequeWrap').style.display = tipo === 'trueque' ? 'block' : 'none';
+  }
+
+  function previewImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById('previewImg');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function publishProduct() {
+    const nombre = document.getElementById('prodNombre').value.trim();
+    const desc = document.getElementById('prodDesc').value.trim();
+    const categoria = document.getElementById('prodCategoria').value;
+    const precio = parseInt(document.getElementById('prodPrecio').value) || 0;
+    const trueque = document.getElementById('prodTrueque').value.trim();
+
+    if (!nombre || !desc) {
+      alert('Por favor completa el nombre y la descripción.');
+      return;
+    }
+
+    const catEmojis = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' };
+    const nuevo = {
+      id: Date.now(), nombre, desc, precio,
+      tipo: currentTipo, categoria,
+      emoji: catEmojis[categoria] || '📦',
+      vendedor: 'Tú',
+      trueque: trueque || 'Negociable'
+    };
+
+    products.unshift(nuevo);
+    closeModal();
+    currentCategory = 'todos';
+    document.querySelectorAll('.cat-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    document.getElementById('searchInput').value = '';
+    filterProducts();
+
+    document.getElementById('prodNombre').value = '';
+    document.getElementById('prodDesc').value = '';
+    document.getElementById('prodPrecio').value = '';
+    document.getElementById('prodTrueque').value = '';
+    document.getElementById('previewImg').style.display = 'none';
+    selectTipo('venta');
+  }
+
+  renderProducts(products);
+</script>
+
+</body>
+</html>
