@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar | Yo Lo Vendo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green-dark: #0b3d2e; --green-mid: #1fbf75; --green-light: #34d399;
+      --yellow: #e6d44c; --yellow-dark: #7a6a00;
+      --card-bg: rgba(255,255,255,0.06); --card-border: rgba(52,211,153,0.2);
+      --text-main: #eafff5; --text-muted: #9fffd8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
+      min-height: 100vh; color: var(--text-main); padding-bottom: 100px;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(11,61,46,0.92); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 900; text-decoration: none; flex-shrink: 0; }
+    .nav-logo .yo { color: #fff; }
+    .nav-logo .lo { color: #fff; font-weight: 400; }
+    .nav-logo .vendo { color: var(--yellow); text-shadow: 0 2px 0 var(--yellow-dark); }
+    .search-bar {
+      flex: 1; position: relative;
+    }
+    .search-bar input {
+      width: 100%; padding: 10px 18px 10px 42px;
+      border-radius: 50px; border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.08); color: var(--text-main);
+      font-family: 'Nunito', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .search-bar input:focus { border-color: var(--green-light); }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar .icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; opacity: 0.6; }
+    .nav-back {
+      background: rgba(255,255,255,0.08); border: 1px solid var(--card-border);
+      color: var(--text-muted); padding: 8px 14px; border-radius: 50px;
+      font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; text-decoration: none; flex-shrink: 0;
+    }
+
+    .page-wrap { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+    /* FILTROS AVANZADOS */
+    .filters-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 18px; padding: 20px; margin-bottom: 24px;
+      animation: fadeUp 0.3s ease both;
+    }
+    .filters-title {
+      font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
+    }
+    .filters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .filter-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
+    .filter-group select, .filter-group input {
+      width: 100%; padding: 9px 12px; border-radius: 10px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.06); color: var(--text-main);
+      font-family: 'Nunito', sans-serif; font-size: 13px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .filter-group select:focus, .filter-group input:focus { border-color: var(--green-light); }
+    .filter-group select option { background: #0b3d2e; }
+
+    .price-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .filters-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-aplicar {
+      flex: 2; padding: 11px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521; font-family: 'Poppins', sans-serif;
+      font-weight: 700; font-size: 14px; cursor: pointer;
+    }
+    .btn-limpiar {
+      flex: 1; padding: 11px; border-radius: 10px;
+      border: 1.5px solid var(--card-border); background: transparent;
+      color: var(--text-muted); font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer;
+    }
+
+    /* TAGS BÚSQUEDAS RECIENTES */
+    .section-label { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; }
+    .tags-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .tag {
+      padding: 6px 14px; border-radius: 50px;
+      border: 1.5px solid var(--card-border);
+      background: transparent; color: var(--text-muted);
+      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tag:hover { border-color: var(--green-light); color: var(--green-light); }
+    .tag.trending { border-color: rgba(230,212,76,0.3); color: var(--yellow); }
+
+    /* RESULTADOS */
+    .results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .results-count { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; }
+    .sort-select {
+      padding: 7px 12px; border-radius: 10px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.06); color: var(--text-main);
+      font-family: 'Nunito', sans-serif; font-size: 12px; outline: none;
+    }
+    .sort-select option { background: #0b3d2e; }
+
+    .product-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .product-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.3); border-color: var(--green-light); }
+    .card-img {
+      width: 100%; aspect-ratio: 1;
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px; position: relative;
+    }
+    .badge-tipo { position: absolute; top: 10px; left: 10px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 50px; }
+    .badge-venta { background: var(--green-mid); color: #063521; }
+    .badge-trueque { background: var(--yellow); color: var(--yellow-dark); }
+    .card-body { padding: 12px 14px 14px; }
+    .card-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .card-price { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 15px; color: var(--green-light); }
+    .card-price.t { color: var(--yellow); font-size: 12px; }
+    .btn-ver { background: rgba(52,211,153,0.15); border: 1px solid var(--green-light); color: var(--green-light); font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 50px; cursor: pointer; transition: background 0.2s; }
+    .btn-ver:hover { background: var(--green-light); color: #063521; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 60px; margin-bottom: 14px; }
+    .empty-state h3 { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(11,61,46,0.97); border-top: 1px solid var(--card-border); backdrop-filter: blur(14px); padding: 10px 0 18px; z-index: 100; }
+    .bnav-inner { display: flex; justify-content: space-around; }
+    .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--text-muted); font-size: 11px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+    .bnav-item.active { color: var(--green-light); }
+    .bnav-icon { font-size: 22px; }
+    .bnav-publish { background: linear-gradient(135deg, var(--green-light), var(--green-mid)); color: #063521 !important; padding: 10px 22px; border-radius: 50px; margin-top: -18px; box-shadow: 0 4px 20px rgba(52,211,153,0.5); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="nav-logo"><span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span></a>
+  <div class="search-bar">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Buscar productos, libros, ropa..." oninput="buscar()" autofocus>
+  </div>
+  <a href="home.html" class="nav-back">← Inicio</a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- FILTROS -->
+  <div class="filters-card">
+    <div class="filters-title">🎛️ Filtros avanzados</div>
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label>Categoría</label>
+        <select id="fCategoria">
+          <option value="">Todas</option>
+          <option value="tecnologia">💻 Tecnología</option>
+          <option value="libros">📚 Libros</option>
+          <option value="ropa">👕 Ropa</option>
+          <option value="videojuegos">🎮 Videojuegos</option>
+          <option value="accesorios">🎧 Accesorios</option>
+          <option value="otros">📦 Otros</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Tipo</label>
+        <select id="fTipo">
+          <option value="">Todos</option>
+          <option value="venta">💰 Venta</option>
+          <option value="trueque">🔄 Trueque</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Precio mínimo</label>
+        <input type="number" id="fPrecioMin" placeholder="$ 0">
+      </div>
+      <div class="filter-group">
+        <label>Precio máximo</label>
+        <input type="number" id="fPrecioMax" placeholder="$ 999999">
+      </div>
+    </div>
+    <div class="filters-actions">
+      <button class="btn-limpiar" onclick="limpiarFiltros()">🗑 Limpiar</button>
+      <button class="btn-aplicar" onclick="buscar()">🔍 Aplicar filtros</button>
+    </div>
+  </div>
+
+  <!-- BÚSQUEDAS RECIENTES -->
+  <div id="recentSection">
+    <div class="section-label">🕐 Búsquedas recientes</div>
+    <div class="tags-row" id="recentTags"></div>
+    <div class="section-label">🔥 Tendencias</div>
+    <div class="tags-row">
+      <span class="tag trending" onclick="buscarTag('Laptop')">💻 Laptop</span>
+      <span class="tag trending" onclick="buscarTag('Libros ingeniería')">📚 Libros ingeniería</span>
+      <span class="tag trending" onclick="buscarTag('Audífonos')">🎧 Audífonos</span>
+      <span class="tag trending" onclick="buscarTag('Calculadora')">🔢 Calculadora</span>
+      <span class="tag trending" onclick="buscarTag('Ropa')">👕 Ropa</span>
+    </div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div id="resultsSection" style="display:none;">
+    <div class="results-header">
+      <div class="results-count" id="resultsCount">0 resultados</div>
+      <select class="sort-select" id="sortSelect" onchange="buscar()">
+        <option value="reciente">Más reciente</option>
+        <option value="precio_asc">Menor precio</option>
+        <option value="precio_desc">Mayor precio</option>
+      </select>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="icon">🔍</div>
+      <h3>Sin resultados</h3>
+      <p>Intenta con otras palabras o cambia los filtros.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bnav-inner">
+    <a href="home.html" class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="search.html" class="bnav-item active"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="chat.html" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="profile.html" class="bnav-item"><span class="bnav-icon">👤</span><span>Perfil</span></a>
+  </div>
+</div>
+
+<script>
+  const productos = [
+    { id:1, nombre:'Laptop HP 15"', desc:'Intel i5, 8GB RAM, 256GB SSD.', precio:850000, tipo:'venta', categoria:'tecnologia', emoji:'💻' },
+    { id:2, nombre:'Audífonos Sony', desc:'Bluetooth, cancelación de ruido.', precio:220000, tipo:'venta', categoria:'accesorios', emoji:'🎧' },
+    { id:3, nombre:'Cálculo Integral', desc:'Larson 9a edición, sin rayones.', precio:0, tipo:'trueque', categoria:'libros', emoji:'📚' },
+    { id:4, nombre:'Control PS5', desc:'Usado 3 meses, perfecto estado.', precio:180000, tipo:'venta', categoria:'videojuegos', emoji:'🎮' },
+    { id:5, nombre:'Sudadera INTEP', desc:'Talla M, nueva, nunca usada.', precio:65000, tipo:'venta', categoria:'ropa', emoji:'👕' },
+    { id:6, nombre:'Mouse Logitech', desc:'Inalámbrico, pila incluida.', precio:0, tipo:'trueque', categoria:'tecnologia', emoji:'🖱️' },
+    { id:7, nombre:'Mochila Nike', desc:'Poco uso, varios compartimentos.', precio:95000, tipo:'venta', categoria:'otros', emoji:'🎒' },
+    { id:8, nombre:'Calculadora Casio', desc:'fx-991EX, perfecta para ingeniería.', precio:120000, tipo:'venta', categoria:'tecnologia', emoji:'🔢' },
+    { id:9, nombre:'Laptop Lenovo', desc:'Ryzen 5, 512GB SSD, casi nueva.', precio:650000, tipo:'venta', categoria:'tecnologia', emoji:'💻' },
+    { id:10, nombre:'Álgebra Lineal', desc:'Grossman 7a edición.', precio:35000, tipo:'venta', categoria:'libros', emoji:'📚' },
+  ];
+
+  let recientes = JSON.parse(localStorage.getItem('busquedasRecientes') || '[]');
+
+  function renderRecientes() {
+    const wrap = document.getElementById('recentTags');
+    wrap.innerHTML = '';
+    recientes.slice(0,5).forEach(q => {
+      const t = document.createElement('span');
+      t.className = 'tag';
+      t.textContent = '🕐 ' + q;
+      t.onclick = () => buscarTag(q);
+      wrap.appendChild(t);
+    });
+  }
+
+  function buscarTag(q) {
+    document.getElementById('searchInput').value = q;
+    buscar();
+  }
+
+  function buscar() {
+    const query    = document.getElementById('searchInput').value.trim().toLowerCase();
+    const cat      = document.getElementById('fCategoria').value;
+    const tipo     = document.getElementById('fTipo').value;
+    const precMin  = parseInt(document.getElementById('fPrecioMin').value) || 0;
+    const precMax  = parseInt(document.getElementById('fPrecioMax').value) || 99999999;
+    const sort     = document.getElementById('sortSelect').value;
+
+    if (!query && !cat && !tipo) {
+      document.getElementById('recentSection').style.display = 'block';
+      document.getElementById('resultsSection').style.display = 'none';
+      return;
+    }
+
+    // Guardar búsqueda reciente
+    if (query && !recientes.includes(query)) {
+      recientes.unshift(query);
+      recientes = recientes.slice(0, 5);
+      localStorage.setItem('busquedasRecientes', JSON.stringify(recientes));
+      renderRecientes();
+    }
+
+    document.getElementById('recentSection').style.display = 'none';
+    document.getElementById('resultsSection').style.display = 'block';
+
+    let resultado = productos.filter(p => {
+      const matchQ   = !query || p.nombre.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
+      const matchCat = !cat  || p.categoria === cat;
+      const matchT   = !tipo || p.tipo === tipo;
+      const matchP   = p.tipo === 'trueque' || (p.precio >= precMin && p.precio <= precMax);
+      return matchQ && matchCat && matchT && matchP;
+    });
+
+    if (sort === 'precio_asc') resultado.sort((a,b) => a.precio - b.precio);
+    if (sort === 'precio_desc') resultado.sort((a,b) => b.precio - a.precio);
+
+    renderResultados(resultado);
+  }
+
+  function renderResultados(lista) {
+    const grid  = document.getElementById('productGrid');
+    const empty = document.getElementById('emptyState');
+    const count = document.getElementById('resultsCount');
+    grid.innerHTML = '';
+    count.textContent = `${lista.length} resultado${lista.length !== 1 ? 's' : ''}`;
+
+    if (lista.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    lista.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.style.animationDelay = `${i * 0.05}s`;
+      card.onclick = () => window.location.href = 'product-detail.html';
+      card.innerHTML = `
+        <div class="card-img">
+          ${p.emoji}
+          <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">${p.nombre}</div>
+          <div class="card-desc">${p.desc}</div>
+          <div class="card-footer">
+            <span class="card-price ${p.tipo==='trueque'?'t':''}">
+              ${p.tipo === 'venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
+            </span>
+            <button class="btn-ver">Ver</button>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function limpiarFiltros() {
+    document.getElementById('fCategoria').value = '';
+    document.getElementById('fTipo').value = '';
+    document.getElementById('fPrecioMin').value = '';
+    document.getElementById('fPrecioMax').value = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('recentSection').style.display = 'block';
+    document.getElementById('resultsSection').style.display = 'none';
+  }
+
+  renderRecientes();
+</script>
+</body>
+</html>

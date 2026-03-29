@@ -537,20 +537,11 @@
 
 <div class="bottom-nav">
   <div class="bnav-inner">
-    <div class="bnav-item active">
-      <span class="bnav-icon">🏠</span><span>Inicio</span>
-    </div>
-    <div class="bnav-item">
-      <span class="bnav-icon">🔍</span><span>Buscar</span>
-    </div>
-    <div class="bnav-item bnav-publish" onclick="openModal()">
-      <span class="bnav-icon">＋</span><span>Publicar</span>
-    </div>
-    <div class="bnav-item">
-      <span class="bnav-icon">💬</span><span>Chats</span>
-    </div>
-    <div class="bnav-item">
-      <span class="bnav-icon">👤</span><span>Perfil</span>
+    <a href="home.html" class="bnav-item active"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="home.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="chat.html" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="profile.html" class="bnav-item"><span class="bnav-icon">👤</span><span>Perfil</span></a>
     </div>
   </div>
 </div>
@@ -602,6 +593,12 @@
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-save" onclick="publishProduct()">Publicar ahora ✅</button>
+      
+       <a href="notifications.html" style="position:relative; font-size:22px; text-decoration:none;">
+         🔔
+         <span style="position:absolute; top:-4px; right:-4px; width:16px; height:16px; border-radius:50%; background:#ff6b6b; color:#fff; font-size:9px; font-weight:800; display:flex; align-items:center; justify-content:center; border:2px solid #0b3d2e;">5</span>
+        </a>
+        <button class="btn-publish" onclick="openModal()">+ Publicar</button>
     </div>
   </div>
 </div>
@@ -631,6 +628,13 @@
       const card = document.createElement('div');
       card.className = 'product-card';
       card.style.animationDelay = `${i * 0.05}s`;
+      card.onclick = () =>{
+        try{
+          window.location.href = 'product-detail.html';
+        }catch(e){
+          alert('Página no encontrada. Asegurate de tener el archivo product.detail.html en la misma carpeta');
+        }
+      }
       const initials = p.vendedor.split(' ').map(w=>w[0]).join('').toUpperCase();
       const precioHtml = p.tipo === 'venta'
         ? `<span class="card-price">$${p.precio.toLocaleString('es-CO')}</span>`
