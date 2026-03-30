@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Perfil | Yo Lo Vendo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --green-dark: #0b3d2e;
+      --green-mid: #1fbf75;
+      --green-light: #34d399;
+      --yellow: #e6d44c;
+      --yellow-dark: #7a6a00;
+      --card-bg: rgba(255,255,255,0.06);
+      --card-border: rgba(52,211,153,0.2);
+      --text-main: #eafff5;
+      --text-muted: #9fffd8;
+      --red: #ff6b6b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
+      min-height: 100vh;
+      color: var(--text-main);
+      padding-bottom: 90px;
+    }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(11,61,46,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .nav-logo {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px; font-weight: 900;
+      text-decoration: none;
+    }
+    .nav-logo .yo { color: #fff; }
+    .nav-logo .lo { color: #fff; font-weight: 400; }
+    .nav-logo .vendo { color: var(--yellow); text-shadow: 0 2px 0 var(--yellow-dark); }
+    .nav-back {
+      margin-left: auto;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 16px; border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .cover {
+      height: 160px;
+      background: linear-gradient(135deg, #1fbf75, #0b5c3d, #e6d44c44);
+      position: relative; overflow: hidden;
+    }
+    .cover::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cover-edit-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 50px;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      backdrop-filter: blur(6px);
+    }
+
+    .profile-header {
+      max-width: 700px; margin: 0 auto;
+      padding: 0 24px; position: relative;
+    }
+
+    .avatar-wrap {
+      position: relative; display: inline-block;
+      margin-top: -52px; margin-bottom: 12px;
+    }
+    .avatar-big {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green-light), var(--yellow));
+      border: 4px solid #0b3d2e;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; font-weight: 900; color: #063521;
+      overflow: hidden; cursor: pointer; position: relative;
+    }
+    .avatar-big img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .avatar-big .avatar-letter { font-family: 'Poppins', sans-serif; }
+    .avatar-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.5); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.2s; font-size: 22px;
+    }
+    .avatar-big:hover .avatar-overlay { opacity: 1; }
+    .avatar-badge {
+      position: absolute; bottom: 4px; right: 4px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--green-mid); border: 3px solid #0b3d2e;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; cursor: pointer;
+    }
+
+    .profile-info { margin-bottom: 20px; }
+    .profile-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px; font-weight: 800;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .verified-badge {
+      background: var(--green-mid); color: #063521;
+      font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 50px;
+    }
+    .profile-email { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+    .profile-bio { margin-top: 10px; font-size: 14px; color: var(--text-main); opacity: 0.85; line-height: 1.5; }
+    .profile-meta { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+    .meta-item { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; margin: 20px 0;
+      max-width: 700px; margin-left: auto; margin-right: auto;
+      padding: 0 24px;
+    }
+    .stat-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 14px 10px; text-align: center;
+      animation: fadeUp 0.4s ease both;
+    }
+    .stat-number {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px; font-weight: 800; color: var(--green-light);
+    }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-wrap { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+
+    .edit-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 18px; padding: 22px; margin-bottom: 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .edit-card-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--card-border);
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+    label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
+    .field-wrap { margin-bottom: 14px; }
+    input[type=text], input[type=email], input[type=tel], textarea, select {
+      width: 100%; padding: 10px 13px; border-radius: 10px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text-main); font-family: 'Nunito', sans-serif;
+      font-size: 14px; outline: none; transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--green-light); }
+    textarea { resize: vertical; min-height: 70px; }
+    select option { background: #0b3d2e; }
+
+    .btn-save-profile {
+      width: 100%; padding: 13px; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521; font-family: 'Poppins', sans-serif;
+      font-weight: 700; font-size: 15px; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s; margin-top: 4px;
+    }
+    .btn-save-profile:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(52,211,153,0.35); }
+
+    .tabs {
+      display: flex; gap: 8px; margin-bottom: 16px;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0; padding: 8px 18px; border-radius: 50px;
+      border: 1.5px solid var(--card-border); background: transparent;
+      color: var(--text-muted); font-family: 'Nunito', sans-serif;
+      font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--green-mid); color: #063521; border-color: var(--green-mid); }
+
+    .history-list { display: flex; flex-direction: column; gap: 12px; }
+    .history-item {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 14px 16px;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color 0.2s; animation: fadeUp 0.3s ease both;
+    }
+    .history-item:hover { border-color: var(--green-light); }
+    .history-emoji {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .history-info { flex: 1; min-width: 0; }
+    .history-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .history-right { text-align: right; flex-shrink: 0; }
+    .history-price { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 15px; color: var(--green-light); }
+    .history-price.trueque { color: var(--yellow); font-size: 12px; }
+    .history-status { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 50px; margin-top: 4px; display: inline-block; }
+    .status-vendido  { background: rgba(52,211,153,0.2); color: var(--green-light); }
+    .status-activo   { background: rgba(230,212,76,0.2); color: var(--yellow); }
+    .status-trueque  { background: rgba(230,212,76,0.15); color: var(--yellow); }
+    .status-comprado { background: rgba(100,180,255,0.2); color: #7dd3fc; }
+
+    .empty-tab { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+    .empty-tab .icon { font-size: 44px; margin-bottom: 10px; }
+    .empty-tab p { font-size: 14px; }
+
+    .danger-zone {
+      background: rgba(255,107,107,0.06);
+      border: 1px solid rgba(255,107,107,0.25);
+      border-radius: 18px; padding: 20px 22px; margin-bottom: 20px;
+    }
+    .danger-title { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .btn-danger {
+      padding: 10px 20px; border-radius: 10px;
+      border: 1px solid rgba(255,107,107,0.4); background: transparent;
+      color: var(--red); font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer;
+      transition: background 0.2s; margin-right: 10px; margin-top: 6px;
+    }
+    .btn-danger:hover { background: rgba(255,107,107,0.1); }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(11,61,46,0.97);
+      border-top: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      padding: 10px 0 18px; z-index: 100;
+    }
+    .bnav-inner { display: flex; justify-content: space-around; }
+    .bnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 11px; font-weight: 600; text-decoration: none; transition: color 0.2s;
+    }
+    .bnav-item.active { color: var(--green-light); }
+    .bnav-icon { font-size: 22px; }
+    .bnav-publish {
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521 !important; padding: 10px 22px; border-radius: 50px;
+      margin-top: -18px; box-shadow: 0 4px 20px rgba(52,211,153,0.5);
+    }
+
+    .toast {
+      position: fixed; bottom: 90px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green-mid); color: #063521;
+      font-weight: 700; font-size: 14px;
+      padding: 12px 24px; border-radius: 50px;
+      opacity: 0; transition: all 0.3s; z-index: 999;
+      white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+      z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-small {
+      background: linear-gradient(160deg, #0f4a32, #0b3d2e);
+      border: 1px solid var(--green-light);
+      border-radius: 20px; padding: 28px;
+      width: 90%; max-width: 340px; text-align: center;
+      animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .modal-small h3 { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+    .modal-small p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .modal-btn-row { display: flex; gap: 10px; }
+    .modal-btn { flex: 1; padding: 11px; border-radius: 10px; border: none; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; }
+    .modal-btn.primary { background: linear-gradient(135deg, var(--green-light), var(--green-mid)); color: #063521; }
+    .modal-btn.secondary { background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--text-muted); }
+
+    input[type=file] { display: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span>
+  </a>
+  <a href="home.html" class="nav-back">← Volver al inicio</a>
+</nav>
+
+<div class="cover">
+  <button class="cover-edit-btn" onclick="showToast('✅ Función de portada próximamente')">✏️ Editar portada</button>
+</div>
+
+<div class="profile-header">
+  <div class="avatar-wrap">
+    <div class="avatar-big" onclick="openPhotoModal()" id="avatarBig">
+      <img id="avatarImg" src="" alt="foto perfil">
+      <span class="avatar-letter" id="avatarLetter">E</span>
+      <div class="avatar-overlay">📷</div>
+    </div>
+    <div class="avatar-badge" onclick="openPhotoModal()">📷</div>
+  </div>
+
+  <div class="profile-info">
+    <div class="profile-name">
+      <span id="displayName">Estudiante INTEP</span>
+      <span class="verified-badge">✓ Verificado</span>
+    </div>
+    <div class="profile-email" id="displayEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ee8b9d9a9b8a878f809a8bae87809a8b9ec08b8a9bc08d81">[email&#160;protected]</a></div>
+    <div class="profile-bio" id="displayBio">¡Hola! Soy estudiante del INTEP. Aquí vendo y hago trueque de cosas que ya no uso.</div>
+    <div class="profile-meta">
+      <span class="meta-item">📅 Miembro desde Marzo 2025</span>
+      <span class="meta-item">📍 Colombia</span>
+      <span class="meta-item" id="displayCarrera">🎓 Ingeniería de Sistemas</span>
+    </div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card" style="animation-delay:0.05s">
+    <div class="stat-number">3</div>
+    <div class="stat-label">Ventas</div>
+  </div>
+  <div class="stat-card" style="animation-delay:0.1s">
+    <div class="stat-number">2</div>
+    <div class="stat-label">Trueques</div>
+  </div>
+  <div class="stat-card" style="animation-delay:0.15s">
+    <div class="stat-number">4</div>
+    <div class="stat-label">Compras</div>
+  </div>
+  <div class="stat-card" style="animation-delay:0.2s">
+    <div class="stat-number">⭐ 5</div>
+    <div class="stat-label">Reputación</div>
+  </div>
+</div>
+
+<div class="section-wrap">
+
+  <div class="edit-card" style="animation-delay:0.1s">
+    <div class="edit-card-title">✏️ Editar información personal</div>
+    <div class="form-row">
+      <div class="field-wrap">
+        <label>Nombre completo</label>
+        <input type="text" id="inputNombre" placeholder="Tu nombre completo">
+      </div>
+      <div class="field-wrap">
+        <label>Carrera / Programa</label>
+        <select id="inputCarrera">
+          <option>Ingeniería de Sistemas</option>
+          <option>Administración de Empresas</option>
+          <option>Contaduría Pública</option>
+          <option>Diseño Visual Digital</option>
+          <option>Especialización en Big Data</option>
+          <option>Otro</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field-wrap">
+        <label>Correo institucional</label>
+        <input type="email" id="inputEmail" placeholder="correo@intep.edu.co">
+      </div>
+      <div class="field-wrap">
+        <label>WhatsApp (opcional)</label>
+        <input type="tel" id="inputWA" placeholder="+57 300 0000000">
+      </div>
+    </div>
+    <div class="field-wrap">
+      <label>Biografía</label>
+      <textarea id="inputBio" placeholder="Cuéntanos algo sobre ti..."></textarea>
+    </div>
+    <button class="btn-save-profile" onclick="saveProfile()">💾 Guardar cambios</button>
+  </div>
+
+  <div class="edit-card" style="animation-delay:0.2s">
+    <div class="edit-card-title">📋 Mi historial</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('ventas', this)">💰 Mis ventas</button>
+      <button class="tab-btn" onclick="switchTab('trueques', this)">🔄 Mis trueques</button>
+      <button class="tab-btn" onclick="switchTab('compras', this)">🛒 Mis compras</button>
+      <button class="tab-btn" onclick="switchTab('activos', this)">📦 Activos</button>
+    </div>
+    <div id="tabContent" class="history-list"></div>
+  </div>
+
+  <div class="danger-zone">
+    <div class="danger-title">⚠️ Zona de peligro</div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Estas acciones son permanentes y no se pueden deshacer.</p>
+    <button class="btn-danger" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+    <button class="btn-danger" onclick="confirmarEliminar()">🗑️ Eliminar cuenta</button>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="bnav-inner">
+    <a href="home.html" class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="home.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="#" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="profile.html" class="bnav-item active"><span class="bnav-icon">👤</span><span>Perfil</span></a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="photoModal">
+  <div class="modal-small">
+    <h3>📷 Foto de perfil</h3>
+    <p>Sube una foto desde tu dispositivo para personalizar tu perfil.</p>
+    <div class="modal-btn-row">
+      <button class="modal-btn secondary" onclick="closePhotoModal()">Cancelar</button>
+      <button class="modal-btn primary" onclick="document.getElementById('fileAvatar').click()">📁 Elegir foto</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="fileAvatar" accept="image/*" onchange="uploadAvatar(event)">
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  // ── Supabase: cerrar sesión real ─────────────────────────
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  const supabase = createClient(
+    'https://uvkjerejhhbpgyvpmxur.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+  )
+
+  // Verificar sesión activa
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) window.location.href = 'index.html'
+
+  // Exponer cerrarSesion al HTML (onclick lo necesita en window)
+  window.cerrarSesion = async () => {
+    if (!confirm('¿Seguro que deseas cerrar sesión?')) return
+    await supabase.auth.signOut()          // ← cierra la sesión en Supabase
+    window.location.href = 'index.html'   // ← ahora sí index no redirige de vuelta
+  }
+
+  window.confirmarEliminar = () => {
+    showToast('📩 Contacta a soporte@intep.edu.co para eliminar tu cuenta.')
+  }
+  const historialData = {
+    ventas: [
+      { nombre:'Audífonos JBL', emoji:'🎧', fecha:'15 Mar 2025', precio:95000, status:'vendido' },
+      { nombre:'Libro Álgebra Lineal', emoji:'📚', fecha:'02 Feb 2025', precio:40000, status:'vendido' },
+      { nombre:'Calculadora Casio', emoji:'🔢', fecha:'10 Ene 2025', precio:80000, status:'vendido' },
+    ],
+    trueques: [
+      { nombre:'Mouse por Teclado', emoji:'🖱️', fecha:'20 Mar 2025', precio:0, status:'trueque', desc:'Teclado mecánico' },
+      { nombre:'Libros Cálculo', emoji:'📚', fecha:'05 Mar 2025', precio:0, status:'trueque', desc:'Libros de física' },
+    ],
+    compras: [
+      { nombre:'Laptop HP 15"', emoji:'💻', fecha:'18 Mar 2025', precio:750000, status:'comprado' },
+      { nombre:'Sudadera INTEP', emoji:'👕', fecha:'12 Mar 2025', precio:65000, status:'comprado' },
+      { nombre:'Control PS5', emoji:'🎮', fecha:'28 Feb 2025', precio:180000, status:'comprado' },
+      { nombre:'Mochila Nike', emoji:'🎒', fecha:'14 Feb 2025', precio:90000, status:'comprado' },
+    ],
+    activos: [
+      { nombre:'Laptop Lenovo', emoji:'💻', fecha:'Publicado hoy', precio:650000, status:'activo' },
+      { nombre:'Ropa deportiva', emoji:'👟', fecha:'Publicado ayer', precio:45000, status:'activo' },
+    ]
+  };
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTab(tab);
+  }
+
+  function renderTab(tab) {
+    const list = historialData[tab];
+    const container = document.getElementById('tabContent');
+    container.innerHTML = '';
+    if (!list || list.length === 0) {
+      container.innerHTML = `<div class="empty-tab"><div class="icon">📭</div><p>No hay registros aún.</p></div>`;
+      return;
+    }
+    list.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'history-item';
+      div.style.animationDelay = `${i * 0.06}s`;
+      const statusLabels = {
+        vendido:  { cls:'status-vendido',  txt:'✅ Vendido' },
+        activo:   { cls:'status-activo',   txt:'🟡 Activo' },
+        trueque:  { cls:'status-trueque',  txt:'🔄 Trueque' },
+        comprado: { cls:'status-comprado', txt:'🛒 Comprado' },
+      };
+      const s = statusLabels[item.status] || { cls:'', txt: item.status };
+      const precioTxt = item.precio > 0
+        ? `<div class="history-price">$${item.precio.toLocaleString('es-CO')}</div>`
+        : `<div class="history-price trueque">🔄 Trueque</div>`;
+      div.innerHTML = `
+        <div class="history-emoji">${item.emoji}</div>
+        <div class="history-info">
+          <div class="history-name">${item.nombre}</div>
+          <div class="history-date">${item.fecha}${item.desc ? ' · ' + item.desc : ''}</div>
+        </div>
+        <div class="history-right">
+          ${precioTxt}
+          <span class="history-status ${s.cls}">${s.txt}</span>
+        </div>`;
+      container.appendChild(div);
+    });
+  }
+
+  function saveProfile() {
+    const nombre  = document.getElementById('inputNombre').value.trim();
+    const email   = document.getElementById('inputEmail').value.trim();
+    const bio     = document.getElementById('inputBio').value.trim();
+    const carrera = document.getElementById('inputCarrera').value;
+    if (!nombre) { showToast('⚠️ Ingresa tu nombre'); return; }
+    if (email && !email.includes('@intep')) { showToast('⚠️ Usa tu correo institucional @intep'); return; }
+    if (nombre)  document.getElementById('displayName').textContent = nombre;
+    if (email)   document.getElementById('displayEmail').textContent = email;
+    if (bio)     document.getElementById('displayBio').textContent = bio;
+    if (carrera) document.getElementById('displayCarrera').textContent = '🎓 ' + carrera;
+    const letra = nombre ? nombre[0].toUpperCase() : 'E';
+    document.getElementById('avatarLetter').textContent = letra;
+    showToast('✅ Perfil actualizado correctamente');
+  }
+
+  function openPhotoModal()  { document.getElementById('photoModal').classList.add('open'); }
+  function closePhotoModal() { document.getElementById('photoModal').classList.remove('open'); }
+  document.getElementById('photoModal').addEventListener('click', function(e) {
+    if (e.target === this) closePhotoModal();
+  });
+
+  function uploadAvatar(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById('avatarImg');
+      const letter = document.getElementById('avatarLetter');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+      letter.style.display = 'none';
+      closePhotoModal();
+      showToast('📸 Foto de perfil actualizada');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+</script>
+</body>
+</html>

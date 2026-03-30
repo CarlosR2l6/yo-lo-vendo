@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Publicaciones | Yo Lo Vendo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --green-dark: #0b3d2e;
+      --green-mid: #1fbf75;
+      --green-light: #34d399;
+      --yellow: #e6d44c;
+      --yellow-dark: #7a6a00;
+      --card-bg: rgba(255,255,255,0.06);
+      --card-border: rgba(52,211,153,0.2);
+      --text-main: #eafff5;
+      --text-muted: #9fffd8;
+      --red: #ff6b6b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
+      min-height: 100vh; color: var(--text-main);
+      padding-bottom: 100px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(11,61,46,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 24px; height: 64px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 900; text-decoration: none; }
+    .nav-logo .yo { color: #fff; }
+    .nav-logo .lo { color: #fff; font-weight: 400; }
+    .nav-logo .vendo { color: var(--yellow); text-shadow: 0 2px 0 var(--yellow-dark); }
+    .nav-back {
+      margin-left: auto; background: rgba(255,255,255,0.08);
+      border: 1px solid var(--card-border); color: var(--text-muted);
+      padding: 8px 16px; border-radius: 50px;
+      font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px;
+    }
+
+    .page-wrap { max-width: 700px; margin: 0 auto; padding: 28px 24px; }
+
+    /* HEADER */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; animation: fadeUp 0.3s ease both;
+    }
+    .page-header h1 {
+      font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800;
+    }
+    .btn-nueva {
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521; font-family: 'Poppins', sans-serif;
+      font-weight: 700; font-size: 13px; padding: 10px 18px;
+      border-radius: 50px; border: none; cursor: pointer;
+      transition: transform 0.15s; white-space: nowrap;
+    }
+    .btn-nueva:hover { transform: translateY(-2px); }
+
+    /* FILTROS */
+    .filtros {
+      display: flex; gap: 8px; margin-bottom: 20px;
+      overflow-x: auto; scrollbar-width: none;
+      animation: fadeUp 0.35s ease both;
+    }
+    .filtros::-webkit-scrollbar { display: none; }
+    .filtro-btn {
+      flex-shrink: 0; padding: 7px 16px; border-radius: 50px;
+      border: 1.5px solid var(--card-border); background: transparent;
+      color: var(--text-muted); font-family: 'Nunito', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .filtro-btn.active { background: var(--green-mid); color: #063521; border-color: var(--green-mid); }
+
+    /* STATS ROW */
+    .mini-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 24px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .mini-stat {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 14px; text-align: center;
+    }
+    .mini-stat-num {
+      font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 800;
+      color: var(--green-light);
+    }
+    .mini-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* LISTA PUBLICACIONES */
+    .listings-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .listing-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 18px; padding: 18px;
+      display: flex; gap: 16px; align-items: flex-start;
+      animation: fadeUp 0.4s ease both;
+      transition: border-color 0.2s;
+    }
+    .listing-card:hover { border-color: var(--green-light); }
+
+    .listing-emoji {
+      width: 64px; height: 64px; border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 34px; flex-shrink: 0;
+    }
+
+    .listing-info { flex: 1; min-width: 0; }
+    .listing-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 8px; margin-bottom: 6px;
+    }
+    .listing-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700; line-height: 1.2;
+    }
+    .listing-badge {
+      font-size: 11px; font-weight: 800;
+      padding: 3px 10px; border-radius: 50px; flex-shrink: 0;
+    }
+    .badge-activo   { background: rgba(52,211,153,0.2); color: var(--green-light); }
+    .badge-vendido  { background: rgba(100,180,255,0.15); color: #7dd3fc; }
+    .badge-pausado  { background: rgba(230,212,76,0.15); color: var(--yellow); }
+
+    .listing-desc {
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 10px; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .listing-meta {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .listing-price {
+      font-family: 'Poppins', sans-serif; font-weight: 800;
+      font-size: 16px; color: var(--green-light);
+    }
+    .listing-price.t { color: var(--yellow); font-size: 13px; }
+    .listing-date { font-size: 11px; color: var(--text-muted); }
+    .listing-views { font-size: 11px; color: var(--text-muted); }
+
+    /* ACCIONES */
+    .listing-actions {
+      display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 7px 14px; border-radius: 50px;
+      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; border: 1.5px solid;
+    }
+    .action-btn.edit {
+      border-color: var(--card-border); background: transparent;
+      color: var(--text-muted);
+    }
+    .action-btn.edit:hover { border-color: var(--green-light); color: var(--green-light); }
+    .action-btn.pause {
+      border-color: rgba(230,212,76,0.3); background: transparent;
+      color: var(--yellow);
+    }
+    .action-btn.pause:hover { background: rgba(230,212,76,0.1); }
+    .action-btn.delete {
+      border-color: rgba(255,107,107,0.3); background: transparent;
+      color: var(--red);
+    }
+    .action-btn.delete:hover { background: rgba(255,107,107,0.1); }
+    .action-btn.sold {
+      border-color: rgba(100,180,255,0.3); background: transparent;
+      color: #7dd3fc;
+    }
+    .action-btn.sold:hover { background: rgba(100,180,255,0.1); }
+
+    /* EMPTY */
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 60px; margin-bottom: 14px; }
+    .empty-state h3 { font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; margin-bottom: 20px; }
+
+    /* MODAL EDITAR */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+      z-index: 200; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: linear-gradient(160deg, #0f4a32, #0b3d2e);
+      border: 1px solid var(--green-light); border-radius: 24px;
+      padding: 28px; width: 100%; max-width: 460px;
+      max-height: 90vh; overflow-y: auto;
+      animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .modal-box h2 {
+      font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .modal-box label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
+    .modal-box input, .modal-box textarea, .modal-box select {
+      width: 100%; padding: 10px 13px; border-radius: 10px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255,255,255,0.06); color: var(--text-main);
+      font-family: 'Nunito', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+    }
+    .modal-box input:focus, .modal-box textarea:focus { border-color: var(--green-light); }
+    .modal-box textarea { resize: vertical; min-height: 80px; }
+    .modal-box select option { background: #0b3d2e; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-modal-cancel {
+      flex: 1; padding: 12px; border-radius: 12px;
+      border: 1.5px solid var(--card-border); background: transparent;
+      color: var(--text-muted); font-family: 'Nunito', sans-serif; font-weight: 700; cursor: pointer;
+    }
+    .btn-modal-save {
+      flex: 2; padding: 12px; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521; font-family: 'Poppins', sans-serif; font-weight: 700; cursor: pointer;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green-mid); color: #063521;
+      font-weight: 700; font-size: 14px;
+      padding: 12px 24px; border-radius: 50px;
+      opacity: 0; transition: all 0.3s; z-index: 999;
+      white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(11,61,46,0.97);
+      border-top: 1px solid var(--card-border);
+      backdrop-filter: blur(14px);
+      padding: 10px 0 18px; z-index: 100;
+    }
+    .bnav-inner { display: flex; justify-content: space-around; }
+    .bnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      cursor: pointer; color: var(--text-muted);
+      font-size: 11px; font-weight: 600; text-decoration: none; transition: color 0.2s;
+    }
+    .bnav-item.active { color: var(--green-light); }
+    .bnav-icon { font-size: 22px; }
+    .bnav-publish {
+      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
+      color: #063521 !important; padding: 10px 22px; border-radius: 50px;
+      margin-top: -18px; box-shadow: 0 4px 20px rgba(52,211,153,0.5);
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span>
+  </a>
+  <a href="home.html" class="nav-back">← Inicio</a>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>📦 Mis publicaciones</h1>
+    <button class="btn-nueva" onclick="window.location.href='home.html'">+ Nueva</button>
+  </div>
+
+  <!-- MINI STATS -->
+  <div class="mini-stats">
+    <div class="mini-stat">
+      <div class="mini-stat-num" id="statActivas">0</div>
+      <div class="mini-stat-label">Activas</div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-num" id="statVendidas">0</div>
+      <div class="mini-stat-label">Vendidas</div>
+    </div>
+    <div class="mini-stat">
+      <div class="mini-stat-num" id="statVistas">0</div>
+      <div class="mini-stat-label">Vistas totales</div>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filtros">
+    <button class="filtro-btn active" onclick="filtrar('todas', this)">📋 Todas</button>
+    <button class="filtro-btn" onclick="filtrar('activo', this)">🟢 Activas</button>
+    <button class="filtro-btn" onclick="filtrar('vendido', this)">✅ Vendidas</button>
+    <button class="filtro-btn" onclick="filtrar('pausado', this)">⏸ Pausadas</button>
+  </div>
+
+  <!-- LISTA -->
+  <div class="listings-list" id="listingsList"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="icon">📭</div>
+    <h3>Sin publicaciones</h3>
+    <p>No tienes publicaciones en esta categoría.</p>
+    <button class="btn-nueva" onclick="window.location.href='home.html'">+ Crear publicación</button>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bnav-inner">
+    <a href="home.html" class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="home.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="chat.html" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="profile.html" class="bnav-item"><span class="bnav-icon">👤</span><span>Perfil</span></a>
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal-overlay" id="editModal" onclick="handleModalClick(event)">
+  <div class="modal-box">
+    <h2>✏️ Editar publicación</h2>
+    <label>Nombre del producto</label>
+    <input type="text" id="editNombre">
+    <label>Precio (COP)</label>
+    <input type="number" id="editPrecio">
+    <label>Descripción</label>
+    <textarea id="editDesc"></textarea>
+    <label>Estado</label>
+    <select id="editEstado">
+      <option value="activo">🟢 Activo</option>
+      <option value="pausado">⏸ Pausado</option>
+      <option value="vendido">✅ Vendido</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeEdit()">Cancelar</button>
+      <button class="btn-modal-save" onclick="guardarEdicion()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let publicaciones = [
+    { id:1, nombre:'Laptop Lenovo IdeaPad', emoji:'💻', tipo:'venta', precio:650000, desc:'Procesador Ryzen 5, 8GB RAM, 512GB SSD. Perfecta para estudiar.', estado:'activo', fecha:'Hoy', vistas:34 },
+    { id:2, nombre:'Ropa deportiva talla M', emoji:'👟', tipo:'venta', precio:45000, desc:'Conjunto deportivo, poco uso, ideal para entrenar.', estado:'activo', fecha:'Ayer', vistas:18 },
+    { id:3, nombre:'Calculadora fx-991EX', emoji:'🔢', tipo:'trueque', precio:0, desc:'Casi nueva, perfecta para ingeniería. Busco libros de física.', estado:'activo', fecha:'Hace 3 días', vistas:27 },
+    { id:4, nombre:'Audífonos JBL', emoji:'🎧', tipo:'venta', precio:95000, desc:'Bluetooth, muy buen sonido. Vendidos.', estado:'vendido', fecha:'Hace 1 semana', vistas:52 },
+    { id:5, nombre:'Libro Álgebra Lineal', emoji:'📚', tipo:'venta', precio:40000, desc:'Larson 8a edición, sin rayones.', estado:'pausado', fecha:'Hace 2 semanas', vistas:11 },
+  ];
+
+  let filtroActual = 'todas';
+  let editandoId   = null;
+
+  function renderStats() {
+    document.getElementById('statActivas').textContent  = publicaciones.filter(p => p.estado === 'activo').length;
+    document.getElementById('statVendidas').textContent = publicaciones.filter(p => p.estado === 'vendido').length;
+    document.getElementById('statVistas').textContent   = publicaciones.reduce((a, p) => a + p.vistas, 0);
+  }
+
+  function getFiltered() {
+    if (filtroActual === 'todas') return publicaciones;
+    return publicaciones.filter(p => p.estado === filtroActual);
+  }
+
+  function renderListings() {
+    const lista = getFiltered();
+    const container = document.getElementById('listingsList');
+    const empty = document.getElementById('emptyState');
+    container.innerHTML = '';
+
+    if (lista.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    const badgeMap = {
+      activo:  { cls:'badge-activo',  txt:'🟢 Activo'  },
+      vendido: { cls:'badge-vendido', txt:'✅ Vendido' },
+      pausado: { cls:'badge-pausado', txt:'⏸ Pausado' },
+    };
+
+    lista.forEach((p, i) => {
+      const b = badgeMap[p.estado];
+      const card = document.createElement('div');
+      card.className = 'listing-card';
+      card.style.animationDelay = `${i * 0.06}s`;
+      card.innerHTML = `
+        <div class="listing-emoji">${p.emoji}</div>
+        <div class="listing-info">
+          <div class="listing-top">
+            <div class="listing-name">${p.nombre}</div>
+            <span class="listing-badge ${b.cls}">${b.txt}</span>
+          </div>
+          <div class="listing-desc">${p.desc}</div>
+          <div class="listing-meta">
+            <span class="listing-price ${p.tipo==='trueque'?'t':''}">
+              ${p.tipo==='venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
+            </span>
+            <span class="listing-date">📅 ${p.fecha}</span>
+            <span class="listing-views">👁 ${p.vistas} vistas</span>
+          </div>
+          <div class="listing-actions">
+            <button class="action-btn edit" onclick="abrirEditar(${p.id})">✏️ Editar</button>
+            ${p.estado !== 'vendido' ? `<button class="action-btn sold" onclick="marcarVendido(${p.id})">✅ Vendido</button>` : ''}
+            ${p.estado === 'activo' ? `<button class="action-btn pause" onclick="pausar(${p.id})">⏸ Pausar</button>` : ''}
+            ${p.estado === 'pausado' ? `<button class="action-btn edit" onclick="activar(${p.id})">▶ Activar</button>` : ''}
+            <button class="action-btn delete" onclick="eliminar(${p.id})">🗑 Eliminar</button>
+          </div>
+        </div>`;
+      container.appendChild(card);
+    });
+    renderStats();
+  }
+
+  function filtrar(f, btn) {
+    filtroActual = f;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderListings();
+  }
+
+  function marcarVendido(id) {
+    publicaciones.find(p => p.id === id).estado = 'vendido';
+    renderListings(); showToast('✅ Marcado como vendido');
+  }
+  function pausar(id) {
+    publicaciones.find(p => p.id === id).estado = 'pausado';
+    renderListings(); showToast('⏸ Publicación pausada');
+  }
+  function activar(id) {
+    publicaciones.find(p => p.id === id).estado = 'activo';
+    renderListings(); showToast('🟢 Publicación activada');
+  }
+  function eliminar(id) {
+    if (!confirm('¿Seguro que deseas eliminar esta publicación?')) return;
+    publicaciones = publicaciones.filter(p => p.id !== id);
+    renderListings(); showToast('🗑 Publicación eliminada');
+  }
+
+  function abrirEditar(id) {
+    editandoId = id;
+    const p = publicaciones.find(p => p.id === id);
+    document.getElementById('editNombre').value = p.nombre;
+    document.getElementById('editPrecio').value = p.precio;
+    document.getElementById('editDesc').value   = p.desc;
+    document.getElementById('editEstado').value = p.estado;
+    document.getElementById('editModal').classList.add('open');
+  }
+  function closeEdit() { document.getElementById('editModal').classList.remove('open'); }
+  function handleModalClick(e) { if (e.target.id === 'editModal') closeEdit(); }
+
+  function guardarEdicion() {
+    const p = publicaciones.find(p => p.id === editandoId);
+    p.nombre = document.getElementById('editNombre').value.trim() || p.nombre;
+    p.precio = parseInt(document.getElementById('editPrecio').value) || p.precio;
+    p.desc   = document.getElementById('editDesc').value.trim() || p.desc;
+    p.estado = document.getElementById('editEstado').value;
+    closeEdit(); renderListings(); showToast('💾 Publicación actualizada');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  renderListings();
+</script>
+</body>
+</html>

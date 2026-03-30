@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Crear cuenta | Yo Lo Vendo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1fbf75, #0b3d2e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    :root {
+      --yellow: #e6d44c;
+      --yellow-dark: #7a6a00;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .title-frame {
+      background: linear-gradient(135deg, #2dbb7a, #198f5c);
+      border-radius: 25px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: inset 0 0 0 4px #0b5c3d, inset 0 0 0 7px #34d399;
+    }
+    .title-frame h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 34px;
+      font-weight: 900;
+    }
+    .yo { color: white; }
+    .lo { color: white; font-weight: 400; }
+    .vendo { color: var(--yellow); text-shadow: 0 3px 0 var(--yellow-dark); }
+    .line { width: 75%; height: 2px; background: #0b5c3d; margin: 10px auto; }
+    .slogan { font-size: 14px; color: #eafff5; }
+    .login-box {
+      background: rgba(0,0,0,0.3);
+      padding: 25px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .login-box input {
+      width: 100%; padding: 12px;
+      margin-bottom: 15px; border: none;
+      border-radius: 10px; outline: none;
+      font-family: 'Nunito', sans-serif; font-size: 14px;
+    }
+    .login-box button {
+      width: 100%; padding: 14px;
+      background: linear-gradient(to right, #5cffb1, #22d389);
+      border: none; border-radius: 12px;
+      font-weight: bold; font-size: 15px;
+      cursor: pointer; font-family: 'Poppins', sans-serif;
+    }
+    .links-single {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #eafff5;
+    }
+    .links-single a {
+      color: #9fffd8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .links-single a:hover { text-decoration: underline; }
+    .terms {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #9fffd8;
+    }
+    .terms a { color: #34d399; text-decoration: none; }
+    .terms a:hover { text-decoration: underline; }
+
+    /* Campos con validación */
+    .field-wrap { position: relative; margin-bottom: 6px; }
+    .field-wrap input { margin-bottom: 0; padding-right: 40px; }
+    .field-icon {
+      position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
+      font-size: 15px; pointer-events: none; opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .field-msg {
+      font-size: 11px; min-height: 16px; margin-bottom: 10px;
+      padding-left: 2px; transition: color 0.2s;
+      display: block;
+    }
+    .field-msg.ok  { color: #34d399; }
+    .field-msg.err { color: #ff6b6b; }
+    input.input-ok  { border: 1.5px solid #34d399 !important; border-radius: 10px; }
+    input.input-err { border: 1.5px solid #ff6b6b !important; border-radius: 10px; }
+
+    /* Barra de fortaleza */
+    .strength-bar { display: flex; gap: 4px; margin-bottom: 4px; }
+    .strength-seg {
+      flex: 1; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.1); transition: background 0.3s;
+    }
+    .strength-label { font-size: 11px; margin-bottom: 10px; padding-left: 2px; min-height: 16px; }
+
+    /* Botón con estado */
+    .login-box button {
+      transition: opacity 0.2s, transform 0.15s;
+      position: relative; overflow: hidden;
+    }
+    .login-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .login-box button:not(:disabled):hover { transform: translateY(-1px); }
+
+    /* Checklist de requisitos */
+    .req-list { list-style: none; padding: 0; margin-bottom: 10px; }
+    .req-list li {
+      font-size: 11px; color: rgba(159,255,216,0.55);
+      display: flex; align-items: center; gap: 5px;
+      margin-bottom: 3px; transition: color 0.2s;
+    }
+    .req-list li.met { color: #34d399; }
+    .req-list li::before { content: '○'; font-size: 10px; }
+    .req-list li.met::before { content: '✓'; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="title-frame">
+      <h1>
+        <span class="yo">YO</span>
+        <span class="lo"> lo </span>
+        <span class="vendo">VENDO</span>
+      </h1>
+      <div class="line"></div>
+      <p class="slogan">Compra, vende e intercambia fácil y seguro</p>
+    </div>
+    <div class="login-box">
+
+      <!-- Nombre -->
+      <div class="field-wrap">
+        <input type="text" id="fNombre" placeholder="Nombre completo"
+          oninput="validateNombre()" autocomplete="name">
+        <span class="field-icon" id="iNombre"></span>
+      </div>
+      <span class="field-msg" id="mNombre"></span>
+
+      <!-- Correo -->
+      <div class="field-wrap">
+        <input type="email" id="fCorreo" placeholder="Correo institucional (@intep.edu.co)"
+          oninput="validateCorreo()" autocomplete="email">
+        <span class="field-icon" id="iCorreo"></span>
+      </div>
+      <span class="field-msg" id="mCorreo"></span>
+
+      <!-- Contraseña -->
+      <div class="field-wrap">
+        <input type="password" id="fPass" placeholder="Contraseña"
+          oninput="validatePass()" autocomplete="new-password">
+        <span class="field-icon" id="iPass"></span>
+      </div>
+      <div class="strength-bar" id="strengthBar">
+        <div class="strength-seg" id="s1"></div>
+        <div class="strength-seg" id="s2"></div>
+        <div class="strength-seg" id="s3"></div>
+        <div class="strength-seg" id="s4"></div>
+      </div>
+      <div class="strength-label" id="strengthLabel"></div>
+      <ul class="req-list" id="reqList">
+        <li id="req-len">Mínimo 8 caracteres</li>
+        <li id="req-num">Al menos un número</li>
+        <li id="req-upper">Al menos una mayúscula</li>
+        <li id="req-special">Al menos un símbolo (!@#...)</li>
+      </ul>
+
+      <!-- Confirmar contraseña -->
+      <div class="field-wrap">
+        <input type="password" id="fPass2" placeholder="Confirmar contraseña"
+          oninput="validatePass2()" autocomplete="new-password">
+        <span class="field-icon" id="iPass2"></span>
+      </div>
+      <span class="field-msg" id="mPass2"></span>
+
+      <button id="btnRegistrar" onclick="intentarRegistro()" disabled>Crear cuenta</button>
+
+      <div class="links-single">
+        <a href="index.html">¿Ya tienes cuenta? Inicia sesión</a>
+      </div>
+      <div class="terms">
+        Al registrarte aceptas nuestros
+        <a href="terms.html">Términos y Condiciones</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = { nombre: false, correo: false, pass: false, pass2: false };
+
+    function setField(inputId, iconId, msgId, ok, msg) {
+      const input = document.getElementById(inputId);
+      const icon  = document.getElementById(iconId);
+      const msgEl = document.getElementById(msgId);
+      input.className = ok ? 'input-ok' : (msg ? 'input-err' : '');
+      icon.textContent = ok ? '✅' : (msg ? '❌' : '');
+      icon.style.opacity = (ok || msg) ? '1' : '0';
+      msgEl.textContent = msg || (ok ? '' : '');
+      msgEl.className = 'field-msg ' + (ok ? 'ok' : (msg ? 'err' : ''));
+    }
+
+    function validateNombre() {
+      const v = document.getElementById('fNombre').value.trim();
+      const words = v.split(/\s+/).filter(Boolean);
+      if (!v) {
+        setField('fNombre','iNombre','mNombre', false, ''); state.nombre = false;
+      } else if (words.length < 2) {
+        setField('fNombre','iNombre','mNombre', false, '⚠ Escribe tu nombre y apellido'); state.nombre = false;
+      } else if (v.length < 5) {
+        setField('fNombre','iNombre','mNombre', false, '⚠ Nombre muy corto'); state.nombre = false;
+      } else {
+        setField('fNombre','iNombre','mNombre', true, '✓ Nombre válido'); state.nombre = true;
+      }
+      checkBtn();
+    }
+
+    function validateCorreo() {
+      const v = document.getElementById('fCorreo').value.trim().toLowerCase();
+      if (!v) {
+        setField('fCorreo','iCorreo','mCorreo', false, ''); state.correo = false;
+      } else if (!v.includes('@')) {
+        setField('fCorreo','iCorreo','mCorreo', false, '⚠ Ingresa un correo válido'); state.correo = false;
+      } else if (!v.endsWith('@intep.edu.co')) {
+        setField('fCorreo','iCorreo','mCorreo', false, '⚠ Debe ser un correo @intep.edu.co'); state.correo = false;
+      } else {
+        setField('fCorreo','iCorreo','mCorreo', true, '✓ Correo institucional válido'); state.correo = true;
+      }
+      checkBtn();
+    }
+
+    const strengthColors = ['#ff6b6b','#f59e0b','#34d399','#1fbf75'];
+    const strengthNames  = ['Muy débil','Débil','Buena','Muy segura'];
+
+    function getStrength(p) {
+      let score = 0;
+      if (p.length >= 8) score++;
+      if (/[0-9]/.test(p)) score++;
+      if (/[A-Z]/.test(p)) score++;
+      if (/[^A-Za-z0-9]/.test(p)) score++;
+      return score;
+    }
+
+    function validatePass() {
+      const v = document.getElementById('fPass').value;
+      const score = getStrength(v);
+
+      // Requisitos visuales
+      document.getElementById('req-len').classList.toggle('met', v.length >= 8);
+      document.getElementById('req-num').classList.toggle('met', /[0-9]/.test(v));
+      document.getElementById('req-upper').classList.toggle('met', /[A-Z]/.test(v));
+      document.getElementById('req-special').classList.toggle('met', /[^A-Za-z0-9]/.test(v));
+
+      // Barra de fortaleza
+      for (let i = 1; i <= 4; i++) {
+        const seg = document.getElementById(`s${i}`);
+        seg.style.background = i <= score ? strengthColors[score - 1] : 'rgba(255,255,255,0.1)';
+      }
+      const lbl = document.getElementById('strengthLabel');
+      if (!v) { lbl.textContent = ''; }
+      else { lbl.textContent = strengthNames[score - 1] || 'Muy débil'; lbl.style.color = strengthColors[score - 1] || '#ff6b6b'; }
+
+      if (!v) {
+        setField('fPass','iPass','', false, ''); state.pass = false;
+      } else if (score < 3) {
+        document.getElementById('fPass').className = 'input-err';
+        document.getElementById('iPass').textContent = '❌'; document.getElementById('iPass').style.opacity = '1';
+        state.pass = false;
+      } else {
+        document.getElementById('fPass').className = 'input-ok';
+        document.getElementById('iPass').textContent = '✅'; document.getElementById('iPass').style.opacity = '1';
+        state.pass = true;
+      }
+
+      // Revalidar confirmación si ya tiene algo
+      if (document.getElementById('fPass2').value) validatePass2();
+      checkBtn();
+    }
+
+    function validatePass2() {
+      const p1 = document.getElementById('fPass').value;
+      const p2 = document.getElementById('fPass2').value;
+      if (!p2) {
+        setField('fPass2','iPass2','mPass2', false, ''); state.pass2 = false;
+      } else if (p2 !== p1) {
+        setField('fPass2','iPass2','mPass2', false, '⚠ Las contraseñas no coinciden'); state.pass2 = false;
+      } else {
+        setField('fPass2','iPass2','mPass2', true, '✓ Las contraseñas coinciden'); state.pass2 = true;
+      }
+      checkBtn();
+    }
+
+    function checkBtn() {
+      const ok = state.nombre && state.correo && state.pass && state.pass2;
+      document.getElementById('btnRegistrar').disabled = !ok;
+    }
+
+    function intentarRegistro() {
+      if (state.nombre && state.correo && state.pass && state.pass2) {
+        window.location.href = 'success.html';
+      }
+    }
+  </script>
+</body>
+</html>
