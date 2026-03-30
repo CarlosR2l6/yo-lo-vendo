@@ -367,27 +367,50 @@
 
   <div class="edit-card" style="animation-delay:0.1s">
     <div class="edit-card-title">✏️ Editar información personal</div>
+
+    <!-- Nombre y correo: solo lectura, vienen de la sesión -->
     <div class="form-row">
       <div class="field-wrap">
         <label>Nombre completo</label>
-        <input type="text" id="inputNombre" placeholder="Tu nombre completo">
+        <div id="roNombre" style="
+          padding: 10px 13px; border-radius: 10px;
+          border: 1.5px solid var(--card-border);
+          background: rgba(255,255,255,0.03);
+          color: var(--text-muted); font-size: 14px;
+          margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+        ">
+          <span style="font-size:12px; opacity:.5">🔒</span>
+          <span id="roNombreVal">Cargando...</span>
+        </div>
       </div>
+      <div class="field-wrap">
+        <label>Correo institucional</label>
+        <div id="roCorreo" style="
+          padding: 10px 13px; border-radius: 10px;
+          border: 1.5px solid var(--card-border);
+          background: rgba(255,255,255,0.03);
+          color: var(--text-muted); font-size: 14px;
+          margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+        ">
+          <span style="font-size:12px; opacity:.5">🔒</span>
+          <span id="roCorreoVal">Cargando...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos editables -->
+    <div class="form-row">
       <div class="field-wrap">
         <label>Carrera / Programa</label>
         <select id="inputCarrera">
-          <option>Ingeniería de Sistemas</option>
-          <option>Administración de Empresas</option>
-          <option>Contaduría Pública</option>
-          <option>Diseño Visual Digital</option>
-          <option>Especialización en Big Data</option>
-          <option>Otro</option>
+          <option value="">— Selecciona tu carrera —</option>
+          <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+          <option value="Administración de Empresas">Administración de Empresas</option>
+          <option value="Contaduría Pública">Contaduría Pública</option>
+          <option value="Diseño Visual Digital">Diseño Visual Digital</option>
+          <option value="Especialización en Big Data">Especialización en Big Data</option>
+          <option value="Otro">Otro</option>
         </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="field-wrap">
-        <label>Correo institucional</label>
-        <input type="email" id="inputEmail" placeholder="correo@intep.edu.co">
       </div>
       <div class="field-wrap">
         <label>WhatsApp (opcional)</label>
@@ -396,9 +419,9 @@
     </div>
     <div class="field-wrap">
       <label>Biografía</label>
-      <textarea id="inputBio" placeholder="Cuéntanos algo sobre ti..."></textarea>
+      <textarea id="inputBio" placeholder="Cuéntanos algo sobre ti... ¿qué vendes? ¿qué buscas?"></textarea>
     </div>
-    <button class="btn-save-profile" onclick="saveProfile()">💾 Guardar cambios</button>
+    <button class="btn-save-profile" id="btnSave" onclick="saveProfile()">💾 Guardar cambios</button>
   </div>
 
   <div class="edit-card" style="animation-delay:0.2s">
@@ -446,27 +469,133 @@
 <div class="toast" id="toast"></div>
 
 <script type="module">
-  // ── Supabase: cerrar sesión real ─────────────────────────
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
   const supabase = createClient(
     'https://uvkjerejhhbpgyvpmxur.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
   )
 
-  // Verificar sesión activa
+  // ── Verificar sesión ──────────────────────────────────────
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) window.location.href = 'index.html'
+  if (!session) { window.location.href = 'index.html'; }
+  const user = session.user
 
-  // Exponer cerrarSesion al HTML (onclick lo necesita en window)
+  // ── Cargar datos del perfil desde Supabase ────────────────
+  async function cargarPerfil() {
+    const { data: perfil } = await supabase
+      .from('users')
+      .select('nombre, correo, carrera, whatsapp, bio, avatar_url')
+      .eq('id', user.id)
+      .single()
+
+    const nombre = perfil?.nombre || user.user_metadata?.nombre || user.email?.split('@')[0] || 'Sin nombre'
+    const correo = perfil?.correo || user.email || ''
+    const inicial = nombre[0].toUpperCase()
+
+    // Mostrar nombre y correo (solo lectura)
+    document.getElementById('roNombreVal').textContent = nombre
+    document.getElementById('roCorreoVal').textContent = correo
+
+    // Mostrar en el header del perfil
+    document.getElementById('displayName').textContent = nombre
+    document.getElementById('displayEmail').textContent = correo
+    document.getElementById('avatarLetter').textContent = inicial
+
+    // Si tiene bio guardada mostrarla
+    if (perfil?.bio) {
+      document.getElementById('displayBio').textContent = perfil.bio
+    } else {
+      document.getElementById('displayBio').textContent = ''
+    }
+
+    // Carrera
+    if (perfil?.carrera) {
+      document.getElementById('displayCarrera').textContent = '🎓 ' + perfil.carrera
+      document.getElementById('inputCarrera').value = perfil.carrera
+    }
+
+    // Prellenar campos editables
+    if (perfil?.whatsapp) document.getElementById('inputWA').value = perfil.whatsapp
+    if (perfil?.bio)      document.getElementById('inputBio').value = perfil.bio
+
+    // Foto de perfil si tiene
+    if (perfil?.avatar_url) {
+      const img = document.getElementById('avatarImg')
+      img.src = perfil.avatar_url
+      img.style.display = 'block'
+      document.getElementById('avatarLetter').style.display = 'none'
+    }
+  }
+
+  // ── Guardar cambios en Supabase ───────────────────────────
+  window.saveProfile = async () => {
+    const carrera  = document.getElementById('inputCarrera').value
+    const whatsapp = document.getElementById('inputWA').value.trim()
+    const bio      = document.getElementById('inputBio').value.trim()
+
+    const btn = document.getElementById('btnSave')
+    btn.textContent = '⏳ Guardando...'
+    btn.disabled = true
+
+    const { error } = await supabase
+      .from('users')
+      .update({ carrera, whatsapp, bio })
+      .eq('id', user.id)
+
+    btn.disabled = false
+    btn.textContent = '💾 Guardar cambios'
+
+    if (error) {
+      showToast('❌ Error al guardar: ' + error.message)
+      return
+    }
+
+    // Actualizar vista del header
+    if (bio)     document.getElementById('displayBio').textContent = bio
+    if (carrera) document.getElementById('displayCarrera').textContent = '🎓 ' + carrera
+    showToast('✅ Perfil actualizado correctamente')
+  }
+
+  // ── Cerrar sesión ─────────────────────────────────────────
   window.cerrarSesion = async () => {
     if (!confirm('¿Seguro que deseas cerrar sesión?')) return
-    await supabase.auth.signOut()          // ← cierra la sesión en Supabase
-    window.location.href = 'index.html'   // ← ahora sí index no redirige de vuelta
+    await supabase.auth.signOut()
+    window.location.href = 'index.html'
   }
 
   window.confirmarEliminar = () => {
     showToast('📩 Contacta a soporte@intep.edu.co para eliminar tu cuenta.')
   }
+
+  // ── Foto de perfil ────────────────────────────────────────
+  window.uploadAvatar = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    const ext  = file.name.split('.').pop()
+    const path = `avatars/${user.id}.${ext}`
+
+    const { error: upErr } = await supabase.storage
+      .from('product-images')
+      .upload(path, file, { upsert: true })
+
+    if (upErr) { showToast('❌ Error subiendo foto'); return }
+
+    const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(path)
+    const avatar_url = urlData.publicUrl
+
+    await supabase.from('users').update({ avatar_url }).eq('id', user.id)
+
+    const img = document.getElementById('avatarImg')
+    img.src = avatar_url
+    img.style.display = 'block'
+    document.getElementById('avatarLetter').style.display = 'none'
+    closePhotoModal()
+    showToast('📸 Foto de perfil actualizada')
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  cargarPerfil()
   const historialData = {
     ventas: [
       { nombre:'Audífonos JBL', emoji:'🎧', fecha:'15 Mar 2025', precio:95000, status:'vendido' },
@@ -531,43 +660,11 @@
     });
   }
 
-  function saveProfile() {
-    const nombre  = document.getElementById('inputNombre').value.trim();
-    const email   = document.getElementById('inputEmail').value.trim();
-    const bio     = document.getElementById('inputBio').value.trim();
-    const carrera = document.getElementById('inputCarrera').value;
-    if (!nombre) { showToast('⚠️ Ingresa tu nombre'); return; }
-    if (email && !email.includes('@intep')) { showToast('⚠️ Usa tu correo institucional @intep'); return; }
-    if (nombre)  document.getElementById('displayName').textContent = nombre;
-    if (email)   document.getElementById('displayEmail').textContent = email;
-    if (bio)     document.getElementById('displayBio').textContent = bio;
-    if (carrera) document.getElementById('displayCarrera').textContent = '🎓 ' + carrera;
-    const letra = nombre ? nombre[0].toUpperCase() : 'E';
-    document.getElementById('avatarLetter').textContent = letra;
-    showToast('✅ Perfil actualizado correctamente');
-  }
-
   function openPhotoModal()  { document.getElementById('photoModal').classList.add('open'); }
   function closePhotoModal() { document.getElementById('photoModal').classList.remove('open'); }
   document.getElementById('photoModal').addEventListener('click', function(e) {
     if (e.target === this) closePhotoModal();
   });
-
-  function uploadAvatar(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = document.getElementById('avatarImg');
-      const letter = document.getElementById('avatarLetter');
-      img.src = ev.target.result;
-      img.style.display = 'block';
-      letter.style.display = 'none';
-      closePhotoModal();
-      showToast('📸 Foto de perfil actualizada');
-    };
-    reader.readAsDataURL(file);
-  }
 
   function showToast(msg) {
     const t = document.getElementById('toast');
