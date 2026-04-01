@@ -362,130 +362,177 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  let publicaciones = [
-    { id:1, nombre:'Laptop Lenovo IdeaPad', emoji:'💻', tipo:'venta', precio:650000, desc:'Procesador Ryzen 5, 8GB RAM, 512GB SSD. Perfecta para estudiar.', estado:'activo', fecha:'Hoy', vistas:34 },
-    { id:2, nombre:'Ropa deportiva talla M', emoji:'👟', tipo:'venta', precio:45000, desc:'Conjunto deportivo, poco uso, ideal para entrenar.', estado:'activo', fecha:'Ayer', vistas:18 },
-    { id:3, nombre:'Calculadora fx-991EX', emoji:'🔢', tipo:'trueque', precio:0, desc:'Casi nueva, perfecta para ingeniería. Busco libros de física.', estado:'activo', fecha:'Hace 3 días', vistas:27 },
-    { id:4, nombre:'Audífonos JBL', emoji:'🎧', tipo:'venta', precio:95000, desc:'Bluetooth, muy buen sonido. Vendidos.', estado:'vendido', fecha:'Hace 1 semana', vistas:52 },
-    { id:5, nombre:'Libro Álgebra Lineal', emoji:'📚', tipo:'venta', precio:40000, desc:'Larson 8a edición, sin rayones.', estado:'pausado', fecha:'Hace 2 semanas', vistas:11 },
-  ];
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  let filtroActual = 'todas';
-  let editandoId   = null;
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const currentUser = session.user
 
-  function renderStats() {
-    document.getElementById('statActivas').textContent  = publicaciones.filter(p => p.estado === 'activo').length;
-    document.getElementById('statVendidas').textContent = publicaciones.filter(p => p.estado === 'vendido').length;
-    document.getElementById('statVistas').textContent   = publicaciones.reduce((a, p) => a + p.vistas, 0);
+const catEmojis = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' }
+
+let publicaciones = []
+let filtroActual = 'todas'
+let editandoId = null
+
+async function cargarPublicaciones() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false })
+  if (error) { showToast('❌ Error cargando publicaciones'); return }
+  publicaciones = (data || []).map(p => ({
+    id: p.id,
+    nombre: p.nombre,
+    emoji: p.foto_url ? null : (catEmojis[p.categoria] || '📦'),
+    foto_url: p.foto_url || null,
+    tipo: p.tipo,
+    precio: p.precio || 0,
+    desc: p.descripcion || '',
+    estado: p.estado || 'activo',
+    fecha: new Date(p.created_at).toLocaleDateString('es-CO', { day:'numeric', month:'short' }),
+    vistas: p.vistas || 0,
+    raw: p
+  }))
+  renderListings()
+}
+
+function renderStats() {
+  document.getElementById('statActivas').textContent  = publicaciones.filter(p => p.estado === 'activo').length
+  document.getElementById('statVendidas').textContent = publicaciones.filter(p => p.estado === 'vendido').length
+  document.getElementById('statVistas').textContent   = publicaciones.reduce((a, p) => a + p.vistas, 0)
+}
+
+function getFiltered() {
+  if (filtroActual === 'todas') return publicaciones
+  return publicaciones.filter(p => p.estado === filtroActual)
+}
+
+function renderListings() {
+  const lista = getFiltered()
+  const container = document.getElementById('listingsList')
+  const empty = document.getElementById('emptyState')
+  container.innerHTML = ''
+  if (lista.length === 0) { empty.style.display = 'block'; renderStats(); return }
+  empty.style.display = 'none'
+
+  const badgeMap = {
+    activo:  { cls:'badge-activo',  txt:'🟢 Activo'  },
+    vendido: { cls:'badge-vendido', txt:'✅ Vendido' },
+    pausado: { cls:'badge-pausado', txt:'⏸ Pausado' },
   }
 
-  function getFiltered() {
-    if (filtroActual === 'todas') return publicaciones;
-    return publicaciones.filter(p => p.estado === filtroActual);
-  }
+  lista.forEach((p, i) => {
+    const b = badgeMap[p.estado] || badgeMap.activo
+    const card = document.createElement('div')
+    card.className = 'listing-card'
+    card.style.animationDelay = `${i * 0.06}s`
+    const imgHtml = p.foto_url
+      ? `<img src="${p.foto_url}" style="width:64px;height:64px;border-radius:14px;object-fit:cover">`
+      : `<div class="listing-emoji">${p.emoji}</div>`
+    card.innerHTML = `
+      ${imgHtml}
+      <div class="listing-info">
+        <div class="listing-top">
+          <div class="listing-name">${p.nombre}</div>
+          <span class="listing-badge ${b.cls}">${b.txt}</span>
+        </div>
+        <div class="listing-desc">${p.desc}</div>
+        <div class="listing-meta">
+          <span class="listing-price ${p.tipo==='trueque'?'t':''}">
+            ${p.tipo==='venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
+          </span>
+          <span class="listing-date">📅 ${p.fecha}</span>
+          <span class="listing-views">👁 ${p.vistas} vistas</span>
+        </div>
+        <div class="listing-actions">
+          <button class="action-btn edit" onclick="abrirEditar('${p.id}')">✏️ Editar</button>
+          ${p.estado !== 'vendido' ? `<button class="action-btn sold" onclick="marcarVendido('${p.id}')">✅ Vendido</button>` : ''}
+          ${p.estado === 'activo' ? `<button class="action-btn pause" onclick="pausar('${p.id}')">⏸ Pausar</button>` : ''}
+          ${p.estado === 'pausado' ? `<button class="action-btn edit" onclick="activar('${p.id}')">▶ Activar</button>` : ''}
+          <button class="action-btn delete" onclick="eliminar('${p.id}')">🗑 Eliminar</button>
+        </div>
+      </div>`
+    container.appendChild(card)
+  })
+  renderStats()
+}
 
-  function renderListings() {
-    const lista = getFiltered();
-    const container = document.getElementById('listingsList');
-    const empty = document.getElementById('emptyState');
-    container.innerHTML = '';
+async function cambiarEstado(id, nuevoEstado) {
+  const { error } = await supabase.from('products').update({ estado: nuevoEstado }).eq('id', id).eq('user_id', currentUser.id)
+  if (error) { showToast('❌ Error: ' + error.message); return false }
+  return true
+}
 
-    if (lista.length === 0) { empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
+window.filtrar = (f, btn) => {
+  filtroActual = f
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  renderListings()
+}
 
-    const badgeMap = {
-      activo:  { cls:'badge-activo',  txt:'🟢 Activo'  },
-      vendido: { cls:'badge-vendido', txt:'✅ Vendido' },
-      pausado: { cls:'badge-pausado', txt:'⏸ Pausado' },
-    };
+window.marcarVendido = async (id) => {
+  if (await cambiarEstado(id, 'vendido')) {
+    publicaciones.find(p => p.id === id).estado = 'vendido'
+    renderListings(); showToast('✅ Marcado como vendido')
+  }
+}
+window.pausar = async (id) => {
+  if (await cambiarEstado(id, 'pausado')) {
+    publicaciones.find(p => p.id === id).estado = 'pausado'
+    renderListings(); showToast('⏸ Publicación pausada')
+  }
+}
+window.activar = async (id) => {
+  if (await cambiarEstado(id, 'activo')) {
+    publicaciones.find(p => p.id === id).estado = 'activo'
+    renderListings(); showToast('🟢 Publicación activada')
+  }
+}
+window.eliminar = async (id) => {
+  if (!confirm('¿Seguro que deseas eliminar esta publicación?')) return
+  const { error } = await supabase.from('products').delete().eq('id', id).eq('user_id', currentUser.id)
+  if (error) { showToast('❌ Error: ' + error.message); return }
+  publicaciones = publicaciones.filter(p => p.id !== id)
+  renderListings(); showToast('🗑 Publicación eliminada')
+}
+window.abrirEditar = (id) => {
+  editandoId = id
+  const p = publicaciones.find(p => p.id === id)
+  document.getElementById('editNombre').value = p.nombre
+  document.getElementById('editPrecio').value = p.precio
+  document.getElementById('editDesc').value   = p.desc
+  document.getElementById('editEstado').value = p.estado
+  document.getElementById('editModal').classList.add('open')
+}
+window.closeEdit = () => document.getElementById('editModal').classList.remove('open')
+window.handleModalClick = (e) => { if (e.target.id === 'editModal') window.closeEdit() }
+window.guardarEdicion = async () => {
+  const p = publicaciones.find(p => p.id === editandoId)
+  const nombre = document.getElementById('editNombre').value.trim() || p.nombre
+  const precio = parseInt(document.getElementById('editPrecio').value) || p.precio
+  const desc   = document.getElementById('editDesc').value.trim() || p.desc
+  const estado = document.getElementById('editEstado').value
+  const { error } = await supabase.from('products')
+    .update({ nombre, precio, descripcion: desc, estado })
+    .eq('id', editandoId).eq('user_id', currentUser.id)
+  if (error) { showToast('❌ Error: ' + error.message); return }
+  p.nombre = nombre; p.precio = precio; p.desc = desc; p.estado = estado
+  window.closeEdit(); renderListings(); showToast('💾 Publicación actualizada')
+}
 
-    lista.forEach((p, i) => {
-      const b = badgeMap[p.estado];
-      const card = document.createElement('div');
-      card.className = 'listing-card';
-      card.style.animationDelay = `${i * 0.06}s`;
-      card.innerHTML = `
-        <div class="listing-emoji">${p.emoji}</div>
-        <div class="listing-info">
-          <div class="listing-top">
-            <div class="listing-name">${p.nombre}</div>
-            <span class="listing-badge ${b.cls}">${b.txt}</span>
-          </div>
-          <div class="listing-desc">${p.desc}</div>
-          <div class="listing-meta">
-            <span class="listing-price ${p.tipo==='trueque'?'t':''}">
-              ${p.tipo==='venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
-            </span>
-            <span class="listing-date">📅 ${p.fecha}</span>
-            <span class="listing-views">👁 ${p.vistas} vistas</span>
-          </div>
-          <div class="listing-actions">
-            <button class="action-btn edit" onclick="abrirEditar(${p.id})">✏️ Editar</button>
-            ${p.estado !== 'vendido' ? `<button class="action-btn sold" onclick="marcarVendido(${p.id})">✅ Vendido</button>` : ''}
-            ${p.estado === 'activo' ? `<button class="action-btn pause" onclick="pausar(${p.id})">⏸ Pausar</button>` : ''}
-            ${p.estado === 'pausado' ? `<button class="action-btn edit" onclick="activar(${p.id})">▶ Activar</button>` : ''}
-            <button class="action-btn delete" onclick="eliminar(${p.id})">🗑 Eliminar</button>
-          </div>
-        </div>`;
-      container.appendChild(card);
-    });
-    renderStats();
-  }
+function showToast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2800)
+}
 
-  function filtrar(f, btn) {
-    filtroActual = f;
-    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderListings();
-  }
-
-  function marcarVendido(id) {
-    publicaciones.find(p => p.id === id).estado = 'vendido';
-    renderListings(); showToast('✅ Marcado como vendido');
-  }
-  function pausar(id) {
-    publicaciones.find(p => p.id === id).estado = 'pausado';
-    renderListings(); showToast('⏸ Publicación pausada');
-  }
-  function activar(id) {
-    publicaciones.find(p => p.id === id).estado = 'activo';
-    renderListings(); showToast('🟢 Publicación activada');
-  }
-  function eliminar(id) {
-    if (!confirm('¿Seguro que deseas eliminar esta publicación?')) return;
-    publicaciones = publicaciones.filter(p => p.id !== id);
-    renderListings(); showToast('🗑 Publicación eliminada');
-  }
-
-  function abrirEditar(id) {
-    editandoId = id;
-    const p = publicaciones.find(p => p.id === id);
-    document.getElementById('editNombre').value = p.nombre;
-    document.getElementById('editPrecio').value = p.precio;
-    document.getElementById('editDesc').value   = p.desc;
-    document.getElementById('editEstado').value = p.estado;
-    document.getElementById('editModal').classList.add('open');
-  }
-  function closeEdit() { document.getElementById('editModal').classList.remove('open'); }
-  function handleModalClick(e) { if (e.target.id === 'editModal') closeEdit(); }
-
-  function guardarEdicion() {
-    const p = publicaciones.find(p => p.id === editandoId);
-    p.nombre = document.getElementById('editNombre').value.trim() || p.nombre;
-    p.precio = parseInt(document.getElementById('editPrecio').value) || p.precio;
-    p.desc   = document.getElementById('editDesc').value.trim() || p.desc;
-    p.estado = document.getElementById('editEstado').value;
-    closeEdit(); renderListings(); showToast('💾 Publicación actualizada');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
-
-  renderListings();
+cargarPublicaciones()
 </script>
 </body>
 </html>

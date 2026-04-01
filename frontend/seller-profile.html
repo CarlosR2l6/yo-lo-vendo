@@ -8,276 +8,136 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     :root {
-      --green-dark: #0b3d2e; --green-mid: #1fbf75; --green-light: #34d399;
-      --yellow: #e6d44c; --yellow-dark: #7a6a00;
-      --card-bg: rgba(255,255,255,0.06); --card-border: rgba(52,211,153,0.2);
-      --text-main: #eafff5; --text-muted: #9fffd8; --red: #ff6b6b;
+      --green-dark:#0b3d2e; --green-mid:#1fbf75; --green-light:#34d399;
+      --yellow:#e6d44c; --yellow-dark:#7a6a00;
+      --card-bg:rgba(255,255,255,0.06); --card-border:rgba(52,211,153,0.2);
+      --text-main:#eafff5; --text-muted:#9fffd8; --red:#ff6b6b;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
-      min-height: 100vh; color: var(--text-main); padding-bottom: 100px;
-    }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Nunito',sans-serif;background:radial-gradient(ellipse at top left,#1a5c3a,#0b3d2e 50%,#071f17);min-height:100vh;color:var(--text-main);padding-bottom:100px}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ── NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(11,61,46,0.92); backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0 24px; height: 64px;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .nav-logo { font-family:'Poppins',sans-serif; font-size:22px; font-weight:900; text-decoration:none; }
-    .nav-logo .yo { color:#fff; } .nav-logo .lo { color:#fff; font-weight:400; }
-    .nav-logo .vendo { color:var(--yellow); text-shadow:0 2px 0 var(--yellow-dark); }
-    .nav-back {
-      margin-left: auto;
-      background: rgba(255,255,255,0.08); border: 1px solid var(--card-border);
-      color: var(--text-muted); padding: 8px 16px; border-radius: 50px;
-      font-family:'Nunito',sans-serif; font-size:13px; font-weight:700;
-      cursor:pointer; text-decoration:none; display:flex; align-items:center; gap:6px;
-      transition: border-color .2s;
-    }
-    .nav-back:hover { border-color: var(--green-light); color: var(--green-light); }
+    nav{position:sticky;top:0;z-index:100;background:rgba(11,61,46,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--card-border);padding:0 24px;height:64px;display:flex;align-items:center;gap:16px}
+    .nav-logo{font-family:'Poppins',sans-serif;font-size:22px;font-weight:900;text-decoration:none}
+    .nav-logo .yo{color:#fff} .nav-logo .lo{color:#fff;font-weight:400} .nav-logo .vendo{color:var(--yellow);text-shadow:0 2px 0 var(--yellow-dark)}
+    .nav-back{margin-left:auto;background:rgba(255,255,255,0.08);border:1px solid var(--card-border);color:var(--text-muted);padding:8px 16px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px;transition:border-color .2s}
+    .nav-back:hover{border-color:var(--green-light);color:var(--green-light)}
 
-    /* ── COVER ── */
-    .cover {
-      height: 150px;
-      background: linear-gradient(135deg, #1a5c3a 0%, #0b3d2e 50%, #1a3a1a 100%);
-      position: relative; overflow: hidden;
-    }
-    .cover-pattern {
-      position: absolute; inset: 0; opacity: .07;
-      background-image: radial-gradient(circle, #34d399 1px, transparent 1px);
-      background-size: 28px 28px;
-    }
-    .cover-report {
-      position: absolute; top: 12px; right: 12px;
-      background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 700;
-      padding: 6px 13px; border-radius: 50px; cursor: pointer;
-      font-family: 'Nunito', sans-serif; backdrop-filter: blur(6px);
-      transition: background .2s;
-    }
-    .cover-report:hover { background: rgba(255,107,107,0.3); color: #ff6b6b; border-color: #ff6b6b; }
+    /* COVER */
+    .cover{height:150px;background:linear-gradient(135deg,#1a5c3a 0%,#0b3d2e 50%,#1a3a1a 100%);position:relative;overflow:hidden}
+    .cover-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:none}
+    .cover-pattern{position:absolute;inset:0;opacity:.07;background-image:radial-gradient(circle,#34d399 1px,transparent 1px);background-size:28px 28px}
+    .cover-report{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:12px;font-weight:700;padding:6px 13px;border-radius:50px;cursor:pointer;font-family:'Nunito',sans-serif;backdrop-filter:blur(6px);transition:all .2s}
+    .cover-report:hover{background:rgba(255,107,107,.2);color:#ffaaaa;border-color:rgba(255,107,107,.4)}
 
-    /* ── HEADER ── */
-    .profile-header {
-      max-width: 700px; margin: 0 auto;
-      padding: 0 24px; position: relative;
-    }
-    .header-row {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px;
-    }
-    .avatar-wrap { position: relative; display: inline-block; margin-top: -48px; }
-    .avatar-big {
-      width: 96px; height: 96px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--green-light), var(--yellow));
-      border: 4px solid #0b3d2e;
-      display: flex; align-items: center; justify-content: center;
-      font-family:'Poppins',sans-serif; font-size: 36px; font-weight: 900; color: #063521;
-      overflow: hidden;
-    }
-    .avatar-big img { width:100%; height:100%; object-fit:cover; display:none; }
-    .online-dot {
-      position: absolute; bottom: 6px; right: 6px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: var(--green-mid); border: 3px solid #0b3d2e;
-    }
+    /* HEADER */
+    .profile-header{max-width:700px;margin:0 auto;padding:0 24px;position:relative}
+    .header-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+    .avatar-wrap{position:relative;display:inline-block;margin-top:-48px}
+    .avatar-big{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));border:4px solid #0b3d2e;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:34px;font-weight:800;color:#063521;overflow:hidden}
+    .avatar-big img{width:100%;height:100%;object-fit:cover;display:none}
+    .avatar-letter{}
+    .online-dot{position:absolute;bottom:6px;right:2px;width:14px;height:14px;border-radius:50%;background:#22c55e;border:3px solid #0b3d2e}
+    .header-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+    .btn-contact-main{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:50px;border:none;cursor:pointer;transition:transform .15s}
+    .btn-contact-main:hover{transform:translateY(-1px)}
+    .btn-wa{background:rgba(52,211,153,.12);border:1.5px solid var(--green-light);color:var(--green-light);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:50px;cursor:pointer;transition:all .2s}
+    .btn-wa:hover{background:rgba(52,211,153,.25)}
+    .btn-follow{background:rgba(255,255,255,.08);border:1.5px solid var(--card-border);color:var(--text-muted);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:50px;cursor:pointer;transition:all .2s}
+    .btn-follow:hover,.btn-follow.following{background:rgba(52,211,153,.1);border-color:var(--green-light);color:var(--green-light)}
 
-    .header-actions { display: flex; gap: 10px; padding-bottom: 4px; flex-wrap: wrap; }
-    .btn-contact-main {
-      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
-      color: #063521; font-family:'Poppins',sans-serif; font-weight:700;
-      font-size: 14px; padding: 10px 22px; border-radius: 50px; border: none;
-      cursor: pointer; transition: transform .15s, box-shadow .15s;
-      display: flex; align-items: center; gap: 7px;
-    }
-    .btn-contact-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(52,211,153,.4); }
-    .btn-wa {
-      background: rgba(37,211,102,0.15); border: 1.5px solid #25d366;
-      color: #25d366; font-family:'Nunito',sans-serif; font-weight:700;
-      font-size: 13px; padding: 10px 18px; border-radius: 50px; cursor: pointer;
-      transition: background .2s; display: flex; align-items: center; gap: 6px;
-    }
-    .btn-wa:hover { background: rgba(37,211,102,0.25); }
-    .btn-follow {
-      background: transparent; border: 1.5px solid var(--card-border);
-      color: var(--text-muted); font-family:'Nunito',sans-serif; font-weight:700;
-      font-size: 13px; padding: 10px 18px; border-radius: 50px; cursor: pointer;
-      transition: all .2s;
-    }
-    .btn-follow:hover, .btn-follow.following {
-      border-color: var(--green-light); color: var(--green-light);
-      background: rgba(52,211,153,.08);
-    }
+    .profile-info{margin-bottom:20px}
+    .profile-name{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .badge-verified{background:var(--green-mid);color:#063521;font-size:10px;font-weight:800;padding:2px 9px;border-radius:50px}
+    .profile-carrera{font-size:13px;color:var(--text-muted);margin-top:3px}
+    .profile-bio{font-size:14px;color:var(--text-main);opacity:.85;margin-top:8px;line-height:1.6}
+    .stars-wrap{display:flex;align-items:center;gap:8px;margin-top:10px}
+    .stars{display:flex;gap:2px;color:var(--yellow);font-size:16px}
+    .rating-val{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;color:var(--yellow)}
+    .rating-count{font-size:12px;color:var(--text-muted)}
+    .profile-meta{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap}
+    .meta-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
 
-    .profile-info { margin-top: 14px; margin-bottom: 20px; }
-    .profile-name {
-      font-family:'Poppins',sans-serif; font-size:22px; font-weight:800;
-      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-    }
-    .badge-verified {
-      background: var(--green-mid); color: #063521;
-      font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 50px;
-    }
-    .profile-carrera { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
-    .profile-bio { margin-top: 10px; font-size: 14px; line-height: 1.6; opacity: .88; }
-    .profile-meta { display:flex; gap:18px; margin-top:12px; flex-wrap:wrap; }
-    .meta-item { font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:5px; }
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;max-width:700px;margin-left:auto;margin-right:auto;padding:0 24px}
+    .stat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 10px;text-align:center;animation:fadeUp .4s ease both}
+    .stat-number{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;color:var(--green-light)}
+    .stat-label{font-size:11px;color:var(--text-muted);margin-top:2px}
 
-    /* ── STARS ── */
-    .stars-wrap { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
-    .stars { display: flex; gap: 2px; }
-    .star { font-size: 16px; }
-    .star.full  { color: var(--yellow); }
-    .star.half  { color: var(--yellow); opacity: .5; }
-    .star.empty { color: rgba(255,255,255,0.15); }
-    .rating-val { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; color:var(--yellow); }
-    .rating-count { font-size:12px; color:var(--text-muted); }
+    /* SECTION */
+    .section-wrap{max-width:700px;margin:0 auto;padding:0 24px}
+    .tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab-btn{flex-shrink:0;padding:8px 18px;border-radius:50px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+    .tab-btn.active{background:var(--green-mid);color:#063521;border-color:var(--green-mid)}
 
-    /* ── STATS ── */
-    .stats-row {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 12px; margin-bottom: 24px;
-      max-width: 700px; margin-left:auto; margin-right:auto;
-      padding: 0 24px;
-    }
-    .stat-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 14px; padding: 14px 10px; text-align: center;
-      animation: fadeUp .4s ease both;
-    }
-    .stat-number { font-family:'Poppins',sans-serif; font-size:22px; font-weight:800; color:var(--green-light); }
-    .stat-label { font-size:11px; color:var(--text-muted); margin-top:2px; }
+    /* GRID PRODUCTOS */
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+    .product-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s;animation:fadeUp .4s ease both}
+    .product-card:hover{transform:translateY(-4px);border-color:var(--green-light)}
+    .card-img{width:100%;aspect-ratio:1;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;overflow:hidden}
+    .card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+    .badge-tipo{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:50px}
+    .badge-venta{background:var(--green-mid);color:#063521}
+    .badge-trueque{background:var(--yellow);color:var(--yellow-dark)}
+    .card-body{padding:10px 12px 12px}
+    .card-name{font-weight:700;font-size:13px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-desc{font-size:11px;color:var(--text-muted);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .card-price{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:var(--green-light)}
+    .card-price.t{color:var(--yellow);font-size:12px}
 
-    /* ── SECCIÓN PUBLICACIONES ── */
-    .section-wrap { max-width:700px; margin:0 auto; padding:0 24px; }
-    .section-title {
-      font-family:'Poppins',sans-serif; font-size:16px; font-weight:700;
-      margin-bottom:14px; display:flex; align-items:center; gap:8px;
-    }
+    /* RESEÑAS */
+    .reviews-list{display:flex;flex-direction:column;gap:12px}
+    .review-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:16px;animation:fadeUp .4s ease both}
+    .review-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .review-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:13px;font-weight:800;color:#063521;flex-shrink:0}
+    .review-meta{}
+    .review-name{font-weight:700;font-size:13px}
+    .review-date{font-size:11px;color:var(--text-muted);margin-top:1px}
+    .review-stars{color:var(--yellow);font-size:14px;margin-bottom:6px}
+    .review-text{font-size:13px;color:var(--text-main);opacity:.9;line-height:1.6;margin-bottom:6px}
+    .review-producto{font-size:11px;color:var(--text-muted)}
 
-    /* ── TABS ── */
-    .tabs { display:flex; gap:8px; margin-bottom:18px; overflow-x:auto; scrollbar-width:none; }
-    .tabs::-webkit-scrollbar { display:none; }
-    .tab-btn {
-      flex-shrink:0; padding:8px 18px; border-radius:50px;
-      border: 1.5px solid var(--card-border); background:transparent;
-      color:var(--text-muted); font-family:'Nunito',sans-serif;
-      font-size:13px; font-weight:700; cursor:pointer; transition:all .2s;
-    }
-    .tab-btn.active { background:var(--green-mid); color:#063521; border-color:var(--green-mid); }
+    /* EMPTY */
+    .empty-tab{text-align:center;padding:36px 20px;color:var(--text-muted)}
+    .empty-tab .icon{font-size:44px;margin-bottom:10px}
+    .empty-tab p{font-size:13px}
 
-    /* ── GRID DE PRODUCTOS ── */
-    .product-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr));
-      gap: 14px; margin-bottom: 28px;
-    }
-    .product-card {
-      background:var(--card-bg); border:1px solid var(--card-border);
-      border-radius:16px; overflow:hidden; cursor:pointer;
-      transition:transform .2s, box-shadow .2s;
-      animation: fadeUp .4s ease both;
-    }
-    .product-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,.3); border-color:var(--green-light); }
-    .card-img {
-      width:100%; aspect-ratio:1;
-      background:rgba(255,255,255,0.05);
-      display:flex; align-items:center; justify-content:center;
-      font-size:50px; position:relative;
-    }
-    .badge-tipo { position:absolute; top:10px; left:10px; font-size:11px; font-weight:700; padding:3px 9px; border-radius:50px; }
-    .badge-venta   { background:var(--green-mid); color:#063521; }
-    .badge-trueque { background:var(--yellow); color:var(--yellow-dark); }
-    .card-body { padding:11px 13px 13px; }
-    .card-name { font-weight:700; font-size:13px; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .card-desc { font-size:11px; color:var(--text-muted); margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    .card-footer { display:flex; align-items:center; justify-content:space-between; }
-    .card-price { font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; color:var(--green-light); }
-    .card-price.t { color:var(--yellow); font-size:12px; }
-    .btn-ver { background:rgba(52,211,153,0.15); border:1px solid var(--green-light); color:var(--green-light); font-size:11px; font-weight:700; padding:4px 10px; border-radius:50px; cursor:pointer; transition:background .2s; }
-    .btn-ver:hover { background:var(--green-light); color:#063521; }
+    /* LOADING */
+    .loading-box{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px;color:var(--text-muted);font-size:14px}
+    .spin{width:20px;height:20px;border:2px solid var(--text-muted);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
 
-    /* ── RESEÑAS ── */
-    .reviews-list { display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
-    .review-card {
-      background:var(--card-bg); border:1px solid var(--card-border);
-      border-radius:14px; padding:16px;
-      animation: fadeUp .4s ease both;
-    }
-    .review-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-    .review-avatar {
-      width:36px; height:36px; border-radius:50%;
-      background:linear-gradient(135deg,var(--green-light),var(--yellow));
-      display:flex; align-items:center; justify-content:center;
-      font-size:13px; font-weight:900; color:#063521; flex-shrink:0;
-    }
-    .review-meta { flex:1; }
-    .review-name { font-weight:700; font-size:13px; }
-    .review-date { font-size:11px; color:var(--text-muted); }
-    .review-stars { display:flex; gap:2px; margin-bottom:6px; }
-    .review-stars span { font-size:13px; }
-    .review-text { font-size:13px; color:var(--text-main); opacity:.88; line-height:1.6; }
-    .review-producto { font-size:11px; color:var(--text-muted); margin-top:6px; }
+    /* BOTTOM NAV */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,61,46,0.97);border-top:1px solid var(--card-border);backdrop-filter:blur(14px);padding:10px 0 18px;z-index:100}
+    .bnav-inner{display:flex;justify-content:space-around}
+    .bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--text-muted);font-size:11px;font-weight:600;text-decoration:none;transition:color .2s}
+    .bnav-item.active{color:var(--green-light)}
+    .bnav-icon{font-size:22px}
+    .bnav-publish{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521!important;padding:10px 22px;border-radius:50px;margin-top:-18px;box-shadow:0 4px 20px rgba(52,211,153,.5)}
 
-    /* ── EMPTY ── */
-    .empty-tab { text-align:center; padding:40px 20px; color:var(--text-muted); }
-    .empty-tab .icon { font-size:48px; margin-bottom:12px; }
-    .empty-tab p { font-size:13px; }
+    /* MODAL REPORTE */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:linear-gradient(160deg,#0f4a32,#0b3d2e);border:1px solid var(--green-light);border-radius:20px;padding:24px;width:100%;max-width:420px}
+    .modal-box h3{font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px}
+    .report-options{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+    .report-opt{padding:12px 14px;border-radius:10px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:left;transition:all .2s}
+    .report-opt.selected,.report-opt:hover{border-color:var(--red);color:var(--red);background:rgba(255,107,107,.06)}
+    .modal-actions{display:flex;gap:10px}
+    .btn-cancel-report{flex:1;padding:11px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--text-muted);font-family:'Nunito',sans-serif;font-weight:700;cursor:pointer}
+    .btn-send-report{flex:2;padding:11px;border-radius:10px;background:var(--red);border:none;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;cursor:pointer}
 
-    /* ── MODAL REPORTAR ── */
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); backdrop-filter:blur(6px); z-index:200; align-items:center; justify-content:center; padding:20px; }
-    .modal-overlay.open { display:flex; }
-    @keyframes popIn { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
-    .modal-box {
-      background:linear-gradient(160deg,#0f4a32,#0b3d2e);
-      border:1px solid var(--green-light); border-radius:24px;
-      padding:28px; width:100%; max-width:400px;
-      animation: popIn .25s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    .modal-box h3 { font-family:'Poppins',sans-serif; font-size:18px; font-weight:800; margin-bottom:16px; }
-    .report-options { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
-    .report-opt {
-      display:flex; align-items:center; gap:10px;
-      padding:12px 14px; border-radius:12px;
-      border:1.5px solid var(--card-border); background:transparent;
-      color:var(--text-muted); font-family:'Nunito',sans-serif;
-      font-size:13px; font-weight:700; cursor:pointer; transition:all .2s; text-align:left;
-    }
-    .report-opt:hover, .report-opt.selected { border-color:var(--red); color:var(--red); background:rgba(255,107,107,.08); }
-    .modal-actions { display:flex; gap:10px; }
-    .btn-cancel-report {
-      flex:1; padding:12px; border-radius:12px;
-      border:1.5px solid var(--card-border); background:transparent;
-      color:var(--text-muted); font-family:'Nunito',sans-serif; font-weight:700; cursor:pointer;
-    }
-    .btn-send-report {
-      flex:2; padding:12px; border-radius:12px; border:none;
-      background:linear-gradient(135deg,#ff6b6b,#e03b3b);
-      color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:14px; cursor:pointer;
-    }
+    /* TOAST */
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-mid);color:#063521;font-weight:700;font-size:14px;padding:12px 24px;border-radius:50px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* ── BOTTOM NAV ── */
-    .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(11,61,46,0.97); border-top:1px solid var(--card-border); backdrop-filter:blur(14px); padding:10px 0 18px; z-index:100; }
-    .bnav-inner { display:flex; justify-content:space-around; }
-    .bnav-item { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:var(--text-muted); font-size:11px; font-weight:600; text-decoration:none; transition:color .2s; }
-    .bnav-item.active { color:var(--green-light); }
-    .bnav-icon { font-size:22px; }
-    .bnav-publish { background:linear-gradient(135deg,var(--green-light),var(--green-mid)); color:#063521 !important; padding:10px 22px; border-radius:50px; margin-top:-18px; box-shadow:0 4px 20px rgba(52,211,153,.5); }
-
-    /* ── TOAST ── */
-    .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--green-mid); color:#063521; font-weight:700; font-size:14px; padding:12px 24px; border-radius:50px; opacity:0; transition:all .3s; z-index:999; white-space:nowrap; }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-    @media(max-width:480px) {
-      .stats-row { grid-template-columns: repeat(2,1fr); }
-      .header-actions { width:100%; }
-      .btn-contact-main { flex:1; justify-content:center; }
-    }
+    /* NOT FOUND */
+    .not-found{text-align:center;padding:80px 20px;color:var(--text-muted)}
+    .not-found .icon{font-size:64px;margin-bottom:16px}
+    .not-found h3{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:var(--text-main);margin-bottom:10px}
+    .not-found p{font-size:14px;margin-bottom:24px}
+    .not-found a{color:var(--green-light);font-weight:700;text-decoration:none}
   </style>
 </head>
 <body>
@@ -288,118 +148,83 @@
 </nav>
 
 <!-- COVER -->
-<div class="cover">
+<div class="cover" id="coverBox">
+  <img id="coverImg" class="cover-img" src="" alt="">
   <div class="cover-pattern"></div>
   <button class="cover-report" onclick="openReportModal()">⚑ Reportar</button>
 </div>
 
-<!-- CABECERA DEL PERFIL -->
+<!-- CABECERA -->
 <div class="profile-header">
   <div class="header-row">
     <div class="avatar-wrap">
       <div class="avatar-big" id="avatarBig">
         <img id="avatarImg" src="" alt="">
-        <span id="avatarLetter">C</span>
+        <span id="avatarLetter">?</span>
       </div>
-      <div class="online-dot" title="Activo recientemente"></div>
+      <div class="online-dot"></div>
     </div>
     <div class="header-actions">
-      <button class="btn-contact-main" onclick="window.location.href='chat.html'">
-        💬 Enviar mensaje
-      </button>
-      <button class="btn-wa" onclick="showToast('📱 Abriendo WhatsApp...')">
-        📱 WhatsApp
-      </button>
-      <button class="btn-follow" id="btnFollow" onclick="toggleFollow()">
-        ＋ Seguir
-      </button>
+      <button class="btn-contact-main" id="btnMensaje" onclick="iniciarChatConVendedor()">💬 Mensaje</button>
+      <button class="btn-wa" id="btnWA" onclick="abrirWA()">📱 WhatsApp</button>
+      <button class="btn-follow" id="btnFollow" onclick="toggleFollow()">＋ Seguir</button>
     </div>
   </div>
-
   <div class="profile-info">
     <div class="profile-name">
-      Carlos Mendoza
+      <span id="sellerName">Cargando...</span>
       <span class="badge-verified">✓ INTEP</span>
     </div>
-    <div class="profile-carrera">🎓 Ingeniería de Sistemas · Semestre 6</div>
-    <div class="profile-bio">
-      Vendo equipo de tecnología y libros universitarios. Siempre entrego en el campus con factura. ¡Precios negociables!
-    </div>
+    <div class="profile-carrera" id="sellerCarrera"></div>
+    <div class="profile-bio" id="sellerBio"></div>
     <div class="stars-wrap">
-      <div class="stars" id="starsDisplay"></div>
-      <span class="rating-val">4.8</span>
-      <span class="rating-count">(23 reseñas)</span>
+      <div class="stars" id="starsDisplay">★★★★★</div>
+      <span class="rating-val">5.0</span>
+      <span class="rating-count">(verificado)</span>
     </div>
     <div class="profile-meta">
-      <span class="meta-item">📅 Miembro desde Ene 2025</span>
-      <span class="meta-item">⚡ Responde en ~2 horas</span>
-      <span class="meta-item">📍 INTEP, sede principal</span>
+      <span class="meta-item" id="metaMiembro">📅 Miembro INTEP</span>
+      <span class="meta-item">📍 Campus INTEP</span>
     </div>
   </div>
 </div>
 
-<!-- ESTADÍSTICAS -->
+<!-- STATS -->
 <div class="stats-row">
-  <div class="stat-card" style="animation-delay:.05s">
-    <div class="stat-number">12</div>
-    <div class="stat-label">Publicaciones</div>
-  </div>
-  <div class="stat-card" style="animation-delay:.1s">
-    <div class="stat-number">34</div>
-    <div class="stat-label">Ventas</div>
-  </div>
-  <div class="stat-card" style="animation-delay:.15s">
-    <div class="stat-number">4.8</div>
-    <div class="stat-label">Calificación</div>
-  </div>
-  <div class="stat-card" style="animation-delay:.2s">
-    <div class="stat-number">98%</div>
-    <div class="stat-label">Satisfacción</div>
-  </div>
+  <div class="stat-card" style="animation-delay:.05s"><div class="stat-number" id="statPubs">0</div><div class="stat-label">Publicaciones</div></div>
+  <div class="stat-card" style="animation-delay:.1s"> <div class="stat-number" id="statVentas">0</div><div class="stat-label">Ventas</div></div>
+  <div class="stat-card" style="animation-delay:.15s"><div class="stat-number" id="statVistas">0</div><div class="stat-label">Vistas</div></div>
+  <div class="stat-card" style="animation-delay:.2s"> <div class="stat-number">✓</div><div class="stat-label">Verificado</div></div>
 </div>
 
 <!-- PUBLICACIONES Y RESEÑAS -->
 <div class="section-wrap">
-
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('activos', this)">📦 Publicaciones activas</button>
-    <button class="tab-btn" onclick="switchTab('vendidos', this)">✅ Vendidos</button>
-    <button class="tab-btn" onclick="switchTab('resenas', this)">⭐ Reseñas (23)</button>
+    <button class="tab-btn active" onclick="switchTab('activos',this)">📦 Activas</button>
+    <button class="tab-btn" onclick="switchTab('vendidos',this)">✅ Vendidos</button>
+    <button class="tab-btn" onclick="switchTab('resenas',this)">⭐ Reseñas</button>
   </div>
-
-  <!-- Tab: activos -->
-  <div id="tab-activos">
-    <div class="product-grid" id="gridActivos"></div>
-  </div>
-
-  <!-- Tab: vendidos -->
-  <div id="tab-vendidos" style="display:none">
-    <div class="product-grid" id="gridVendidos"></div>
-  </div>
-
-  <!-- Tab: reseñas -->
-  <div id="tab-resenas" style="display:none">
-    <div class="reviews-list" id="listResenas"></div>
-  </div>
-
+  <div id="tab-activos"><div class="product-grid" id="gridActivos"></div></div>
+  <div id="tab-vendidos" style="display:none"><div class="product-grid" id="gridVendidos"></div></div>
+  <div id="tab-resenas"  style="display:none"><div class="reviews-list" id="listResenas"><div class="empty-tab"><div class="icon">⭐</div><p>Sin reseñas aún.</p></div></div></div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div class="bnav-inner">
-    <a href="home.html" class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
-    <a href="search.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
-    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
-    <a href="chat.html" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="home.html"    class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="search.html"  class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html"    class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="chat.html"    class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
     <a href="profile.html" class="bnav-item"><span class="bnav-icon">👤</span><span>Perfil</span></a>
   </div>
 </div>
 
-<!-- MODAL REPORTAR -->
-<div class="modal-overlay" id="reportModal" onclick="handleOverlay(event)">
+<!-- MODAL REPORTE -->
+<div class="modal-overlay" id="reportModal" onclick="if(event.target===this)closeReportModal()">
   <div class="modal-box">
     <h3>⚑ Reportar usuario</h3>
-    <div class="report-options" id="reportOpts">
+    <div class="report-options">
       <button class="report-opt" onclick="selectReport(this)">🚫 Información falsa o engañosa</button>
       <button class="report-opt" onclick="selectReport(this)">💸 Intento de estafa</button>
       <button class="report-opt" onclick="selectReport(this)">🤬 Conducta inapropiada</button>
@@ -408,151 +233,265 @@
     </div>
     <div class="modal-actions">
       <button class="btn-cancel-report" onclick="closeReportModal()">Cancelar</button>
-      <button class="btn-send-report" onclick="enviarReporte()">Enviar reporte</button>
+      <button class="btn-send-report"   onclick="enviarReporte()">Enviar reporte</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
-  // ── DATA ────────────────────────────────────────────────
-  const productosActivos = [
-    { nombre:'Laptop HP 15"',    desc:'Intel i5, 8GB RAM, 256GB SSD. Cargador incluido.',   precio:850000, tipo:'venta',   emoji:'💻' },
-    { nombre:'Audífonos Sony',   desc:'Bluetooth 5.0, cancelación de ruido activa.',         precio:220000, tipo:'venta',   emoji:'🎧' },
-    { nombre:'Cálculo Integral', desc:'Larson 9a edición, sin rayones ni subrayados.',       precio:0,      tipo:'trueque', emoji:'📚' },
-    { nombre:'Mouse Logitech',   desc:'Inalámbrico, 1 año de uso, funciona perfecto.',       precio:0,      tipo:'trueque', emoji:'🖱️' },
-    { nombre:'Calculadora Casio',desc:'fx-991EX ClassWiz, perfecta para ingeniería.',        precio:120000, tipo:'venta',   emoji:'🔢' },
-  ];
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  const productosVendidos = [
-    { nombre:'Control PS5',     desc:'Usado 3 meses, buen estado.',         precio:175000, tipo:'venta', emoji:'🎮' },
-    { nombre:'Álgebra Lineal',  desc:'Grossman 7a edición.',                precio:38000,  tipo:'venta', emoji:'📚' },
-    { nombre:'Mochila Nike',    desc:'Poco uso, varios compartimentos.',     precio:90000,  tipo:'venta', emoji:'🎒' },
-  ];
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const currentUser = session.user
 
-  const resenas = [
-    { nombre:'Laura P.',    iniciales:'LP', fecha:'20 Mar 2025', estrellas:5, texto:'¡Excelente vendedor! El producto llegó exactamente como lo describió. Muy puntual para la entrega en el campus.', producto:'Laptop HP 15"' },
-    { nombre:'Miguel R.',   iniciales:'MR', fecha:'15 Mar 2025', estrellas:5, texto:'Súper confiable. Hicimos el trueque sin problemas y fue muy honesto con el estado del artículo.', producto:'Cálculo Integral (trueque)' },
-    { nombre:'Sofía G.',    iniciales:'SG', fecha:'08 Mar 2025', estrellas:4, texto:'Buena experiencia en general. Respondió rápido y el producto estaba en buen estado. Le doy 4 porque tardó un poco en acordar el punto de encuentro.', producto:'Audífonos Sony' },
-    { nombre:'Andrés T.',   iniciales:'AT', fecha:'01 Mar 2025', estrellas:5, texto:'Todo perfecto. Recomendado 100%. Volveré a comprarle.', producto:'Mouse Logitech' },
-    { nombre:'Valentina C.',iniciales:'VC', fecha:'22 Feb 2025', estrellas:5, texto:'Muy buena persona y muy cumplido. El producto estaba en mejores condiciones de lo esperado.', producto:'Calculadora Casio' },
-  ];
+// ── Leer ID del vendedor desde la URL ────────────────────
+const params   = new URLSearchParams(window.location.search)
+const sellerId = params.get('id')
 
-  // ── RENDER ESTRELLAS ────────────────────────────────────
-  function renderStars(container, rating) {
-    container.innerHTML = '';
-    for (let i = 1; i <= 5; i++) {
-      const s = document.createElement('span');
-      s.className = 'star';
-      if (i <= Math.floor(rating)) { s.className += ' full'; s.textContent = '★'; }
-      else if (i - rating < 1)     { s.className += ' half'; s.textContent = '★'; }
-      else                          { s.className += ' empty'; s.textContent = '☆'; }
-      container.appendChild(s);
-    }
+const catEmojis = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' }
+
+let vendedorData = null
+
+if (!sellerId) {
+  mostrarNotFound('No se especificó un vendedor.')
+} else {
+  await cargarVendedor()
+if (sellerId && sellerId !== session.user.id) cargarEstadoFollow()
+}
+
+async function cargarVendedor() {
+  // Cargar perfil del vendedor
+  const { data: perfil, error } = await supabase
+    .from('users')
+    .select('id, nombre, username, correo, carrera, whatsapp, bio, avatar_url, cover_url, created_at')
+    .eq('id', sellerId)
+    .single()
+
+  if (error || !perfil) { mostrarNotFound('Vendedor no encontrado.'); return }
+
+  // Si el vendedor es el usuario actual → redirigir a su propio perfil
+  if (sellerId === currentUser.id) {
+    window.location.href = 'profile.html'; return
   }
 
-  // ── RENDER PRODUCTOS ────────────────────────────────────
-  function renderProductos(lista, gridId) {
-    const grid = document.getElementById(gridId);
-    grid.innerHTML = '';
-    if (!lista.length) {
-      grid.innerHTML = `<div class="empty-tab"><div class="icon">📭</div><p>Sin publicaciones aquí.</p></div>`;
-      return;
-    }
-    lista.forEach((p, i) => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.style.animationDelay = `${i * .06}s`;
-      card.onclick = () => window.location.href = 'product-detail.html';
-      card.innerHTML = `
-        <div class="card-img">
-          ${p.emoji}
-          <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+  vendedorData = perfil
+  renderVendedor(perfil)
+
+  // Cargar publicaciones del vendedor
+  const { data: productos } = await supabase
+    .from('products')
+    .select('id, nombre, descripcion, precio, tipo, estado, foto_url, categoria, vistas')
+    .eq('user_id', sellerId)
+    .order('created_at', { ascending: false })
+
+  const activos  = (productos || []).filter(p => p.estado === 'activo')
+  const vendidos = (productos || []).filter(p => p.estado === 'vendido')
+  const totalVistas = (productos || []).reduce((a,p) => a + (p.vistas||0), 0)
+
+  document.getElementById('statPubs').textContent   = productos?.length || 0
+  document.getElementById('statVentas').textContent = vendidos.filter(p => p.tipo === 'venta').length
+  document.getElementById('statVistas').textContent = totalVistas
+
+  renderProductos(activos,  'gridActivos')
+  renderProductos(vendidos, 'gridVendidos')
+}
+
+function renderVendedor(p) {
+  const nombre  = p.nombre || p.correo?.split('@')[0] || 'Vendedor'
+  const inicial = nombre[0]?.toUpperCase() || '?'
+
+  document.title = nombre + ' | Yo Lo Vendo'
+  document.getElementById('sellerName').textContent    = nombre
+  document.getElementById('sellerBio').textContent     = p.bio || ''
+
+  // Mostrar @username y carrera
+  const subTexts = []
+  if (p.username) subTexts.push('@' + p.username)
+  if (p.carrera)  subTexts.push('🎓 ' + p.carrera)
+  document.getElementById('sellerCarrera').textContent = subTexts.join(' · ')
+
+  const avatarLetter = document.getElementById('avatarLetter')
+  avatarLetter.textContent = inicial
+  if (p.avatar_url) {
+    const img = document.getElementById('avatarImg')
+    img.src = p.avatar_url; img.style.display = 'block'
+    avatarLetter.style.display = 'none'
+  }
+
+  if (p.cover_url) {
+    const ci = document.getElementById('coverImg')
+    ci.src = p.cover_url; ci.style.display = 'block'
+  }
+
+  const fechaMiembro = p.created_at
+    ? new Date(p.created_at).toLocaleDateString('es-CO', { month:'long', year:'numeric' })
+    : ''
+  if (fechaMiembro) document.getElementById('metaMiembro').textContent = '📅 Desde ' + fechaMiembro
+}
+
+function renderProductos(lista, gridId) {
+  const grid = document.getElementById(gridId)
+  grid.innerHTML = ''
+  if (!lista.length) {
+    grid.innerHTML = `<div class="empty-tab" style="grid-column:1/-1"><div class="icon">📭</div><p>Sin publicaciones aquí.</p></div>`
+    return
+  }
+  lista.forEach((p, i) => {
+    const card = document.createElement('div')
+    card.className = 'product-card'
+    card.style.animationDelay = `${i * .06}s`
+    card.onclick = () => window.location.href = `product-detail.html?id=${p.id}`
+    const emoji     = catEmojis[p.categoria] || '📦'
+    const imgContent = p.foto_url
+      ? `<img src="${p.foto_url}" alt="${p.nombre}" loading="lazy">`
+      : emoji
+    card.innerHTML = `
+      <div class="card-img">
+        ${imgContent}
+        <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.nombre}</div>
+        <div class="card-desc">${p.descripcion || ''}</div>
+        <div class="card-price ${p.tipo==='trueque'?'t':''}">
+          ${p.tipo === 'venta' ? '$'+(p.precio||0).toLocaleString('es-CO') : '🔄 Trueque'}
         </div>
-        <div class="card-body">
-          <div class="card-name">${p.nombre}</div>
-          <div class="card-desc">${p.desc}</div>
-          <div class="card-footer">
-            <span class="card-price ${p.tipo==='trueque'?'t':''}">
-              ${p.tipo === 'venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
-            </span>
-            <button class="btn-ver" onclick="event.stopPropagation()">Ver</button>
-          </div>
-        </div>`;
-      grid.appendChild(card);
-    });
-  }
+      </div>`
+    grid.appendChild(card)
+  })
+}
 
-  // ── RENDER RESEÑAS ──────────────────────────────────────
-  function renderResenas() {
-    const list = document.getElementById('listResenas');
-    list.innerHTML = '';
-    resenas.forEach((r, i) => {
-      const div = document.createElement('div');
-      div.className = 'review-card';
-      div.style.animationDelay = `${i * .07}s`;
-      const starsHtml = Array.from({length:5}, (_,j) =>
-        `<span>${j < r.estrellas ? '★' : '☆'}</span>`
-      ).join('');
-      div.innerHTML = `
-        <div class="review-header">
-          <div class="review-avatar">${r.iniciales}</div>
-          <div class="review-meta">
-            <div class="review-name">${r.nombre}</div>
-            <div class="review-date">${r.fecha}</div>
-          </div>
-        </div>
-        <div class="review-stars" style="color:var(--yellow)">${starsHtml}</div>
-        <div class="review-text">${r.texto}</div>
-        <div class="review-producto">📦 Sobre: ${r.producto}</div>`;
-      list.appendChild(div);
-    });
-  }
+// ── TABS ─────────────────────────────────────────────────
+window.switchTab = (tab, btn) => {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  ;['activos','vendidos','resenas'].forEach(t => {
+    document.getElementById(`tab-${t}`).style.display = t === tab ? 'block' : 'none'
+  })
+}
 
-  // ── TABS ────────────────────────────────────────────────
-  function switchTab(tab, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    ['activos','vendidos','resenas'].forEach(t => {
-      document.getElementById(`tab-${t}`).style.display = t === tab ? 'block' : 'none';
-    });
-  }
+// ── SEGUIR REAL ──────────────────────────────────────────
+let following = false
 
-  // ── FOLLOW ──────────────────────────────────────────────
-  let following = false;
-  function toggleFollow() {
-    following = !following;
-    const btn = document.getElementById('btnFollow');
-    btn.textContent = following ? '✓ Siguiendo' : '＋ Seguir';
-    btn.classList.toggle('following', following);
-    showToast(following ? '✅ Ahora sigues a Carlos' : 'Dejaste de seguir a Carlos');
-  }
+async function cargarEstadoFollow() {
+  const { data } = await supabase
+    .from('follows')
+    .select('id')
+    .eq('follower_id', session.user.id)
+    .eq('following_id', sellerId)
+    .maybeSingle()
+  following = !!data
+  actualizarBtnFollow()
+}
 
-  // ── REPORTE ─────────────────────────────────────────────
-  let selectedReport = null;
-  function openReportModal()  { document.getElementById('reportModal').classList.add('open'); }
-  function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); selectedReport = null; document.querySelectorAll('.report-opt').forEach(o => o.classList.remove('selected')); }
-  function handleOverlay(e)   { if (e.target === document.getElementById('reportModal')) closeReportModal(); }
-  function selectReport(btn)  { document.querySelectorAll('.report-opt').forEach(o => o.classList.remove('selected')); btn.classList.add('selected'); selectedReport = btn.textContent.trim(); }
-  function enviarReporte() {
-    if (!selectedReport) { showToast('⚠ Selecciona un motivo'); return; }
-    closeReportModal();
-    showToast('📩 Reporte enviado. Lo revisaremos pronto.');
+function actualizarBtnFollow() {
+  const btn = document.getElementById('btnFollow')
+  if (!btn) return
+  if (following) {
+    btn.textContent = '✓ Siguiendo'
+    btn.classList.add('following')
+  } else {
+    btn.textContent = '＋ Seguir'
+    btn.classList.remove('following')
   }
+}
 
-  // ── TOAST ───────────────────────────────────────────────
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+window.toggleFollow = async () => {
+  if (!sellerId) return
+  const btn = document.getElementById('btnFollow')
+  btn.disabled = true
+
+  if (following) {
+    await supabase.from('follows')
+      .delete()
+      .eq('follower_id', session.user.id)
+      .eq('following_id', sellerId)
+    following = false
+    showToast('Dejaste de seguir')
+  } else {
+    await supabase.from('follows').insert({
+      follower_id:  session.user.id,
+      following_id: sellerId
+    })
+    following = true
+    showToast('✅ Ahora sigues a este vendedor')
   }
+  btn.disabled = false
+  actualizarBtnFollow()
+}
 
-  // ── INIT ────────────────────────────────────────────────
-  renderStars(document.getElementById('starsDisplay'), 4.8);
-  renderProductos(productosActivos, 'gridActivos');
-  renderProductos(productosVendidos, 'gridVendidos');
-  renderResenas();
+
+window.iniciarChatConVendedor = async () => {
+  if (!sellerId) return
+  const { data: existing } = await supabase
+    .from('conversations')
+    .select('id')
+    .or(`and(user_a.eq.${session.user.id},user_b.eq.${sellerId}),and(user_a.eq.${sellerId},user_b.eq.${session.user.id})`)
+    .maybeSingle()
+
+  let convId = existing?.id
+  if (!convId) {
+    const { data: nueva } = await supabase.from('conversations').insert({
+      user_a: session.user.id,
+      user_b: sellerId,
+    }).select('id').single()
+    convId = nueva?.id
+  }
+  window.location.href = convId ? `chat.html?conv=${convId}` : 'chat.html'
+}
+
+// ── WHATSAPP ─────────────────────────────────────────────
+window.abrirWA = () => {
+  const wa = vendedorData?.whatsapp
+  if (!wa) { showToast('❌ El vendedor no tiene WhatsApp registrado'); return }
+  const msg = encodeURIComponent('Hola, vi tu perfil en Yo Lo Vendo. ¿Tienes productos disponibles?')
+  window.open(`https://wa.me/${wa.replace(/\D/g,'')}?text=${msg}`, '_blank')
+}
+
+// ── NOT FOUND ────────────────────────────────────────────
+function mostrarNotFound(msg) {
+  document.querySelector('.profile-header').innerHTML = `
+    <div class="not-found">
+      <div class="icon">👤</div>
+      <h3>Vendedor no encontrado</h3>
+      <p>${msg}</p>
+      <a href="home.html">← Volver al inicio</a>
+    </div>`
+  document.querySelector('.stats-row').style.display = 'none'
+  document.querySelector('.section-wrap').style.display = 'none'
+}
+
+// ── REPORTE ──────────────────────────────────────────────
+let selectedReport = null
+window.openReportModal  = () => document.getElementById('reportModal').classList.add('open')
+window.closeReportModal = () => {
+  document.getElementById('reportModal').classList.remove('open')
+  selectedReport = null
+  document.querySelectorAll('.report-opt').forEach(o => o.classList.remove('selected'))
+}
+window.selectReport = (btn) => {
+  document.querySelectorAll('.report-opt').forEach(o => o.classList.remove('selected'))
+  btn.classList.add('selected'); selectedReport = btn.textContent.trim()
+}
+window.enviarReporte = () => {
+  if (!selectedReport) { showToast('⚠ Selecciona un motivo'); return }
+  closeReportModal(); showToast('📩 Reporte enviado. Lo revisaremos pronto.')
+}
+
+// ── TOAST ────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 3000)
+}
+window.showToast = showToast
 </script>
 </body>
 </html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Admin | Yo Lo Vendo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --green-dark:#0b3d2e;--green-mid:#1fbf75;--green-light:#34d399;
+      --yellow:#e6d44c;--yellow-dark:#7a6a00;
+      --card-bg:rgba(255,255,255,0.06);--card-border:rgba(52,211,153,0.2);
+      --text-main:#eafff5;--text-muted:#9fffd8;--red:#ff6b6b;--blue:#7dd3fc;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Nunito',sans-serif;background:radial-gradient(ellipse at top left,#1a5c3a,#0b3d2e 50%,#071f17);min-height:100vh;color:var(--text-main)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popIn {from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+    @keyframes spin  {to{transform:rotate(360deg)}}
+
+    /* ── ACCESO DENEGADO ── */
+    #accessDenied{display:none;position:fixed;inset:0;background:radial-gradient(ellipse at top,#1a5c3a,#071f17);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:9999}
+    #accessDenied.show{display:flex}
+    #accessDenied .icon{font-size:80px;margin-bottom:20px}
+    #accessDenied h2{font-family:'Poppins',sans-serif;font-size:24px;font-weight:800;margin-bottom:10px}
+    #accessDenied p{color:var(--text-muted);margin-bottom:24px;font-size:15px}
+    #accessDenied button{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521;font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;padding:13px 28px;border-radius:50px;border:none;cursor:pointer}
+
+    /* ── TOPBAR ── */
+    .topbar{background:rgba(11,61,46,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--card-border);padding:0 20px;height:62px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+    .logo{font-family:'Poppins',sans-serif;font-size:20px;font-weight:900;text-decoration:none}
+    .logo .yo{color:#fff}.logo .lo{color:#fff;font-weight:400}.logo .vendo{color:var(--yellow);text-shadow:0 2px 0 var(--yellow-dark)}
+    .admin-pill{background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:50px}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .admin-email{font-size:12px;color:var(--text-muted)}
+    .btn-back-home{background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;padding:7px 14px;border-radius:50px;cursor:pointer;text-decoration:none;transition:all .2s}
+    .btn-back-home:hover{border-color:var(--green-light);color:var(--green-light)}
+    .btn-logout{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.3);color:var(--red);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;padding:7px 14px;border-radius:50px;cursor:pointer;transition:background .2s}
+    .btn-logout:hover{background:rgba(255,107,107,.22)}
+
+    /* ── LAYOUT ── */
+    .admin-wrap{display:flex;min-height:calc(100vh - 62px)}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:210px;flex-shrink:0;background:rgba(11,61,46,0.55);border-right:1px solid var(--card-border);padding:18px 10px;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto}
+    @media(max-width:680px){.sidebar{display:none}}
+    .sb-label{font-size:10px;font-weight:800;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;padding:4px 12px;margin-bottom:4px;margin-top:14px}
+    .sb-label:first-child{margin-top:0}
+    .sb-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text-muted);transition:all .2s;width:100%;text-align:left;border:none;background:transparent;margin-bottom:2px}
+    .sb-item:hover{background:rgba(52,211,153,.08);color:var(--green-light)}
+    .sb-item.active{background:rgba(52,211,153,.14);color:var(--green-light);font-weight:700}
+    .sb-icon{font-size:17px}
+
+    /* ── MAIN ── */
+    .main-content{flex:1;padding:24px 20px;overflow-x:hidden}
+
+    /* MOBILE TABS */
+    .mobile-tabs{display:none;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:18px;padding-bottom:4px}
+    .mobile-tabs::-webkit-scrollbar{display:none}
+    @media(max-width:680px){.mobile-tabs{display:flex}}
+    .mt-btn{flex-shrink:0;padding:8px 14px;border-radius:50px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+    .mt-btn.active{background:var(--green-mid);color:#063521;border-color:var(--green-mid)}
+
+    /* PANELS */
+    .panel{display:none;animation:fadeUp .3s ease both}
+    .panel.active{display:block}
+
+    /* TÍTULOS */
+    .panel-title{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+    .panel-sub{font-size:13px;color:var(--text-muted);margin-bottom:22px}
+
+    /* STATS GRID */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-bottom:26px}
+    .stat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:18px 14px;text-align:center;animation:fadeUp .4s ease both}
+    .stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:800}
+    .stat-lbl{font-size:11px;color:var(--text-muted);margin-top:4px}
+    .c-green{color:var(--green-light)}.c-yellow{color:var(--yellow)}.c-red{color:var(--red)}.c-blue{color:var(--blue)}
+
+    /* RESUMEN */
+    .summary-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:20px;margin-bottom:20px}
+    .summary-title{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(52,211,153,.07)}
+    .summary-row:last-child{border-bottom:none}
+    .summary-label{font-size:13px;color:var(--text-muted)}
+    .summary-val{font-family:'Poppins',sans-serif;font-weight:700;font-size:14px}
+
+    /* SEARCH */
+    .search-bar{position:relative;margin-bottom:14px}
+    .search-bar input{width:100%;padding:11px 16px 11px 42px;border-radius:50px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.07);color:var(--text-main);font-family:'Nunito',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+    .search-bar input:focus{border-color:var(--green-light)}
+    .search-bar input::placeholder{color:var(--text-muted)}
+    .search-bar .si{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.6}
+
+    /* FILTROS */
+    .filtros{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+    .filtro-btn{padding:6px 14px;border-radius:50px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+    .filtro-btn.active{background:var(--green-mid);color:#063521;border-color:var(--green-mid)}
+
+    /* TABLE CARD */
+    .table-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;overflow:hidden;margin-bottom:20px}
+    .table-head{padding:14px 18px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between}
+    .table-head h3{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700}
+    .table-count{font-size:12px;color:var(--text-muted)}
+
+    /* ROWS */
+    .item-row{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid rgba(52,211,153,.06);transition:background .15s;flex-wrap:wrap}
+    .item-row:last-child{border-bottom:none}
+    .item-row:hover{background:rgba(52,211,153,.03)}
+    .item-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:14px;font-weight:800;color:#063521;flex-shrink:0;overflow:hidden}
+    .item-avatar img{width:100%;height:100%;object-fit:cover}
+    .item-thumb{width:38px;height:38px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden}
+    .item-thumb img{width:100%;height:100%;object-fit:cover}
+    .item-info{flex:1;min-width:0}
+    .item-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .item-sub{font-size:11px;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    /* BADGES */
+    .badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:50px;flex-shrink:0}
+    .b-activo {background:rgba(52,211,153,.2);color:var(--green-light)}
+    .b-bloq   {background:rgba(255,107,107,.15);color:var(--red)}
+    .b-admin  {background:rgba(230,212,76,.15);color:var(--yellow)}
+    .b-venta  {background:rgba(52,211,153,.2);color:var(--green-light)}
+    .b-trueque{background:rgba(230,212,76,.15);color:var(--yellow)}
+    .b-vendido{background:rgba(100,180,255,.15);color:var(--blue)}
+    .b-pausado{background:rgba(230,212,76,.15);color:var(--yellow)}
+
+    /* ACCIONES */
+    .item-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .act-btn{padding:5px 11px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid}
+    .act-btn.block  {border-color:rgba(255,107,107,.3);background:transparent;color:var(--red)}
+    .act-btn.block:hover{background:rgba(255,107,107,.1)}
+    .act-btn.unblock{border-color:rgba(52,211,153,.3);background:transparent;color:var(--green-light)}
+    .act-btn.unblock:hover{background:rgba(52,211,153,.1)}
+    .act-btn.del    {border-color:rgba(255,107,107,.3);background:transparent;color:var(--red)}
+    .act-btn.del:hover{background:rgba(255,107,107,.1)}
+    .act-btn.promote{border-color:rgba(230,212,76,.3);background:transparent;color:var(--yellow)}
+    .act-btn.promote:hover{background:rgba(230,212,76,.1)}
+    .act-btn.pause  {border-color:rgba(230,212,76,.3);background:transparent;color:var(--yellow)}
+    .act-btn.pause:hover{background:rgba(230,212,76,.1)}
+    .act-btn.activate{border-color:rgba(52,211,153,.3);background:transparent;color:var(--green-light)}
+    .act-btn.activate:hover{background:rgba(52,211,153,.1)}
+
+    /* EMPTY / LOADING */
+    .empty-msg{text-align:center;padding:36px;color:var(--text-muted);font-size:13px}
+    .empty-msg .icon{font-size:40px;margin-bottom:10px}
+    .loading-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:30px;color:var(--text-muted);font-size:13px}
+    .spin-sm{width:18px;height:18px;border:2px solid var(--text-muted);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+
+    /* ACTIVIDAD */
+    .log-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:12px 16px;margin-bottom:10px;display:flex;gap:12px;animation:fadeUp .3s ease both}
+    .log-icon{font-size:20px;flex-shrink:0}
+    .log-text{font-size:13px;font-weight:600}
+    .log-time{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+    /* MODAL CONFIRMACIÓN */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:300;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:linear-gradient(160deg,#0f4a32,#0b3d2e);border:1px solid var(--green-light);border-radius:22px;padding:26px;width:100%;max-width:420px;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both}
+    .modal-box h3{font-family:'Poppins',sans-serif;font-size:18px;font-weight:800;margin-bottom:10px}
+    .modal-box p{font-size:14px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+    .modal-btns{display:flex;gap:10px}
+    .mbtn{flex:1;padding:12px;border-radius:10px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:opacity .2s}
+    .mbtn.cancel {background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--text-muted)}
+    .mbtn.confirm{background:var(--red);color:#fff}
+    .mbtn.confirm:hover{opacity:.85}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-mid);color:#063521;font-weight:700;font-size:14px;padding:12px 24px;border-radius:50px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.err{background:var(--red);color:#fff}
+  </style>
+</head>
+<body>
+
+<!-- ACCESO DENEGADO -->
+<div id="accessDenied">
+  <div class="icon">🔒</div>
+  <h2>Acceso denegado</h2>
+  <p>No tienes permisos de administrador<br>para acceder a este panel.</p>
+  <button onclick="window.location.href='home.html'">← Volver al inicio</button>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="appWrap" style="display:none">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="#" class="logo"><span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span></a>
+    <span class="admin-pill">ADMIN</span>
+    <div class="topbar-right">
+      <span class="admin-email" id="adminEmail"></span>
+      <a href="home.html" class="btn-back-home">🏠 Inicio</a>
+      <button class="btn-logout" onclick="cerrarSesion()">🚪 Salir</button>
+    </div>
+  </div>
+
+  <div class="admin-wrap">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-label">Panel</div>
+      <button class="sb-item active" onclick="ir('dashboard',this)"><span class="sb-icon">📊</span>Dashboard</button>
+      <div class="sb-label">Gestión</div>
+      <button class="sb-item" onclick="ir('usuarios',this)"><span class="sb-icon">👥</span>Usuarios</button>
+      <button class="sb-item" onclick="ir('publicaciones',this)"><span class="sb-icon">📦</span>Publicaciones</button>
+      <div class="sb-label">Sistema</div>
+      <button class="sb-item" onclick="ir('actividad',this)"><span class="sb-icon">📋</span>Actividad reciente</button>
+    </aside>
+
+    <!-- CONTENIDO -->
+    <div class="main-content">
+
+      <!-- TABS MÓVIL -->
+      <div class="mobile-tabs">
+        <button class="mt-btn active" onclick="irM('dashboard',this)">📊 Dashboard</button>
+        <button class="mt-btn"        onclick="irM('usuarios',this)">👥 Usuarios</button>
+        <button class="mt-btn"        onclick="irM('publicaciones',this)">📦 Publicaciones</button>
+        <button class="mt-btn"        onclick="irM('actividad',this)">📋 Actividad</button>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panelDashboard">
+        <div class="panel-title">📊 Dashboard</div>
+        <p class="panel-sub">Resumen general de la plataforma Yo Lo Vendo</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num c-green"  id="sUsuarios">—</div><div class="stat-lbl">Usuarios totales</div></div>
+          <div class="stat-card"><div class="stat-num c-blue"   id="sActivos">—</div><div class="stat-lbl">Activos</div></div>
+          <div class="stat-card"><div class="stat-num c-yellow" id="sPubs">—</div><div class="stat-lbl">Publicaciones</div></div>
+          <div class="stat-card"><div class="stat-num c-green"  id="sVentas">—</div><div class="stat-lbl">Ventas cerradas</div></div>
+          <div class="stat-card"><div class="stat-num c-yellow" id="sTrueques">—</div><div class="stat-lbl">Trueques</div></div>
+          <div class="stat-card"><div class="stat-num c-red"    id="sBloqueados">—</div><div class="stat-lbl">Bloqueados</div></div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-title">📈 Estado de publicaciones</div>
+          <div class="summary-row"><span class="summary-label">Activas</span>   <span class="summary-val c-green"  id="raActivas">—</span></div>
+          <div class="summary-row"><span class="summary-label">Vendidas</span>  <span class="summary-val c-blue"   id="raVendidas">—</span></div>
+          <div class="summary-row"><span class="summary-label">Pausadas</span>  <span class="summary-val c-yellow" id="raPausadas">—</span></div>
+          <div class="summary-row"><span class="summary-label">Bloqueados</span><span class="summary-val c-red"    id="raBloq">—</span></div>
+        </div>
+      </div>
+
+      <!-- USUARIOS -->
+      <div class="panel" id="panelUsuarios">
+        <div class="panel-title">👥 Usuarios</div>
+        <p class="panel-sub">Gestiona todos los usuarios registrados en la plataforma</p>
+        <div class="search-bar">
+          <span class="si">🔍</span>
+          <input type="text" id="searchU" placeholder="Buscar por nombre o correo..." oninput="buscarU(this.value)">
+        </div>
+        <div class="filtros">
+          <button class="filtro-btn active" onclick="filtroU('todos',this)">Todos</button>
+          <button class="filtro-btn"        onclick="filtroU('activo',this)">✅ Activos</button>
+          <button class="filtro-btn"        onclick="filtroU('bloqueado',this)">🚫 Bloqueados</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><h3>Lista de usuarios</h3><span class="table-count" id="cntU">—</span></div>
+          <div id="listaU"><div class="loading-row"><div class="spin-sm"></div> Cargando...</div></div>
+        </div>
+      </div>
+
+      <!-- PUBLICACIONES -->
+      <div class="panel" id="panelPublicaciones">
+        <div class="panel-title">📦 Publicaciones</div>
+        <p class="panel-sub">Modera todas las publicaciones de la plataforma</p>
+        <div class="search-bar">
+          <span class="si">🔍</span>
+          <input type="text" id="searchP" placeholder="Buscar por nombre..." oninput="buscarP(this.value)">
+        </div>
+        <div class="filtros">
+          <button class="filtro-btn active" onclick="filtroP('todos',this)">Todas</button>
+          <button class="filtro-btn"        onclick="filtroP('activo',this)">🟢 Activas</button>
+          <button class="filtro-btn"        onclick="filtroP('vendido',this)">✅ Vendidas</button>
+          <button class="filtro-btn"        onclick="filtroP('pausado',this)">⏸ Pausadas</button>
+          <button class="filtro-btn"        onclick="filtroP('venta',this)">💰 Venta</button>
+          <button class="filtro-btn"        onclick="filtroP('trueque',this)">🔄 Trueque</button>
+        </div>
+        <div class="table-card">
+          <div class="table-head"><h3>Lista de publicaciones</h3><span class="table-count" id="cntP">—</span></div>
+          <div id="listaP"><div class="loading-row"><div class="spin-sm"></div> Cargando...</div></div>
+        </div>
+      </div>
+
+      <!-- ACTIVIDAD -->
+      <div class="panel" id="panelActividad">
+        <div class="panel-title">📋 Actividad reciente</div>
+        <p class="panel-sub">Últimas 30 publicaciones registradas en la plataforma</p>
+        <div id="listaActividad"><div class="loading-row"><div class="spin-sm"></div> Cargando...</div></div>
+      </div>
+
+    </div><!-- /main-content -->
+  </div><!-- /admin-wrap -->
+</div><!-- /appWrap -->
+
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal-overlay" id="confirmModal" onclick="if(event.target===this)cerrarModal()">
+  <div class="modal-box">
+    <h3 id="confirmTitle">¿Confirmar?</h3>
+    <p  id="confirmText">Esta acción no se puede deshacer.</p>
+    <div class="modal-btns">
+      <button class="mbtn cancel"  onclick="cerrarModal()">Cancelar</button>
+      <button class="mbtn confirm" id="confirmBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
+
+// ── VERIFICAR SESIÓN Y ROL ────────────────────────────────
+const { data:{ session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+
+const user = session.user
+const { data: uRow } = await supabase.from('users').select('role').eq('id', user.id).single()
+const isAdmin = user.user_metadata?.role === 'admin' || uRow?.role === 'admin'
+
+if (!isAdmin) {
+  document.getElementById('accessDenied').classList.add('show')
+  throw new Error('No autorizado')
+}
+
+document.getElementById('appWrap').style.display = 'block'
+document.getElementById('adminEmail').textContent = user.email
+
+// ── ESTADO ───────────────────────────────────────────────
+let allU = [], allP = []
+let filtU = 'todos', filtP = 'todos'
+let busqU_ = '', busqP_ = ''
+
+const catEmojis = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' }
+const fmtFecha = iso => new Date(iso).toLocaleString('es-CO',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+
+// ── CARGA INICIAL ─────────────────────────────────────────
+async function cargarTodo() {
+  await Promise.all([ cargarUsuarios(), cargarPublicaciones(), cargarActividad() ])
+  actualizarDashboard()
+}
+
+async function cargarUsuarios() {
+  const { data } = await supabase.from('users').select('*').order('created_at',{ascending:false})
+  allU = data || []
+  renderU()
+}
+async function cargarPublicaciones() {
+  const { data } = await supabase.from('products').select('*').order('created_at',{ascending:false})
+  allP = data || []
+  renderP()
+}
+async function cargarActividad() {
+  const { data } = await supabase.from('products')
+    .select('id,nombre,tipo,estado,created_at')
+    .order('created_at',{ascending:false}).limit(30)
+  const c = document.getElementById('listaActividad')
+  c.innerHTML = ''
+  if (!data?.length) { c.innerHTML = `<div class="empty-msg"><div class="icon">📭</div>Sin actividad.</div>`; return }
+  const icons = { venta:'💰', trueque:'🔄' }
+  const stxt  = { activo:'Publicado', vendido:'Marcado vendido', pausado:'Pausado' }
+  data.forEach((p,i) => {
+    const d = document.createElement('div'); d.className='log-item'; d.style.animationDelay=`${i*.03}s`
+    d.innerHTML = `<div class="log-icon">${icons[p.tipo]||'📦'}</div>
+      <div><div class="log-text">${stxt[p.estado]||p.estado}: <strong>${p.nombre}</strong></div>
+      <div class="log-time">${fmtFecha(p.created_at)}</div></div>`
+    c.appendChild(d)
+  })
+}
+
+function actualizarDashboard() {
+  const bloq = allU.filter(u=>u.bloqueado).length
+  document.getElementById('sUsuarios').textContent   = allU.length
+  document.getElementById('sActivos').textContent    = allU.filter(u=>!u.bloqueado).length
+  document.getElementById('sPubs').textContent       = allP.length
+  document.getElementById('sVentas').textContent     = allP.filter(p=>p.estado==='vendido'&&p.tipo==='venta').length
+  document.getElementById('sTrueques').textContent   = allP.filter(p=>p.tipo==='trueque').length
+  document.getElementById('sBloqueados').textContent = bloq
+  document.getElementById('raActivas').textContent   = allP.filter(p=>p.estado==='activo').length
+  document.getElementById('raVendidas').textContent  = allP.filter(p=>p.estado==='vendido').length
+  document.getElementById('raPausadas').textContent  = allP.filter(p=>p.estado==='pausado').length
+  document.getElementById('raBloq').textContent      = bloq
+}
+
+// ── USUARIOS ──────────────────────────────────────────────
+window.filtroU = (f,btn) => {
+  filtU = f
+  document.querySelectorAll('#panelUsuarios .filtro-btn').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active'); renderU()
+}
+window.buscarU = q => { busqU_ = q.toLowerCase(); renderU() }
+
+function renderU() {
+  let lista = allU
+  if (filtU === 'activo')    lista = lista.filter(u=>!u.bloqueado)
+  if (filtU === 'bloqueado') lista = lista.filter(u=> u.bloqueado)
+  if (busqU_) lista = lista.filter(u=>(u.nombre||'').toLowerCase().includes(busqU_)||(u.correo||'').toLowerCase().includes(busqU_))
+
+  const c = document.getElementById('listaU')
+  document.getElementById('cntU').textContent = `${lista.length} usuario${lista.length!==1?'s':''}`
+  c.innerHTML = ''
+  if (!lista.length) { c.innerHTML=`<div class="empty-msg"><div class="icon">👤</div>Sin usuarios.</div>`; return }
+
+  lista.forEach((u,i) => {
+    const ini = (u.nombre||u.correo||'?')[0].toUpperCase()
+    const esBloq  = u.bloqueado
+    const esAdmin = u.role === 'admin'
+    const row = document.createElement('div'); row.className='item-row'; row.style.animationDelay=`${i*.025}s`
+    row.innerHTML = `
+      <div class="item-avatar">${u.avatar_url?`<img src="${u.avatar_url}">`:`${ini}`}</div>
+      <div class="item-info">
+        <div class="item-name">${u.nombre||'(sin nombre)'}</div>
+        <div class="item-sub">${u.correo||''} · ${u.carrera||'Sin carrera'}</div>
+      </div>
+      ${esAdmin ? `<span class="badge b-admin">⭐ Admin</span>` : ''}
+      <span class="badge ${esBloq?'b-bloq':'b-activo'}">${esBloq?'🚫 Bloqueado':'✅ Activo'}</span>
+      <div class="item-actions">
+        ${esBloq
+          ? `<button class="act-btn unblock" onclick="desbloquear('${u.id}')">✅ Desbloquear</button>`
+          : `<button class="act-btn block"   onclick="bloquear('${u.id}','${(u.nombre||'').replace(/'/g,"\\'")}')">🚫 Bloquear</button>`}
+        ${!esAdmin ? `<button class="act-btn promote" onclick="hacerAdmin('${u.id}','${(u.nombre||'').replace(/'/g,"\\'")}')">⭐ Hacer admin</button>` : ''}
+        <button class="act-btn del" onclick="eliminarU('${u.id}','${(u.nombre||'').replace(/'/g,"\\'")}')">🗑 Eliminar</button>
+      </div>`
+    c.appendChild(row)
+  })
+}
+
+window.bloquear = (id,nombre) => confirmar(
+  `🚫 Bloquear a ${nombre}`,
+  'El usuario no podrá iniciar sesión ni publicar. ¿Confirmar?',
+  async () => {
+    const { error } = await supabase.from('users').update({bloqueado:true}).eq('id',id)
+    if (error) { toast('❌ '+error.message,true); return }
+    allU.find(u=>u.id===id).bloqueado = true
+    actualizarDashboard(); renderU(); toast('🚫 Usuario bloqueado')
+  }
+)
+window.desbloquear = async id => {
+  const { error } = await supabase.from('users').update({bloqueado:false}).eq('id',id)
+  if (error) { toast('❌ '+error.message,true); return }
+  allU.find(u=>u.id===id).bloqueado = false
+  actualizarDashboard(); renderU(); toast('✅ Usuario desbloqueado')
+}
+window.eliminarU = (id,nombre) => confirmar(
+  `🗑 Eliminar a ${nombre}`,
+  '¡ATENCIÓN! Se eliminarán el usuario y todas sus publicaciones. Acción permanente e irreversible.',
+  async () => {
+    await supabase.from('products').delete().eq('user_id',id)
+    const { error } = await supabase.from('users').delete().eq('id',id)
+    if (error) { toast('❌ '+error.message,true); return }
+    allU = allU.filter(u=>u.id!==id)
+    allP = allP.filter(p=>p.user_id!==id)
+    actualizarDashboard(); renderU(); renderP(); toast('🗑 Usuario eliminado')
+  }
+)
+window.hacerAdmin = (id,nombre) => confirmar(
+  `⭐ Hacer admin a ${nombre}`,
+  'Este usuario tendrá acceso completo al panel de administración.',
+  async () => {
+    const { error } = await supabase.from('users').update({role:'admin'}).eq('id',id)
+    if (error) { toast('❌ '+error.message,true); return }
+    allU.find(u=>u.id===id).role = 'admin'; renderU(); toast('⭐ Usuario promovido a admin')
+  }
+)
+
+// ── PUBLICACIONES ─────────────────────────────────────────
+window.filtroP = (f,btn) => {
+  filtP = f
+  document.querySelectorAll('#panelPublicaciones .filtro-btn').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active'); renderP()
+}
+window.buscarP = q => { busqP_ = q.toLowerCase(); renderP() }
+
+function renderP() {
+  let lista = allP
+  if (filtP==='activo')   lista = lista.filter(p=>p.estado==='activo')
+  if (filtP==='vendido')  lista = lista.filter(p=>p.estado==='vendido')
+  if (filtP==='pausado')  lista = lista.filter(p=>p.estado==='pausado')
+  if (filtP==='venta')    lista = lista.filter(p=>p.tipo==='venta')
+  if (filtP==='trueque')  lista = lista.filter(p=>p.tipo==='trueque')
+  if (busqP_) lista = lista.filter(p=>(p.nombre||'').toLowerCase().includes(busqP_))
+
+  const c = document.getElementById('listaP')
+  document.getElementById('cntP').textContent = `${lista.length} publicación${lista.length!==1?'es':''}`
+  c.innerHTML = ''
+  if (!lista.length) { c.innerHTML=`<div class="empty-msg"><div class="icon">📭</div>Sin publicaciones.</div>`; return }
+
+  const bMap = { activo:'b-activo', vendido:'b-vendido', pausado:'b-pausado' }
+  const btxt = { activo:'🟢 Activa', vendido:'✅ Vendida', pausado:'⏸ Pausada' }
+
+  lista.forEach((p,i) => {
+    const uData  = allU.find(u=>u.id===p.user_id)
+    const uNombre = uData?.nombre || uData?.correo || 'Desconocido'
+    const precioTxt = p.tipo==='venta' ? '$'+(p.precio||0).toLocaleString('es-CO') : 'Trueque'
+    const row = document.createElement('div'); row.className='item-row'; row.style.animationDelay=`${i*.025}s`
+    row.innerHTML = `
+      <div class="item-thumb">${p.foto_url?`<img src="${p.foto_url}">`:(catEmojis[p.categoria]||'📦')}</div>
+      <div class="item-info">
+        <div class="item-name">${p.nombre}</div>
+        <div class="item-sub">👤 ${uNombre} · ${precioTxt} · 👁 ${p.vistas||0}</div>
+      </div>
+      <span class="badge ${p.tipo==='venta'?'b-venta':'b-trueque'}">${p.tipo==='venta'?'💰 Venta':'🔄 Trueque'}</span>
+      <span class="badge ${bMap[p.estado]||''}">${btxt[p.estado]||p.estado}</span>
+      <div class="item-actions">
+        ${p.estado==='activo' ?`<button class="act-btn pause"    onclick="pausarP('${p.id}')">⏸ Pausar</button>`:''}
+        ${p.estado==='pausado'?`<button class="act-btn activate" onclick="activarP('${p.id}')">▶ Activar</button>`:''}
+        <button class="act-btn del" onclick="eliminarP('${p.id}','${(p.nombre||'').replace(/'/g,"\\'")}')">🗑 Eliminar</button>
+      </div>`
+    c.appendChild(row)
+  })
+}
+
+window.pausarP = async id => {
+  const { error } = await supabase.from('products').update({estado:'pausado'}).eq('id',id)
+  if (error) { toast('❌ '+error.message,true); return }
+  allP.find(p=>p.id===id).estado='pausado'; actualizarDashboard(); renderP(); toast('⏸ Publicación pausada')
+}
+window.activarP = async id => {
+  const { error } = await supabase.from('products').update({estado:'activo'}).eq('id',id)
+  if (error) { toast('❌ '+error.message,true); return }
+  allP.find(p=>p.id===id).estado='activo'; actualizarDashboard(); renderP(); toast('🟢 Publicación activada')
+}
+window.eliminarP = (id,nombre) => confirmar(
+  `🗑 Eliminar "${nombre}"`,
+  'Esta publicación será eliminada permanentemente de la plataforma.',
+  async () => {
+    const { error } = await supabase.from('products').delete().eq('id',id)
+    if (error) { toast('❌ '+error.message,true); return }
+    allP = allP.filter(p=>p.id!==id); actualizarDashboard(); renderP(); toast('🗑 Publicación eliminada')
+  }
+)
+
+// ── NAVEGACIÓN ────────────────────────────────────────────
+const panelIds = ['panelDashboard','panelUsuarios','panelPublicaciones','panelActividad']
+const panelMap = { dashboard:'panelDashboard', usuarios:'panelUsuarios', publicaciones:'panelPublicaciones', actividad:'panelActividad' }
+
+window.ir = (name,btn) => {
+  panelIds.forEach(id=>document.getElementById(id).classList.remove('active'))
+  document.getElementById(panelMap[name]).classList.add('active')
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+}
+window.irM = (name,btn) => {
+  panelIds.forEach(id=>document.getElementById(id).classList.remove('active'))
+  document.getElementById(panelMap[name]).classList.add('active')
+  document.querySelectorAll('.mt-btn').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+}
+
+// ── MODAL CONFIRMACIÓN ────────────────────────────────────
+let cbConfirm = null
+function confirmar(title,text,cb) {
+  cbConfirm = cb
+  document.getElementById('confirmTitle').textContent = title
+  document.getElementById('confirmText').textContent  = text
+  document.getElementById('confirmModal').classList.add('open')
+}
+window.cerrarModal = () => { document.getElementById('confirmModal').classList.remove('open'); cbConfirm=null }
+document.getElementById('confirmBtn').onclick = async () => { if(cbConfirm) await cbConfirm(); cerrarModal() }
+
+// ── SESIÓN ────────────────────────────────────────────────
+window.cerrarSesion = async () => {
+  if (!confirm('¿Cerrar sesión?')) return
+  await supabase.auth.signOut(); window.location.href = 'index.html'
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+function toast(msg, isErr=false) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.className = 'toast'+(isErr?' err':'')
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000)
+}
+
+// ── INIT ──────────────────────────────────────────────────
+await cargarTodo()
+</script>
+</body>
+</html>

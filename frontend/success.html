@@ -2,64 +2,125 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cuenta creada | Yo Lo Vendo</title>
+  <title>¡Cuenta creada! | Yo Lo Vendo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --yellow:#e6d44c; --yellow-dark:#7a6a00; --green-light:#34d399; --green-mid:#1fbf75; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Nunito', sans-serif;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #1fbf75, #0b3d2e);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      font-family:'Nunito',sans-serif; min-height:100vh;
+      background:radial-gradient(circle at 20% 10%,#1fbf75 0%,#0b3d2e 45%,#071f17 100%);
+      display:flex; justify-content:center; align-items:center; padding:20px;
     }
-    :root { --yellow: #e6d44c; --yellow-dark: #7a6a00; }
-    .login-container { width: 100%; max-width: 420px; text-align: center; }
+    .container { width:100%; max-width:420px; text-align:center; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes popIn  { from{opacity:0;transform:scale(.7)} to{opacity:1;transform:scale(1)} }
+    @keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
     .title-frame {
-      background: linear-gradient(135deg, #2dbb7a, #198f5c);
-      border-radius: 25px; padding: 20px; margin-bottom: 30px;
-      box-shadow: inset 0 0 0 4px #0b5c3d, inset 0 0 0 7px #34d399;
+      background:linear-gradient(135deg,#2dbb7a,#198f5c);
+      border-radius:25px; padding:20px; margin-bottom:24px;
+      box-shadow:inset 0 0 0 4px #0b5c3d,inset 0 0 0 7px #34d399;
+      animation:fadeUp .4s ease both;
     }
-    .title-frame h1 { font-family: 'Poppins', sans-serif; font-size: 34px; font-weight: 900; }
-    .yo { color: white; }
-    .lo { color: white; font-weight: 400; }
-    .vendo { color: var(--yellow); text-shadow: 0 3px 0 var(--yellow-dark); }
-    .line { width: 75%; height: 2px; background: #0b5c3d; margin: 10px auto; }
-    .slogan { font-size: 14px; color: #eafff5; }
-    .login-box {
-      background: rgba(0,0,0,0.3); padding: 25px;
-      border-radius: 20px; backdrop-filter: blur(10px);
+    .title-frame h1 { font-family:'Poppins',sans-serif; font-size:34px; font-weight:900; }
+    .yo{color:#fff} .lo{color:rgba(255,255,255,.75);font-weight:400} .vendo{color:var(--yellow);text-shadow:0 3px 0 var(--yellow-dark)}
+    .line{width:70%;height:2px;background:#0b5c3d;margin:10px auto}
+    .slogan{font-size:13px;color:#c0ffe8}
+
+    .card {
+      background:rgba(0,0,0,0.35); padding:32px 24px;
+      border-radius:22px; backdrop-filter:blur(14px);
+      border:1px solid rgba(52,211,153,0.2);
+      animation:fadeUp .5s ease both;
     }
-    .success-icon { font-size: 56px; margin-bottom: 14px; }
-    .login-box p { color: #eafff5; font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
-    .login-box button {
-      width: 100%; padding: 14px;
-      background: linear-gradient(to right, #5cffb1, #22d389);
-      border: none; border-radius: 12px;
-      font-weight: bold; font-size: 15px;
-      cursor: pointer; font-family: 'Poppins', sans-serif;
+
+    .success-emoji {
+      font-size:72px; display:block; margin-bottom:20px;
+      animation:float 2.5s ease-in-out infinite;
     }
+
+    .card h2 {
+      font-family:'Poppins',sans-serif; font-size:22px; font-weight:800;
+      color:#eafff5; margin-bottom:8px;
+    }
+    .card h2 span { color:var(--yellow); }
+
+    .card p {
+      font-size:14px; color:#9fffd8; line-height:1.7; margin-bottom:24px;
+    }
+
+    .notice {
+      background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.25);
+      border-radius:12px; padding:14px 16px; margin-bottom:24px;
+      font-size:13px; color:#9fffd8; line-height:1.6; text-align:left;
+    }
+    .notice strong { color:#eafff5; }
+
+    .btn-continuar {
+      width:100%; padding:15px;
+      background:linear-gradient(135deg,#5cffb1,#22d389);
+      border:none; border-radius:12px; font-weight:800; font-size:16px;
+      cursor:pointer; font-family:'Poppins',sans-serif; color:#063521;
+      transition:transform .15s,box-shadow .15s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .btn-continuar:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(52,211,153,.4); }
+
+    .link-login { margin-top:16px; font-size:13px; color:#9fffd8; }
+    .link-login a { color:var(--green-light); font-weight:700; text-decoration:none; }
+    .link-login a:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="title-frame">
-      <h1>
-        <span class="yo">YO</span>
-        <span class="lo"> lo </span>
-        <span class="vendo">VENDO</span>
-      </h1>
-      <div class="line"></div>
-      <p class="slogan">Cuenta creada exitosamente</p>
+<div class="container">
+
+  <div class="title-frame">
+    <h1><span class="yo">YO</span><span class="lo"> lo </span><span class="vendo">VENDO</span></h1>
+    <div class="line"></div>
+    <p class="slogan">Tu cuenta está casi lista 🎉</p>
+  </div>
+
+  <div class="card">
+    <span class="success-emoji">🎉</span>
+    <h2>¡Bienvenido, <span id="nombreUsuario">estudiante</span>!</h2>
+    <p>Tu cuenta ha sido creada exitosamente. Ya puedes empezar a comprar, vender e intercambiar en la comunidad INTEP.</p>
+
+    <div class="notice">
+      <strong>📧 Confirma tu correo</strong><br>
+      Revisa tu bandeja de entrada en <strong id="correoUsuario">tu correo @intep.edu.co</strong> y haz clic en el enlace de confirmación antes de iniciar sesión.
+      Si no lo ves, revisa tu carpeta de spam.
     </div>
-    <div class="login-box">
-      <div class="success-icon">🎉</div>
-      <p>Tu cuenta ha sido creada correctamente. Ya puedes empezar a vender, comprar y hacer trueques.</p>
-      <button onclick="window.location.href='onboarding.html'">Comenzar →</button>
+
+    <button class="btn-continuar" onclick="continuar()">
+      Continuar →
+    </button>
+
+    <div class="link-login">
+      ¿Ya confirmaste tu correo? <a href="index.html">Iniciar sesión</a>
     </div>
   </div>
+</div>
+
+<script>
+  // Leer datos guardados desde register.html
+  const nombre = sessionStorage.getItem('regNombre') || 'estudiante'
+  const correo = sessionStorage.getItem('regCorreo') || 'tu correo @intep.edu.co'
+
+  // Mostrar primer nombre solamente
+  const primerNombre = nombre.split(' ')[0]
+  document.getElementById('nombreUsuario').textContent = primerNombre
+  if (sessionStorage.getItem('regCorreo')) {
+    document.getElementById('correoUsuario').textContent = correo
+  }
+
+  function continuar() {
+    // Limpiar sessionStorage y redirigir al onboarding
+    sessionStorage.removeItem('regNombre')
+    sessionStorage.removeItem('regCorreo')
+    window.location.href = 'onboarding.html'
+  }
+</script>
 </body>
 </html>

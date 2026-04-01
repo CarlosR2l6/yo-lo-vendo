@@ -276,174 +276,189 @@
   </div>
 </div>
 
-<script>
-  const productos = [
-    { id:1,  nombre:'Laptop HP 15"',      desc:'Intel i5, 8GB RAM, 256GB SSD.',         precio:850000, tipo:'venta',   categoria:'tecnologia', emoji:'💻' },
-    { id:2,  nombre:'Audífonos Sony',      desc:'Bluetooth, cancelación de ruido.',       precio:220000, tipo:'venta',   categoria:'accesorios', emoji:'🎧' },
-    { id:3,  nombre:'Cálculo Integral',    desc:'Larson 9a edición, sin rayones.',        precio:0,      tipo:'trueque', categoria:'libros',     emoji:'📚' },
-    { id:4,  nombre:'Control PS5',         desc:'Usado 3 meses, perfecto estado.',        precio:180000, tipo:'venta',   categoria:'videojuegos',emoji:'🎮' },
-    { id:5,  nombre:'Sudadera INTEP',      desc:'Talla M, nueva, nunca usada.',           precio:65000,  tipo:'venta',   categoria:'ropa',       emoji:'👕' },
-    { id:6,  nombre:'Mouse Logitech',      desc:'Inalámbrico, pila incluida.',            precio:0,      tipo:'trueque', categoria:'tecnologia', emoji:'🖱️' },
-    { id:7,  nombre:'Mochila Nike',        desc:'Poco uso, varios compartimentos.',       precio:95000,  tipo:'venta',   categoria:'otros',      emoji:'🎒' },
-    { id:8,  nombre:'Calculadora Casio',   desc:'fx-991EX, perfecta para ingeniería.',   precio:120000, tipo:'venta',   categoria:'tecnologia', emoji:'🔢' },
-    { id:9,  nombre:'Laptop Lenovo',       desc:'Ryzen 5, 512GB SSD, casi nueva.',       precio:650000, tipo:'venta',   categoria:'tecnologia', emoji:'💻' },
-    { id:10, nombre:'Álgebra Lineal',      desc:'Grossman 7a edición.',                  precio:35000,  tipo:'venta',   categoria:'libros',     emoji:'📚' },
-  ];
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  const catLabels = { tecnologia:'💻 Tecnología', libros:'📚 Libros', ropa:'👕 Ropa', videojuegos:'🎮 Videojuegos', accesorios:'🎧 Accesorios', otros:'📦 Otros' };
-  const tipoLabels = { venta:'💰 Venta', trueque:'🔄 Trueque' };
+// ── Verificar sesión ───────────────────────────────────────
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
 
-  let recientes = [];
-  try { recientes = JSON.parse(localStorage.getItem('busquedasRecientes') || '[]'); } catch(e){}
+const catEmojis  = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' }
+const catLabels  = { tecnologia:'💻 Tecnología', libros:'📚 Libros', ropa:'👕 Ropa', videojuegos:'🎮 Videojuegos', accesorios:'🎧 Accesorios', otros:'📦 Otros' }
+const tipoLabels = { venta:'💰 Venta', trueque:'🔄 Trueque' }
 
-  // ── Búsquedas recientes ─────────────────────────────────
-  function renderRecientes() {
-    const wrap = document.getElementById('recentTags');
-    wrap.innerHTML = '';
-    recientes.slice(0,5).forEach(q => {
-      const t = document.createElement('span');
-      t.className = 'tag';
-      t.textContent = '🕐 ' + q;
-      t.onclick = () => buscarTag(q);
-      wrap.appendChild(t);
-    });
+// ── Cargar productos desde Supabase ───────────────────────
+let productos = []
+async function cargarProductos() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, users(nombre)')
+    .eq('estado', 'activo')
+    .order('created_at', { ascending: false })
+    .limit(200)
+  if (!error && data) {
+    productos = data.map(p => ({
+      id:        p.id,
+      nombre:    p.nombre,
+      desc:      p.descripcion || '',
+      precio:    p.precio || 0,
+      tipo:      p.tipo,
+      categoria: p.categoria,
+      emoji:     catEmojis[p.categoria] || '📦',
+      foto_url:  p.foto_url || null,
+      vendedor:  p.users?.nombre || 'Anónimo',
+    }))
+  }
+  // Auto-buscar si hay query en URL
+  const urlQ = new URLSearchParams(window.location.search).get('q')
+  if (urlQ) { document.getElementById('searchInput').value = urlQ; buscar() }
+  renderRecientes()
+}
+
+let recientes = []
+try { recientes = JSON.parse(localStorage.getItem('busquedasRecientes') || '[]') } catch(e){}
+
+function renderRecientes() {
+  const wrap = document.getElementById('recentTags')
+  if (!wrap) return
+  wrap.innerHTML = ''
+  recientes.slice(0,5).forEach(q => {
+    const t = document.createElement('span')
+    t.className = 'tag'
+    t.textContent = '🕐 ' + q
+    t.onclick = () => buscarTag(q)
+    wrap.appendChild(t)
+  })
+}
+
+function highlight(text, query) {
+  if (!query) return text
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>')
+}
+
+function renderChips(query, cat, tipo, precMin, precMax) {
+  const wrap = document.getElementById('activeFilters')
+  if (!wrap) return
+  wrap.innerHTML = ''
+  const addChip = (label, clearFn) => {
+    const d = document.createElement('div')
+    d.className = 'filter-chip'
+    d.innerHTML = `${label} <button onclick="(${clearFn.toString()})()">✕</button>`
+    wrap.appendChild(d)
+  }
+  if (query)  addChip(`🔍 "${query}"`, () => { document.getElementById('searchInput').value=''; buscar() })
+  if (cat)    addChip(catLabels[cat],  () => { document.getElementById('fCategoria').value=''; buscar() })
+  if (tipo)   addChip(tipoLabels[tipo],() => { document.getElementById('fTipo').value=''; buscar() })
+  if (precMin) addChip(`Desde $${Number(precMin).toLocaleString('es-CO')}`, () => { document.getElementById('fPrecioMin').value=''; buscar() })
+  if (precMax && precMax < 99999999) addChip(`Hasta $${Number(precMax).toLocaleString('es-CO')}`, () => { document.getElementById('fPrecioMax').value=''; buscar() })
+}
+
+window.buscar = function buscar() {
+  const query   = document.getElementById('searchInput').value.trim()
+  const queryLC = query.toLowerCase()
+  const cat     = document.getElementById('fCategoria').value
+  const tipo    = document.getElementById('fTipo').value
+  const precMin = parseInt(document.getElementById('fPrecioMin').value) || 0
+  const precMax = parseInt(document.getElementById('fPrecioMax').value) || 99999999
+  const sort    = document.getElementById('sortSelect').value
+
+  const hayFiltros = query || cat || tipo || precMin > 0 || parseInt(document.getElementById('fPrecioMax').value) > 0
+  if (!hayFiltros) {
+    document.getElementById('recentSection').style.display = 'block'
+    document.getElementById('resultsSection').style.display = 'none'
+    return
   }
 
-  function buscarTag(q) {
-    document.getElementById('searchInput').value = q;
-    buscar();
+  if (query && !recientes.includes(queryLC)) {
+    recientes.unshift(queryLC)
+    recientes = recientes.slice(0, 5)
+    try { localStorage.setItem('busquedasRecientes', JSON.stringify(recientes)) } catch(e){}
+    renderRecientes()
   }
 
-  // ── Highlight ───────────────────────────────────────────
-  function highlight(text, query) {
-    if (!query) return text;
-    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
-  }
+  document.getElementById('recentSection').style.display = 'none'
+  document.getElementById('resultsSection').style.display = 'block'
 
-  // ── Chips de filtros activos ────────────────────────────
-  function renderChips(query, cat, tipo, precMin, precMax) {
-    const wrap = document.getElementById('activeFilters');
-    wrap.innerHTML = '';
-    const addChip = (label, clearFn) => {
-      const d = document.createElement('div');
-      d.className = 'filter-chip';
-      d.innerHTML = `${label} <button onclick="(${clearFn.toString()})()">✕</button>`;
-      wrap.appendChild(d);
-    };
-    if (query)  addChip(`🔍 "${query}"`, () => { document.getElementById('searchInput').value=''; buscar(); });
-    if (cat)    addChip(catLabels[cat],  () => { document.getElementById('fCategoria').value=''; buscar(); });
-    if (tipo)   addChip(tipoLabels[tipo],() => { document.getElementById('fTipo').value=''; buscar(); });
-    if (precMin) addChip(`Desde $${Number(precMin).toLocaleString('es-CO')}`, () => { document.getElementById('fPrecioMin').value=''; buscar(); });
-    if (precMax && precMax < 99999999) addChip(`Hasta $${Number(precMax).toLocaleString('es-CO')}`, () => { document.getElementById('fPrecioMax').value=''; buscar(); });
-  }
+  let resultado = productos.filter(p => {
+    const matchQ   = !queryLC || p.nombre.toLowerCase().includes(queryLC) || p.desc.toLowerCase().includes(queryLC)
+    const matchCat = !cat   || p.categoria === cat
+    const matchT   = !tipo  || p.tipo === tipo
+    const matchP   = p.tipo === 'trueque' || (p.precio >= precMin && p.precio <= precMax)
+    return matchQ && matchCat && matchT && matchP
+  })
 
-  // ── Buscar (tiempo real) ────────────────────────────────
-  function buscar() {
-    const query   = document.getElementById('searchInput').value.trim();
-    const queryLC = query.toLowerCase();
-    const cat     = document.getElementById('fCategoria').value;
-    const tipo    = document.getElementById('fTipo').value;
-    const precMin = parseInt(document.getElementById('fPrecioMin').value) || 0;
-    const precMax = parseInt(document.getElementById('fPrecioMax').value) || 99999999;
-    const sort    = document.getElementById('sortSelect').value;
+  if (sort === 'precio_asc')  resultado.sort((a,b) => a.precio - b.precio)
+  if (sort === 'precio_desc') resultado.sort((a,b) => b.precio - a.precio)
 
-    const hayFiltros = query || cat || tipo || precMin > 0 || (parseInt(document.getElementById('fPrecioMax').value) > 0);
+  renderChips(query, cat, tipo, precMin, parseInt(document.getElementById('fPrecioMax').value) || 0)
+  renderResultados(resultado, query)
+}
 
-    if (!hayFiltros) {
-      document.getElementById('recentSection').style.display = 'block';
-      document.getElementById('resultsSection').style.display = 'none';
-      return;
-    }
-
-    // Guardar búsqueda reciente
-    if (query && !recientes.includes(queryLC)) {
-      recientes.unshift(queryLC);
-      recientes = recientes.slice(0, 5);
-      try { localStorage.setItem('busquedasRecientes', JSON.stringify(recientes)); } catch(e){}
-      renderRecientes();
-    }
-
-    document.getElementById('recentSection').style.display = 'none';
-    document.getElementById('resultsSection').style.display = 'block';
-
-    let resultado = productos.filter(p => {
-      const matchQ   = !queryLC || p.nombre.toLowerCase().includes(queryLC) || p.desc.toLowerCase().includes(queryLC);
-      const matchCat = !cat   || p.categoria === cat;
-      const matchT   = !tipo  || p.tipo === tipo;
-      const matchP   = p.tipo === 'trueque' || (p.precio >= precMin && p.precio <= precMax);
-      return matchQ && matchCat && matchT && matchP;
-    });
-
-    if (sort === 'precio_asc')  resultado.sort((a,b) => a.precio - b.precio);
-    if (sort === 'precio_desc') resultado.sort((a,b) => b.precio - a.precio);
-
-    renderChips(query, cat, tipo, precMin, parseInt(document.getElementById('fPrecioMax').value) || 0);
-    renderResultados(resultado, query);
-  }
-
-  // ── Render tarjetas ─────────────────────────────────────
-  function renderResultados(lista, query) {
-    const grid  = document.getElementById('productGrid');
-    const empty = document.getElementById('emptyState');
-    const count = document.getElementById('resultsCount');
-    grid.innerHTML = '';
-    count.textContent = `${lista.length} resultado${lista.length !== 1 ? 's' : ''}`;
-
-    if (lista.length === 0) { empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
-
-    lista.forEach((p, i) => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.style.animationDelay = `${i * 0.04}s`;
-      card.onclick = () => window.location.href = 'product-detail.html';
-      const nombreHL = highlight(p.nombre, query);
-      const descHL   = highlight(p.desc, query);
-      card.innerHTML = `
-        <div class="card-img">
-          ${p.emoji}
-          <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+function renderResultados(lista, query) {
+  const grid  = document.getElementById('productGrid')
+  const empty = document.getElementById('emptyState')
+  const count = document.getElementById('resultsCount')
+  grid.innerHTML = ''
+  count.textContent = `${lista.length} resultado${lista.length !== 1 ? 's' : ''}`
+  if (lista.length === 0) { empty.style.display = 'block'; return }
+  empty.style.display = 'none'
+  lista.forEach((p, i) => {
+    const card = document.createElement('div')
+    card.className = 'product-card'
+    card.style.animationDelay = `${i * 0.04}s`
+    card.onclick = () => window.location.href = 'product-detail.html'
+    const nombreHL = highlight(p.nombre, query)
+    const descHL   = highlight(p.desc, query)
+    const imgHtml  = p.foto_url
+      ? `<img src="${p.foto_url}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
+      : p.emoji
+    card.innerHTML = `
+      <div class="card-img">
+        ${imgHtml}
+        <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${nombreHL}</div>
+        <div class="card-desc">${descHL}</div>
+        <div class="card-footer">
+          <span class="card-price ${p.tipo==='trueque'?'t':''}">
+            ${p.tipo === 'venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
+          </span>
+          <button class="btn-ver" onclick="event.stopPropagation()">Ver</button>
         </div>
-        <div class="card-body">
-          <div class="card-name">${nombreHL}</div>
-          <div class="card-desc">${descHL}</div>
-          <div class="card-footer">
-            <span class="card-price ${p.tipo==='trueque'?'t':''}">
-              ${p.tipo === 'venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
-            </span>
-            <button class="btn-ver" onclick="event.stopPropagation()">Ver</button>
-          </div>
-        </div>`;
-      grid.appendChild(card);
-    });
-  }
+      </div>`
+    grid.appendChild(card)
+  })
+}
 
-  // ── Limpiar todo ────────────────────────────────────────
-  function limpiarFiltros() {
-    ['fCategoria','fTipo','fPrecioMin','fPrecioMax'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('searchInput').value = '';
-    document.getElementById('recentSection').style.display = 'block';
-    document.getElementById('resultsSection').style.display = 'none';
-    document.getElementById('activeFilters').innerHTML = '';
-  }
+window.limpiarFiltros = function() {
+  ;['fCategoria','fTipo','fPrecioMin','fPrecioMax'].forEach(id => document.getElementById(id).value = '')
+  document.getElementById('searchInput').value = ''
+  document.getElementById('recentSection').style.display = 'block'
+  document.getElementById('resultsSection').style.display = 'none'
+  document.getElementById('activeFilters').innerHTML = ''
+}
 
-  // ── Filtros en tiempo real al cambiar selects ───────────
-  ['fCategoria','fTipo','fPrecioMin','fPrecioMax','sortSelect'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('change', buscar);
-  });
-  // Precio: también al escribir con delay
-  ['fPrecioMin','fPrecioMax'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { let t; el.addEventListener('input', () => { clearTimeout(t); t = setTimeout(buscar, 400); }); }
-  });
+window.buscarTag = function(q) {
+  document.getElementById('searchInput').value = q
+  window.buscar()
+}
 
-  renderRecientes();
+;['fCategoria','fTipo','fPrecioMin','fPrecioMax','sortSelect'].forEach(id => {
+  const el = document.getElementById(id)
+  if (el) el.addEventListener('change', window.buscar)
+})
+;['fPrecioMin','fPrecioMax'].forEach(id => {
+  const el = document.getElementById(id)
+  if (el) { let t; el.addEventListener('input', () => { clearTimeout(t); t = setTimeout(window.buscar, 400) }) }
+})
 
-  // Auto-buscar si llega query en URL
-  const urlQ = new URLSearchParams(window.location.search).get('q');
-  if (urlQ) { document.getElementById('searchInput').value = urlQ; buscar(); }
+cargarProductos()
 </script>
 </body>
 </html>

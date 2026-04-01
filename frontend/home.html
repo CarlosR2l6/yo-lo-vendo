@@ -15,7 +15,22 @@
     .nav-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
     .btn-publish{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;padding:9px 18px;border-radius:50px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s;white-space:nowrap}
     .btn-publish:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(52,211,153,.4)}
-    .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#063521;cursor:pointer;flex-shrink:0}
+
+    /* AVATAR NAV con foto real */
+    .nav-avatar-wrap{position:relative;cursor:pointer}
+    .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#063521;overflow:hidden;flex-shrink:0;border:2px solid transparent;transition:border-color .2s}
+    .avatar:hover{border-color:var(--green-light)}
+    .avatar img{width:100%;height:100%;object-fit:cover}
+
+    /* BADGE NOTIF */
+    .notif-wrap{position:relative;cursor:pointer;font-size:22px;text-decoration:none;display:flex;align-items:center}
+    .notif-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #0b3d2e;padding:0 2px}
+    .notif-badge.show{display:flex}
+
+    /* BADGE CHAT */
+    .chat-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #0b3d2e;padding:0 2px}
+    .chat-badge.show{display:flex}
+
     .main-wrap{max-width:1200px;margin:0 auto;padding:28px 24px}
     .hero{background:linear-gradient(135deg,rgba(31,191,117,.2),rgba(230,212,76,.1));border:1px solid var(--card-border);border-radius:20px;padding:28px 32px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:20px}
     .hero-text h2{font-family:'Poppins',sans-serif;font-size:26px;font-weight:800;line-height:1.2}
@@ -37,8 +52,10 @@
     .btn-contact{background:rgba(52,211,153,.15);border:1px solid var(--green-light);color:var(--green-light);font-size:11px;font-weight:700;padding:5px 11px;border-radius:50px;cursor:pointer;transition:background .2s}
     .btn-contact:hover{background:var(--green-light);color:#063521}
     .seller-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
-    .seller-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#063521}
-    .seller-name{font-size:11px;color:var(--text-muted)}
+    .seller-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#063521;overflow:hidden;flex-shrink:0}
+    .seller-avatar img{width:100%;height:100%;object-fit:cover}
+    .seller-name{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
     /* Skeletons */
     .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.1) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:12px}
     @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -46,7 +63,8 @@
     .skel-img{width:100%;aspect-ratio:1}
     .skel-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
     .skel-line{height:12px;border-radius:6px}
-    /* Modal */
+
+    /* Modal publicar */
     .modal{background:linear-gradient(160deg,#0f4a32,#0b3d2e);border:1px solid var(--green-light);border-radius:24px;padding:28px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both}
     .modal::-webkit-scrollbar{width:4px}.modal::-webkit-scrollbar-thumb{background:var(--card-border);border-radius:2px}
     .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
@@ -97,10 +115,12 @@
     .cat-chip.selected{border-color:var(--green-light);background:rgba(52,211,153,.12);color:var(--green-light)}
     .pub-spinner{width:16px;height:16px;border:2px solid #063521;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;display:none}
     @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
     @media(max-width:640px){.hero{flex-direction:column;text-align:center}.hero-emoji{font-size:48px}.btn-publish{display:none}.main-wrap{padding-bottom:90px}}
   </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-logo"><span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span></div>
   <div class="search-wrap">
@@ -108,9 +128,16 @@
     <input type="text" id="searchInput" placeholder="Buscar productos, libros, ropa..." oninput="filterProducts()">
   </div>
   <div class="nav-actions">
-    <a href="notifications.html" style="position:relative;font-size:22px;text-decoration:none;">🔔</a>
+    <!-- Notificaciones con badge -->
+    <a href="notifications.html" class="notif-wrap" title="Notificaciones">
+      🔔
+      <span class="notif-badge" id="notifBadge"></span>
+    </a>
     <button class="btn-publish" onclick="openModal()">+ Publicar</button>
-    <div class="avatar" id="navAvatar" onclick="window.location.href='profile.html'">?</div>
+    <!-- Avatar con foto real -->
+    <div class="nav-avatar-wrap" onclick="window.location.href='profile.html'" title="Mi perfil">
+      <div class="avatar" id="navAvatar">?</div>
+    </div>
   </div>
 </nav>
 
@@ -134,7 +161,7 @@
   </div>
   <div class="section-title">🔥 Publicaciones recientes</div>
   <div class="product-grid" id="productGrid"></div>
-  <div class="empty-state" id="emptyState" style="display:none;">
+  <div class="empty-state" id="emptyState" style="display:none">
     <div class="icon">📭</div>
     <p>No hay publicaciones aún. ¡Sé el primero en publicar!</p>
   </div>
@@ -142,10 +169,13 @@
 
 <div class="bottom-nav">
   <div class="bnav-inner">
-    <a href="home.html" class="bnav-item active"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
-    <a href="search.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html"    class="bnav-item active"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="search.html"  class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
     <div class="bnav-item bnav-publish" onclick="openModal()"><span class="bnav-icon">＋</span><span>Publicar</span></div>
-    <a href="chat.html" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="chat.html"    class="bnav-item" style="position:relative">
+      <span class="bnav-icon">💬</span><span>Chats</span>
+      <span class="chat-badge bnav-badge" id="chatBadge"></span>
+    </a>
     <a href="profile.html" class="bnav-item"><span class="bnav-icon">👤</span><span>Perfil</span></a>
   </div>
 </div>
@@ -197,7 +227,7 @@
         <div class="price-prefix"><span>$</span><input type="number" id="prodPrecio" placeholder="150000" min="0" oninput="clearError('prodPrecio','errPrecio')"></div>
         <div class="field-error" id="errPrecio">⚠ Ingresa un precio válido</div>
       </div>
-      <div id="truequeWrap" style="display:none;">
+      <div id="truequeWrap" style="display:none">
         <label>¿Qué deseas a cambio? *</label>
         <input type="text" id="prodTrueque" placeholder="Ej: Libros de física" oninput="clearError('prodTrueque','errTrueque')">
         <div class="field-error" id="errTrueque">⚠ Indica qué quieres a cambio</div>
@@ -240,7 +270,6 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
 const supabase = createClient(
   'https://uvkjerejhhbpgyvpmxur.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
@@ -250,16 +279,56 @@ const supabase = createClient(
 const { data:{ session } } = await supabase.auth.getSession()
 if (!session) { window.location.href = 'index.html' }
 const currentUser = session.user
-const inicial = (currentUser.user_metadata?.nombre || currentUser.email || '?')[0].toUpperCase()
-document.getElementById('navAvatar').textContent = inicial
+
+// ── AVATAR REAL en nav ────────────────────────────────────
+const { data: miPerfil } = await supabase
+  .from('users')
+  .select('nombre,avatar_url,username')
+  .eq('id', currentUser.id)
+  .single()
+
+const navAv = document.getElementById('navAvatar')
+if (miPerfil?.avatar_url) {
+  navAv.innerHTML = `<img src="${miPerfil.avatar_url}" alt="">`
+} else {
+  const nombre = miPerfil?.nombre || currentUser.user_metadata?.nombre || currentUser.email || '?'
+  navAv.textContent = nombre[0].toUpperCase()
+}
+
+// ── BADGE NOTIFICACIONES ──────────────────────────────────
+async function cargarBadges() {
+  const { count: notifCount } = await supabase
+    .from('notifications')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', currentUser.id)
+    .eq('leida', false)
+
+  const badge = document.getElementById('notifBadge')
+  if (notifCount > 0) { badge.textContent = notifCount > 9 ? '9+' : notifCount; badge.classList.add('show') }
+
+  // Badge mensajes no leídos
+  const { count: msgCount } = await supabase
+    .from('messages')
+    .select('id', { count: 'exact', head: true })
+    .eq('leido', false)
+    .neq('sender_id', currentUser.id)
+    .in('conversation_id', (await supabase
+      .from('conversations')
+      .select('id')
+      .or(`user_a.eq.${currentUser.id},user_b.eq.${currentUser.id}`)
+    ).data?.map(c=>c.id) || [])
+
+  const chatBadge = document.getElementById('chatBadge')
+  if (msgCount > 0) { chatBadge.textContent = msgCount > 9 ? '9+' : msgCount; chatBadge.classList.add('show') }
+}
+cargarBadges()
 
 // ── ESTADO ────────────────────────────────────────────────
-let allProducts = []
+let allProducts    = []
 let currentCategory = 'todos'
-let currentTipo = 'venta'
-let currentCat  = 'tecnologia'
+let currentTipo    = 'venta'
+let currentCat     = 'tecnologia'
 let uploadedImages = []
-
 const catEmojis = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' }
 const catLabels = { tecnologia:'Tecnología', libros:'Libros', ropa:'Ropa', videojuegos:'Videojuegos', accesorios:'Accesorios', otros:'Otros' }
 
@@ -268,7 +337,7 @@ async function loadProducts() {
   renderSkeletons()
   const { data, error } = await supabase
     .from('products')
-    .select('*, users(nombre)')
+    .select('*, users(id,nombre,username,avatar_url)')
     .eq('estado','activo')
     .order('created_at', { ascending: false })
     .limit(40)
@@ -279,14 +348,10 @@ async function loadProducts() {
 
 function renderSkeletons() {
   document.getElementById('productGrid').innerHTML = Array.from({length:8}).map(()=>`
-    <div class="skel-card">
-      <div class="skel-img skeleton"></div>
-      <div class="skel-body">
-        <div class="skel-line skeleton" style="width:80%"></div>
-        <div class="skel-line skeleton" style="width:60%"></div>
-        <div class="skel-line skeleton" style="width:40%"></div>
-      </div>
-    </div>`).join('')
+    <div class="skel-card"><div class="skel-img skeleton"></div>
+    <div class="skel-body"><div class="skel-line skeleton" style="width:80%"></div>
+    <div class="skel-line skeleton" style="width:60%"></div>
+    <div class="skel-line skeleton" style="width:40%"></div></div></div>`).join('')
 }
 
 function getFiltered() {
@@ -304,14 +369,22 @@ function renderProducts(list) {
   grid.innerHTML = ''
   if (!list.length) { empty.style.display='block'; return }
   empty.style.display = 'none'
-  list.forEach((p,i) => {
+
+  list.forEach((p, i) => {
     const card = document.createElement('div')
     card.className = 'product-card'
     card.style.animationDelay = `${i*.05}s`
-    card.onclick = () => window.location.href = 'product-detail.html'
-    const vendedor = p.users?.nombre || 'Anónimo'
-    const initials = vendedor.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)
-    const imgHtml  = p.foto_url ? `<img src="${p.foto_url}" loading="lazy">` : catEmojis[p.categoria]||'📦'
+    card.onclick = () => window.location.href = `product-detail.html?id=${p.id}`
+
+    const vendedor = p.users
+    const nombre   = vendedor?.nombre || vendedor?.username || 'Anónimo'
+    const initials = nombre.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)
+    const imgHtml  = p.foto_url ? `<img src="${p.foto_url}" loading="lazy" alt="${p.nombre}">` : (catEmojis[p.categoria]||'📦')
+
+    const avatarHtml = vendedor?.avatar_url
+      ? `<img src="${vendedor.avatar_url}" alt="">`
+      : initials
+
     card.innerHTML = `
       <div class="card-img">
         ${imgHtml}
@@ -319,8 +392,8 @@ function renderProducts(list) {
       </div>
       <div class="card-body">
         <div class="seller-row">
-          <div class="seller-avatar">${initials}</div>
-          <span class="seller-name">${vendedor}</span>
+          <div class="seller-avatar">${avatarHtml}</div>
+          <span class="seller-name">${nombre}</span>
         </div>
         <div class="card-name">${p.nombre}</div>
         <div class="card-desc">${p.tipo==='trueque'&&p.trueque_desc?'🔄 '+p.trueque_desc:(p.descripcion||'')}</div>
@@ -328,22 +401,22 @@ function renderProducts(list) {
           ${p.tipo==='venta'
             ?`<span class="card-price">$${(p.precio||0).toLocaleString('es-CO')}</span>`
             :`<span class="card-price trueque">🔄 Trueque</span>`}
-          <button class="btn-contact" onclick="event.stopPropagation()">Contactar</button>
+          <button class="btn-contact" onclick="event.stopPropagation();window.location.href='product-detail.html?id=${p.id}'">Ver más</button>
         </div>
       </div>`
     grid.appendChild(card)
   })
 }
 
-window.filterProducts = () => renderProducts(getFiltered())
-window.filterCategory = (cat, btn) => {
+window.filterProducts  = () => renderProducts(getFiltered())
+window.filterCategory  = (cat, btn) => {
   currentCategory = cat
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'))
   btn.classList.add('active')
   renderProducts(getFiltered())
 }
 
-// ── MODAL ─────────────────────────────────────────────────
+// ── MODAL PUBLICAR ────────────────────────────────────────
 window.openModal  = () => { resetModal(); document.getElementById('modalOverlay').classList.add('open') }
 window.closeModal = () => document.getElementById('modalOverlay').classList.remove('open')
 window.handleOverlayClick = e => { if(e.target===document.getElementById('modalOverlay')) closeModal() }
@@ -359,7 +432,7 @@ function resetModal() {
 
 window.goStep = n => {
   for(let i=1;i<=4;i++){
-    document.getElementById(`panel${i}`).classList.toggle('active', i===n)
+    document.getElementById(`panel${i}`).classList.toggle('active',i===n)
     const sc=document.getElementById(`sc${i}`), sl=document.getElementById(`sl${i}`)
     sc.classList.remove('active','done'); sl.classList.remove('active')
     if(i<n){sc.classList.add('done');sc.textContent='✓'}
@@ -442,7 +515,7 @@ function buildSummary(){
       :`<div class="summary-row"><span class="summary-label">A cambio de</span><span class="summary-val">${trueque}</span></div>`}`
 }
 
-// ── PUBLICAR EN SUPABASE ──────────────────────────────────
+// ── PUBLICAR ──────────────────────────────────────────────
 window.publishProduct = async () => {
   const btn=document.getElementById('btnPublish'),spin=document.getElementById('pubSpin'),lbl=document.getElementById('pubLbl')
   btn.disabled=true;spin.style.display='block';lbl.style.display='none'
@@ -453,29 +526,25 @@ window.publishProduct = async () => {
     const ext=file.name.split('.').pop()
     const path=`productos/${currentUser.id}/${Date.now()}.${ext}`
     const {error:upErr}=await supabase.storage.from('product-images').upload(path,file,{upsert:true})
-    if(!upErr){
-      const {data:urlData}=supabase.storage.from('product-images').getPublicUrl(path)
-      foto_url=urlData.publicUrl
-    }
+    if(!upErr){ const {data:urlData}=supabase.storage.from('product-images').getPublicUrl(path); foto_url=urlData.publicUrl }
   }
 
   const {data,error}=await supabase.from('products').insert({
-    user_id:    currentUser.id,
-    nombre:     document.getElementById('prodNombre').value.trim(),
+    user_id:currentUser.id,
+    nombre:document.getElementById('prodNombre').value.trim(),
     descripcion:document.getElementById('prodDesc').value.trim(),
-    precio:     parseInt(document.getElementById('prodPrecio').value)||0,
-    tipo:       currentTipo,
-    categoria:  currentCat,
+    precio:parseInt(document.getElementById('prodPrecio').value)||0,
+    tipo:currentTipo, categoria:currentCat,
     trueque_desc:document.getElementById('prodTrueque').value.trim()||null,
-    foto_url,
-    estado:     'activo',
+    foto_url, estado:'activo',
   }).select().single()
 
   btn.disabled=false;spin.style.display='none';lbl.style.display='inline'
-
   if(error){showToast('❌ Error: '+error.message);return}
+
   closeModal()
-  allProducts.unshift({...data,users:{nombre:currentUser.user_metadata?.nombre||'Tú'}})
+  const nombreVendedor = miPerfil?.nombre || currentUser.user_metadata?.nombre || 'Tú'
+  allProducts.unshift({...data,users:{nombre:nombreVendedor,username:miPerfil?.username,avatar_url:miPerfil?.avatar_url,id:currentUser.id}})
   renderProducts(getFiltered())
   showToast('🎉 ¡Publicación creada con éxito!')
 }

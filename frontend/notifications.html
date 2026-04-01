@@ -7,458 +7,318 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      --green-dark: #0b3d2e;
-      --green-mid: #1fbf75;
-      --green-light: #34d399;
-      --yellow: #e6d44c;
-      --yellow-dark: #7a6a00;
-      --card-bg: rgba(255,255,255,0.06);
-      --card-border: rgba(52,211,153,0.2);
-      --text-main: #eafff5;
-      --text-muted: #9fffd8;
-      --red: #ff6b6b;
-    }
+    :root{--green-dark:#0b3d2e;--green-mid:#1fbf75;--green-light:#34d399;--yellow:#e6d44c;--yellow-dark:#7a6a00;--card-bg:rgba(255,255,255,0.06);--card-border:rgba(52,211,153,0.2);--text-main:#eafff5;--text-muted:#9fffd8;--red:#ff6b6b}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Nunito',sans-serif;background:radial-gradient(ellipse at top left,#1a5c3a,#0b3d2e 50%,#071f17);min-height:100vh;color:var(--text-main);padding-bottom:100px}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    nav{position:sticky;top:0;z-index:100;background:rgba(11,61,46,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--card-border);padding:0 24px;height:64px;display:flex;align-items:center;gap:16px}
+    .nav-logo{font-family:'Poppins',sans-serif;font-size:22px;font-weight:900;text-decoration:none}
+    .nav-logo .yo{color:#fff}.nav-logo .lo{color:#fff;font-weight:400}.nav-logo .vendo{color:var(--yellow);text-shadow:0 2px 0 var(--yellow-dark)}
+    .nav-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .nav-back{background:rgba(255,255,255,0.08);border:1px solid var(--card-border);color:var(--text-muted);padding:8px 16px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:6px;transition:all .2s}
+    .nav-back:hover{border-color:var(--green-light);color:var(--green-light)}
+    .btn-clear-all{background:transparent;border:1px solid rgba(255,107,107,.3);color:var(--red);padding:7px 14px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s}
+    .btn-clear-all:hover{background:rgba(255,107,107,.1)}
 
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
-      min-height: 100vh; color: var(--text-main);
-      padding-bottom: 100px;
-    }
+    .page-wrap{max-width:680px;margin:0 auto;padding:24px 24px}
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;animation:fadeUp .3s ease both}
+    .page-header h1{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px}
+    .unread-count{background:var(--red);color:#fff;font-size:12px;font-weight:800;padding:2px 9px;border-radius:50px}
+    .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green-light);font-weight:700}
+    .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green-light);animation:pulse 1.5s ease-in-out infinite}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .filtros{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;scrollbar-width:none;animation:fadeUp .35s ease both}
+    .filtros::-webkit-scrollbar{display:none}
+    .filtro-btn{flex-shrink:0;padding:7px 16px;border-radius:50px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .filtro-btn.active{background:var(--green-mid);color:#063521;border-color:var(--green-mid)}
 
-    /* NAVBAR */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(11,61,46,0.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0 24px; height: 64px;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 900; text-decoration: none; }
-    .nav-logo .yo { color: #fff; }
-    .nav-logo .lo { color: #fff; font-weight: 400; }
-    .nav-logo .vendo { color: var(--yellow); text-shadow: 0 2px 0 var(--yellow-dark); }
-    .nav-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-    .nav-back {
-      background: rgba(255,255,255,0.08); border: 1px solid var(--card-border);
-      color: var(--text-muted); padding: 8px 16px; border-radius: 50px;
-      font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
-      cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px;
-    }
-    .btn-clear-all {
-      background: transparent; border: 1px solid rgba(255,107,107,0.3);
-      color: var(--red); padding: 7px 14px; border-radius: 50px;
-      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
-      cursor: pointer; transition: background 0.2s;
-    }
-    .btn-clear-all:hover { background: rgba(255,107,107,0.1); }
+    .notif-group{margin-bottom:24px;animation:fadeUp .4s ease both}
+    .notif-group-title{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;padding-left:2px;letter-spacing:.3px;text-transform:uppercase;font-size:11px}
+    .notif-list{display:flex;flex-direction:column;gap:8px}
 
-    /* PAGE */
-    .page-wrap { max-width: 680px; margin: 0 auto; padding: 28px 24px; }
+    .notif-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:16px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:all .2s;animation:fadeUp .4s ease both;position:relative}
+    .notif-card:hover{border-color:var(--green-light);transform:translateX(2px)}
+    .notif-card.unread{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.3)}
+    .dot-unread{position:absolute;top:18px;left:-6px;width:10px;height:10px;border-radius:50%;background:var(--green-mid);border:2px solid #0b3d2e;flex-shrink:0}
 
-    .page-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px; animation: fadeUp 0.3s ease both;
-    }
-    .page-header h1 { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; }
-    .unread-count {
-      background: var(--red); color: #fff;
-      font-size: 12px; font-weight: 800;
-      padding: 3px 10px; border-radius: 50px; margin-left: 10px;
-    }
+    .notif-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+    .icon-mensaje{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3)}
+    .icon-interes{background:rgba(100,180,255,.15);border:1px solid rgba(100,180,255,.3)}
+    .icon-oferta {background:rgba(230,212,76,.15);border:1px solid rgba(230,212,76,.3)}
+    .icon-sistema{background:rgba(255,255,255,.08);border:1px solid var(--card-border)}
+    .icon-trueque{background:rgba(230,212,76,.12);border:1px solid rgba(230,212,76,.3)}
 
-    /* FILTROS */
-    .filtros {
-      display: flex; gap: 8px; margin-bottom: 22px;
-      overflow-x: auto; scrollbar-width: none;
-      animation: fadeUp 0.35s ease both;
-    }
-    .filtros::-webkit-scrollbar { display: none; }
-    .filtro-btn {
-      flex-shrink: 0; padding: 7px 16px; border-radius: 50px;
-      border: 1.5px solid var(--card-border); background: transparent;
-      color: var(--text-muted); font-family: 'Nunito', sans-serif;
-      font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-    }
-    .filtro-btn.active { background: var(--green-mid); color: #063521; border-color: var(--green-mid); }
+    .notif-content{flex:1;min-width:0}
+    .notif-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px}
+    .notif-title{font-weight:700;font-size:14px;line-height:1.3}
+    .notif-time{font-size:11px;color:var(--text-muted);flex-shrink:0}
+    .notif-body{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:8px}
+    .notif-product{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);border-radius:50px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--green-light)}
+    .notif-product.yellow{background:rgba(230,212,76,.1);border-color:rgba(230,212,76,.2);color:var(--yellow)}
+    .notif-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .notif-btn{padding:7px 16px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;border:none}
+    .notif-btn.primary{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521}
+    .notif-btn.secondary{background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--text-muted)}
+    .notif-btn.secondary:hover{border-color:var(--green-light);color:var(--green-light)}
 
-    /* NOTIFICACIONES */
-    .notif-group { margin-bottom: 28px; }
-    .notif-group-title {
-      font-size: 12px; font-weight: 800; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 1px;
-      margin-bottom: 10px; padding-left: 4px;
-    }
+    .empty-state{text-align:center;padding:60px 20px;color:var(--text-muted);display:none}
+    .empty-state .icon{font-size:60px;margin-bottom:16px}
+    .empty-state h3{font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;color:var(--text-main);margin-bottom:8px}
+    .empty-state p{font-size:14px}
 
-    .notif-list { display: flex; flex-direction: column; gap: 10px; }
+    .loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px;color:var(--text-muted);font-size:14px}
+    .spin-sm{width:18px;height:18px;border:2px solid var(--text-muted);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
 
-    .notif-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 16px; padding: 16px 18px;
-      display: flex; gap: 14px; align-items: flex-start;
-      cursor: pointer; transition: all 0.2s;
-      animation: fadeUp 0.35s ease both;
-      position: relative; overflow: hidden;
-    }
-    .notif-card:hover { border-color: var(--green-light); transform: translateX(4px); }
-    .notif-card.unread {
-      background: rgba(52,211,153,0.07);
-      border-color: rgba(52,211,153,0.3);
-    }
-    .notif-card.unread::before {
-      content: '';
-      position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px; background: var(--green-light); border-radius: 3px 0 0 3px;
-    }
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,61,46,0.97);border-top:1px solid var(--card-border);backdrop-filter:blur(14px);padding:10px 0 18px;z-index:100}
+    .bnav-inner{display:flex;justify-content:space-around}
+    .bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--text-muted);font-size:11px;font-weight:600;text-decoration:none;transition:color .2s;position:relative}
+    .bnav-item.active{color:var(--green-light)}
+    .bnav-icon{font-size:22px}
+    .bnav-badge{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:var(--red);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #0b3d2e}
+    .bnav-publish{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521!important;padding:10px 22px;border-radius:50px;margin-top:-18px;box-shadow:0 4px 20px rgba(52,211,153,.5)}
 
-    .notif-icon-wrap {
-      width: 46px; height: 46px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-    }
-    .icon-mensaje  { background: rgba(52,211,153,0.15); }
-    .icon-interes  { background: rgba(230,212,76,0.15); }
-    .icon-trueque  { background: rgba(100,180,255,0.15); }
-    .icon-vendido  { background: rgba(52,211,153,0.2); }
-    .icon-sistema  { background: rgba(255,255,255,0.06); }
-    .icon-oferta   { background: rgba(255,107,107,0.15); }
-
-    .notif-content { flex: 1; min-width: 0; }
-    .notif-top {
-      display: flex; align-items: flex-start;
-      justify-content: space-between; gap: 8px; margin-bottom: 4px;
-    }
-    .notif-title { font-weight: 700; font-size: 14px; line-height: 1.3; }
-    .notif-time { font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
-    .notif-body { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-    .notif-product {
-      display: inline-flex; align-items: center; gap: 5px;
-      margin-top: 8px; font-size: 12px; font-weight: 700;
-      color: var(--green-light); background: rgba(52,211,153,0.1);
-      border: 1px solid rgba(52,211,153,0.2);
-      padding: 4px 10px; border-radius: 50px;
-    }
-    .notif-product.yellow { color: var(--yellow); background: rgba(230,212,76,0.1); border-color: rgba(230,212,76,0.2); }
-
-    .notif-actions { display: flex; gap: 8px; margin-top: 10px; }
-    .notif-btn {
-      padding: 6px 14px; border-radius: 50px;
-      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
-      cursor: pointer; border: 1.5px solid; transition: all 0.2s;
-    }
-    .notif-btn.primary {
-      background: var(--green-mid); color: #063521; border-color: var(--green-mid);
-    }
-    .notif-btn.secondary {
-      background: transparent; color: var(--text-muted); border-color: var(--card-border);
-    }
-    .notif-btn.secondary:hover { border-color: var(--green-light); color: var(--green-light); }
-
-    .dot-unread {
-      width: 9px; height: 9px; border-radius: 50%;
-      background: var(--green-light); flex-shrink: 0; margin-top: 5px;
-    }
-
-    /* EMPTY */
-    .empty-state {
-      text-align: center; padding: 60px 20px;
-      color: var(--text-muted); display: none;
-    }
-    .empty-state .icon { font-size: 60px; margin-bottom: 14px; }
-    .empty-state h3 {
-      font-family: 'Poppins', sans-serif; font-size: 18px;
-      font-weight: 700; color: var(--text-main); margin-bottom: 8px;
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed; bottom: 90px; left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--green-mid); color: #063521;
-      font-weight: 700; font-size: 14px;
-      padding: 12px 24px; border-radius: 50px;
-      opacity: 0; transition: all 0.3s; z-index: 999;
-      white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(11,61,46,0.97);
-      border-top: 1px solid var(--card-border);
-      backdrop-filter: blur(14px);
-      padding: 10px 0 18px; z-index: 100;
-    }
-    .bnav-inner { display: flex; justify-content: space-around; }
-    .bnav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      cursor: pointer; color: var(--text-muted);
-      font-size: 11px; font-weight: 600; text-decoration: none; transition: color 0.2s;
-      position: relative;
-    }
-    .bnav-item.active { color: var(--green-light); }
-    .bnav-icon { font-size: 22px; }
-    .bnav-badge {
-      position: absolute; top: -2px; right: -2px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: var(--red); color: #fff;
-      font-size: 9px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid #0b3d2e;
-    }
-    .bnav-publish {
-      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
-      color: #063521 !important; padding: 10px 22px; border-radius: 50px;
-      margin-top: -18px; box-shadow: 0 4px 20px rgba(52,211,153,0.5);
-    }
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-mid);color:#063521;font-weight:700;font-size:14px;padding:12px 24px;border-radius:50px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="home.html" class="nav-logo">
-    <span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span>
-  </a>
+  <a href="home.html" class="nav-logo"><span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span></a>
   <div class="nav-actions">
-    <button class="btn-clear-all" onclick="marcarTodasLeidas()">✓ Marcar todas como leídas</button>
+    <button class="btn-clear-all" onclick="marcarTodasLeidas()">✓ Todas leídas</button>
     <a href="home.html" class="nav-back">← Inicio</a>
   </div>
 </nav>
 
 <div class="page-wrap">
-
   <div class="page-header">
-    <h1>🔔 Notificaciones <span class="unread-count" id="unreadCount">5</span></h1>
+    <h1>🔔 Notificaciones <span class="unread-count" id="unreadCount" style="display:none"></span></h1>
+    <div class="live-badge"><div class="live-dot"></div> En vivo</div>
   </div>
 
-  <!-- FILTROS -->
   <div class="filtros">
-    <button class="filtro-btn active" onclick="filtrar('todas', this)">📋 Todas</button>
-    <button class="filtro-btn" onclick="filtrar('mensaje', this)">💬 Mensajes</button>
-    <button class="filtro-btn" onclick="filtrar('interes', this)">👀 Interés</button>
-    <button class="filtro-btn" onclick="filtrar('oferta', this)">💰 Ofertas</button>
-    <button class="filtro-btn" onclick="filtrar('sistema', this)">⚙️ Sistema</button>
+    <button class="filtro-btn active" onclick="filtrar('todas',this)">📋 Todas</button>
+    <button class="filtro-btn"        onclick="filtrar('mensaje',this)">💬 Mensajes</button>
+    <button class="filtro-btn"        onclick="filtrar('interes',this)">👀 Interés</button>
+    <button class="filtro-btn"        onclick="filtrar('oferta',this)">💰 Ofertas</button>
+    <button class="filtro-btn"        onclick="filtrar('sistema',this)">⚙️ Sistema</button>
   </div>
 
-  <!-- CONTENIDO -->
-  <div id="notifContent"></div>
+  <div id="notifContent"><div class="loading"><div class="spin-sm"></div> Cargando notificaciones...</div></div>
 
   <div class="empty-state" id="emptyState">
     <div class="icon">🔔</div>
     <h3>Sin notificaciones</h3>
-    <p>No tienes notificaciones en esta categoría.</p>
+    <p>Cuando alguien te escriba o interactúe con tus publicaciones, aparecerá aquí en tiempo real.</p>
   </div>
-
 </div>
 
-<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div class="bnav-inner">
-    <a href="home.html" class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
-    <a href="home.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
-    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
-    <a href="chat.html" class="bnav-item">
-      <span class="bnav-icon">💬</span><span>Chats</span>
-    </a>
+    <a href="home.html"    class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="search.html"  class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html"    class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="chat.html"    class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
     <a href="profile.html" class="bnav-item"><span class="bnav-icon">👤</span><span>Perfil</span></a>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script>
-  let notificaciones = [
-    {
-      id:1, tipo:'mensaje', leida:false,
-      titulo:'Carlos M. te envió un mensaje',
-      cuerpo:'¿El precio es negociable? Me interesa mucho la laptop.',
-      producto:'💻 Laptop HP 15"', productoTipo:'green',
-      hora:'Hace 5 min', grupo:'Hoy',
-      accion: () => window.location.href = 'chat.html'
-    },
-    {
-      id:2, tipo:'interes', leida:false,
-      titulo:'3 personas vieron tu publicación',
-      cuerpo:'Tu calculadora Casio tiene mucho interés hoy. ¡Considera bajar el precio!',
-      producto:'🔢 Calculadora Casio', productoTipo:'yellow',
-      hora:'Hace 20 min', grupo:'Hoy',
-      accion: () => window.location.href = 'my-listings.html'
-    },
-    {
-      id:3, tipo:'oferta', leida:false,
-      titulo:'Nueva oferta recibida 💰',
-      cuerpo:'Laura P. te ofrece $180.000 por tus audífonos. ¡Revisa y responde!',
-      producto:'🎧 Audífonos JBL', productoTipo:'green',
-      hora:'Hace 1 hora', grupo:'Hoy',
-      accion: () => window.location.href = 'chat.html'
-    },
-    {
-      id:4, tipo:'interes', leida:false,
-      titulo:'Miguel R. guardó tu publicación',
-      cuerpo:'Alguien agregó tu libro de Cálculo a sus favoritos.',
-      producto:'📚 Cálculo Integral', productoTipo:'yellow',
-      hora:'Hace 2 horas', grupo:'Hoy',
-      accion: () => window.location.href = 'product-detail.html'
-    },
-    {
-      id:5, tipo:'sistema', leida:false,
-      titulo:'¡Bienvenido a Yo Lo Vendo! 🎉',
-      cuerpo:'Tu cuenta fue verificada con tu correo institucional. Ya puedes vender, comprar y hacer trueques.',
-      producto:'', productoTipo:'',
-      hora:'Hace 3 horas', grupo:'Hoy',
-      accion: () => window.location.href = 'profile.html'
-    },
-    {
-      id:6, tipo:'mensaje', leida:true,
-      titulo:'Sofía G. respondió tu mensaje',
-      cuerpo:'Sí, el control está disponible. Te mando las fotos esta tarde.',
-      producto:'🎮 Control PS5', productoTipo:'green',
-      hora:'Ayer 4:30 PM', grupo:'Ayer',
-      accion: () => window.location.href = 'chat.html'
-    },
-    {
-      id:7, tipo:'oferta', leida:true,
-      titulo:'Tu oferta fue aceptada ✅',
-      cuerpo:'¡Felicidades! Andrés aceptó tu oferta por la sudadera. Coordina la entrega.',
-      producto:'👕 Sudadera INTEP', productoTipo:'green',
-      hora:'Ayer 11:00 AM', grupo:'Ayer',
-      accion: () => window.location.href = 'chat.html'
-    },
-    {
-      id:8, tipo:'sistema', leida:true,
-      titulo:'Tu publicación expira pronto ⚠️',
-      cuerpo:'La publicación de tu mochila Nike lleva 30 días activa. Renuévala para más visibilidad.',
-      producto:'🎒 Mochila Nike', productoTipo:'yellow',
-      hora:'Hace 2 días', grupo:'Esta semana',
-      accion: () => window.location.href = 'my-listings.html'
-    },
-  ];
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  let filtroActual = 'todas';
+const { data:{ session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const ME = session.user
 
-  const tipoIcono = {
-    mensaje: { emoji:'💬', cls:'icon-mensaje' },
-    interes: { emoji:'👀', cls:'icon-interes' },
-    oferta:  { emoji:'💰', cls:'icon-oferta'  },
-    sistema: { emoji:'⚙️', cls:'icon-sistema' },
-    trueque: { emoji:'🔄', cls:'icon-trueque' },
-  };
+let notificaciones = []
+let filtroActual   = 'todas'
 
-  function getFiltered() {
-    if (filtroActual === 'todas') return notificaciones;
-    return notificaciones.filter(n => n.tipo === filtroActual);
+const tipoIcono = {
+  mensaje: { emoji:'💬', cls:'icon-mensaje' },
+  interes: { emoji:'👀', cls:'icon-interes' },
+  oferta:  { emoji:'💰', cls:'icon-oferta'  },
+  sistema: { emoji:'⚙️', cls:'icon-sistema' },
+  trueque: { emoji:'🔄', cls:'icon-trueque' },
+}
+
+const fmtTiempo = iso => {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 1000)
+  if (diff < 60)   return 'Ahora mismo'
+  if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`
+  if (diff < 86400)return `Hace ${Math.floor(diff/3600)}h`
+  if (diff < 172800) return 'Ayer'
+  return new Date(iso).toLocaleDateString('es-CO',{day:'numeric',month:'short'})
+}
+
+const fmtGrupo = iso => {
+  const d = new Date(iso), hoy = new Date()
+  if (d.toDateString() === hoy.toDateString()) return 'Hoy'
+  const ayer = new Date(hoy); ayer.setDate(hoy.getDate()-1)
+  if (d.toDateString() === ayer.toDateString()) return 'Ayer'
+  const diff = Math.floor((hoy - d) / 86400000)
+  if (diff < 7) return 'Esta semana'
+  return 'Anterior'
+}
+
+// ── CARGAR NOTIFICACIONES ─────────────────────────────────
+async function cargarNotifs() {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('user_id', ME.id)
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  if (error) { console.error(error); return }
+  notificaciones = data || []
+  renderNotifs()
+}
+
+// ── RENDER ────────────────────────────────────────────────
+function getFiltered() {
+  if (filtroActual === 'todas') return notificaciones
+  return notificaciones.filter(n => n.tipo === filtroActual)
+}
+
+function renderNotifs() {
+  const lista   = getFiltered()
+  const content = document.getElementById('notifContent')
+  const empty   = document.getElementById('emptyState')
+
+  // Actualizar contador
+  const sinLeer = notificaciones.filter(n => !n.leida).length
+  const badge   = document.getElementById('unreadCount')
+  if (sinLeer > 0) { badge.textContent = sinLeer; badge.style.display = 'inline' }
+  else             { badge.style.display = 'none' }
+
+  if (!lista.length) {
+    content.innerHTML = ''
+    empty.style.display = 'block'
+    return
   }
+  empty.style.display = 'none'
+  content.innerHTML = ''
 
-  function renderNotifs() {
-    const lista = getFiltered();
-    const content = document.getElementById('notifContent');
-    const empty   = document.getElementById('emptyState');
-    content.innerHTML = '';
+  // Agrupar
+  const grupos = {}
+  lista.forEach(n => {
+    const g = fmtGrupo(n.created_at)
+    if (!grupos[g]) grupos[g] = []
+    grupos[g].push(n)
+  })
 
-    if (lista.length === 0) {
-      empty.style.display = 'block'; return;
-    }
-    empty.style.display = 'none';
+  const ordenGrupos = ['Hoy','Ayer','Esta semana','Anterior']
+  const ordenado = Object.entries(grupos).sort((a,b) => {
+    return ordenGrupos.indexOf(a[0]) - ordenGrupos.indexOf(b[0])
+  })
 
-    // Agrupar por grupo
-    const grupos = {};
-    lista.forEach(n => {
-      if (!grupos[n.grupo]) grupos[n.grupo] = [];
-      grupos[n.grupo].push(n);
-    });
+  ordenado.forEach(([grupo, items], gi) => {
+    const gDiv = document.createElement('div')
+    gDiv.className = 'notif-group'; gDiv.style.animationDelay = `${gi*.06}s`
 
-    Object.entries(grupos).forEach(([grupo, items], gi) => {
-      const groupDiv = document.createElement('div');
-      groupDiv.className = 'notif-group';
-      groupDiv.style.animationDelay = `${gi * 0.05}s`;
+    let html = `<div class="notif-group-title">${grupo}</div><div class="notif-list">`
 
-      let html = `<div class="notif-group-title">${grupo}</div><div class="notif-list">`;
+    items.forEach((n, i) => {
+      const ic = tipoIcono[n.tipo] || { emoji:'🔔', cls:'icon-sistema' }
+      const tiempo = fmtTiempo(n.created_at)
 
-      items.forEach((n, i) => {
-        const ic = tipoIcono[n.tipo] || { emoji:'🔔', cls:'icon-sistema' };
-        const accionesBtns = n.tipo === 'oferta' && !n.leida ? `
-          <div class="notif-actions">
-            <button class="notif-btn primary" onclick="event.stopPropagation(); marcarLeida(${n.id}); window.location.href='chat.html'">Ver oferta</button>
-            <button class="notif-btn secondary" onclick="event.stopPropagation(); marcarLeida(${n.id})">Ignorar</button>
-          </div>` :
-          n.tipo === 'mensaje' && !n.leida ? `
-          <div class="notif-actions">
-            <button class="notif-btn primary" onclick="event.stopPropagation(); window.location.href='chat.html'">Responder</button>
-          </div>` : '';
+      let btns = ''
+      if (n.tipo === 'mensaje' && !n.leida) {
+        btns = `<div class="notif-actions">
+          <button class="notif-btn primary" onclick="event.stopPropagation();irNotif('${n.id}','${n.link||'chat.html'}')">💬 Responder</button>
+          <button class="notif-btn secondary" onclick="event.stopPropagation();leerNotif('${n.id}')">Ignorar</button>
+        </div>`
+      } else if (n.tipo === 'oferta' && !n.leida) {
+        btns = `<div class="notif-actions">
+          <button class="notif-btn primary" onclick="event.stopPropagation();irNotif('${n.id}','${n.link||'chat.html'}')">Ver oferta</button>
+          <button class="notif-btn secondary" onclick="event.stopPropagation();leerNotif('${n.id}')">Ignorar</button>
+        </div>`
+      }
 
-        html += `
-          <div class="notif-card ${n.leida ? '' : 'unread'}"
-               style="animation-delay:${i*0.06}s"
-               onclick="clickNotif(${n.id})">
-            ${!n.leida ? '<div class="dot-unread"></div>' : ''}
-            <div class="notif-icon-wrap ${ic.cls}">${ic.emoji}</div>
-            <div class="notif-content">
-              <div class="notif-top">
-                <div class="notif-title">${n.titulo}</div>
-                <div class="notif-time">${n.hora}</div>
-              </div>
-              <div class="notif-body">${n.cuerpo}</div>
-              ${n.producto ? `<div class="notif-product ${n.productoTipo === 'yellow' ? 'yellow' : ''}">${n.producto}</div>` : ''}
-              ${accionesBtns}
+      html += `
+        <div class="notif-card ${n.leida?'':'unread'}"
+             style="animation-delay:${i*.05}s"
+             onclick="irNotif('${n.id}','${n.link||''}')">
+          ${!n.leida ? '<div class="dot-unread"></div>' : ''}
+          <div class="notif-icon-wrap ${ic.cls}">${ic.emoji}</div>
+          <div class="notif-content">
+            <div class="notif-top">
+              <div class="notif-title">${n.titulo}</div>
+              <div class="notif-time">${tiempo}</div>
             </div>
-          </div>`;
-      });
+            <div class="notif-body">${n.cuerpo||''}</div>
+            ${btns}
+          </div>
+        </div>`
+    })
 
-      html += '</div>';
-      groupDiv.innerHTML = html;
-      content.appendChild(groupDiv);
-    });
+    html += '</div>'
+    gDiv.innerHTML = html
+    content.appendChild(gDiv)
+  })
+}
 
-    // Actualizar contador
-    const sinLeer = notificaciones.filter(n => !n.leida).length;
-    const badge = document.getElementById('unreadCount');
-    badge.textContent = sinLeer;
-    badge.style.display = sinLeer === 0 ? 'none' : 'inline';
-  }
+// ── ACCIONES ──────────────────────────────────────────────
+window.irNotif = async (id, link) => {
+  await supabase.from('notifications').update({leida:true}).eq('id',id)
+  const n = notificaciones.find(n=>n.id===id)
+  if (n) n.leida = true
+  renderNotifs()
+  if (link) window.location.href = link
+}
 
-  function clickNotif(id) {
-    const n = notificaciones.find(n => n.id === id);
-    if (!n) return;
-    n.leida = true;
-    if (n.accion) n.accion();
-    else renderNotifs();
-  }
+window.leerNotif = async id => {
+  await supabase.from('notifications').update({leida:true}).eq('id',id)
+  const n = notificaciones.find(n=>n.id===id)
+  if (n) n.leida = true
+  renderNotifs()
+}
 
-  function marcarLeida(id) {
-    const n = notificaciones.find(n => n.id === id);
-    if (n) { n.leida = true; renderNotifs(); }
-  }
+window.marcarTodasLeidas = async () => {
+  await supabase.from('notifications').update({leida:true}).eq('user_id',ME.id)
+  notificaciones.forEach(n => n.leida = true)
+  renderNotifs()
+  showToast('✅ Todas las notificaciones leídas')
+}
 
-  function marcarTodasLeidas() {
-    notificaciones.forEach(n => n.leida = true);
-    renderNotifs();
-    showToast('✅ Todas las notificaciones leídas');
-  }
+window.filtrar = (f, btn) => {
+  filtroActual = f
+  document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+  renderNotifs()
+}
 
-  function filtrar(f, btn) {
-    filtroActual = f;
-    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderNotifs();
-  }
+function showToast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2800)
+}
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  }
+// ── REALTIME ──────────────────────────────────────────────
+supabase.channel('notifs-realtime')
+  .on('postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${ME.id}` },
+    payload => {
+      notificaciones.unshift(payload.new)
+      renderNotifs()
+      // Toast cuando llega nueva notif
+      showToast('🔔 ' + (payload.new.titulo||'Nueva notificación'))
+    }
+  )
+  .subscribe()
 
-  renderNotifs();
+// ── INIT ──────────────────────────────────────────────────
+await cargarNotifs()
 </script>
 </body>
 </html>

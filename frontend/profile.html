@@ -8,302 +8,195 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     :root {
-      --green-dark: #0b3d2e;
-      --green-mid: #1fbf75;
-      --green-light: #34d399;
-      --yellow: #e6d44c;
-      --yellow-dark: #7a6a00;
-      --card-bg: rgba(255,255,255,0.06);
-      --card-border: rgba(52,211,153,0.2);
-      --text-main: #eafff5;
-      --text-muted: #9fffd8;
-      --red: #ff6b6b;
+      --green-dark:#0b3d2e; --green-mid:#1fbf75; --green-light:#34d399;
+      --yellow:#e6d44c; --yellow-dark:#7a6a00;
+      --card-bg:rgba(255,255,255,0.06); --card-border:rgba(52,211,153,0.2);
+      --text-main:#eafff5; --text-muted:#9fffd8; --red:#ff6b6b;
     }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Nunito',sans-serif;background:radial-gradient(ellipse at top left,#1a5c3a,#0b3d2e 50%,#071f17);min-height:100vh;color:var(--text-main);padding-bottom:100px}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popIn {from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+    @keyframes spin  {to{transform:rotate(360deg)}}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* NAV */
+    nav{position:sticky;top:0;z-index:100;background:rgba(11,61,46,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--card-border);padding:0 24px;height:64px;display:flex;align-items:center;gap:16px}
+    .nav-logo{font-family:'Poppins',sans-serif;font-size:22px;font-weight:900;text-decoration:none}
+    .nav-logo .yo{color:#fff}.nav-logo .lo{color:#fff;font-weight:400}.nav-logo .vendo{color:var(--yellow);text-shadow:0 2px 0 var(--yellow-dark)}
+    .nav-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+    .nav-link{background:rgba(255,255,255,0.08);border:1px solid var(--card-border);color:var(--text-muted);padding:8px 14px;border-radius:50px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s}
+    .nav-link:hover{border-color:var(--green-light);color:var(--green-light)}
+    .nav-link.admin{border-color:rgba(230,212,76,.4);color:var(--yellow);background:rgba(230,212,76,.08)}
+    .nav-link.admin:hover{border-color:var(--yellow);background:rgba(230,212,76,.15)}
 
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: radial-gradient(ellipse at top left, #1a5c3a, #0b3d2e 50%, #071f17);
-      min-height: 100vh;
-      color: var(--text-main);
-      padding-bottom: 90px;
-    }
+    /* PORTADA */
+    .cover{height:160px;background:linear-gradient(135deg,#1fbf75,#0b5c3d,#e6d44c44);position:relative;overflow:hidden}
+    .cover-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:none}
+    .cover::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='20' fill='%23fff' fill-opacity='.04'/%3E%3C/svg%3E");pointer-events:none}
+    .cover-edit-btn{position:absolute;top:12px;right:12px;z-index:2;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12px;font-weight:700;padding:6px 12px;border-radius:50px;cursor:pointer;font-family:'Nunito',sans-serif;backdrop-filter:blur(6px);transition:background .2s}
+    .cover-edit-btn:hover{background:rgba(0,0,0,.7)}
+    .cover-uploading{position:absolute;inset:0;z-index:3;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;gap:10px}
+    .cover-uploading.show{display:flex}
+    .spin{width:18px;height:18px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
 
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(11,61,46,0.92);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0 24px; height: 64px;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .nav-logo {
-      font-family: 'Poppins', sans-serif;
-      font-size: 22px; font-weight: 900;
-      text-decoration: none;
-    }
-    .nav-logo .yo { color: #fff; }
-    .nav-logo .lo { color: #fff; font-weight: 400; }
-    .nav-logo .vendo { color: var(--yellow); text-shadow: 0 2px 0 var(--yellow-dark); }
-    .nav-back {
-      margin-left: auto;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      padding: 8px 16px; border-radius: 50px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 13px; font-weight: 700;
-      cursor: pointer; text-decoration: none;
-      display: flex; align-items: center; gap: 6px;
-    }
+    /* HEADER PERFIL */
+    .profile-header{max-width:700px;margin:0 auto;padding:0 24px;position:relative}
+    .avatar-wrap{position:relative;display:inline-block;margin-top:-52px;margin-bottom:12px}
+    .avatar-big{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),var(--yellow));border:4px solid #0b3d2e;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:900;color:#063521;overflow:hidden;cursor:pointer;position:relative}
+    .avatar-big img{width:100%;height:100%;object-fit:cover;display:none}
+    .avatar-letter{font-family:'Poppins',sans-serif}
+    .avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-size:22px}
+    .avatar-big:hover .avatar-overlay{opacity:1}
+    .avatar-badge{position:absolute;bottom:4px;right:4px;width:26px;height:26px;border-radius:50%;background:var(--green-mid);border:3px solid #0b3d2e;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
 
-    .cover {
-      height: 160px;
-      background: linear-gradient(135deg, #1fbf75, #0b5c3d, #e6d44c44);
-      position: relative; overflow: hidden;
-    }
-    .cover::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .cover-edit-btn {
-      position: absolute; top: 12px; right: 12px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #fff; font-size: 12px; font-weight: 700;
-      padding: 6px 12px; border-radius: 50px;
-      cursor: pointer; font-family: 'Nunito', sans-serif;
-      backdrop-filter: blur(6px);
-    }
+    .profile-info{margin-bottom:16px}
+    .profile-name{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .verified-badge{background:var(--green-mid);color:#063521;font-size:10px;font-weight:800;padding:2px 8px;border-radius:50px}
+    .profile-email{color:var(--text-muted);font-size:13px;margin-top:3px}
+    .profile-bio{margin-top:10px;font-size:14px;color:var(--text-main);opacity:.85;line-height:1.5}
+    .profile-meta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+    .meta-item{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
 
-    .profile-header {
-      max-width: 700px; margin: 0 auto;
-      padding: 0 24px; position: relative;
-    }
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;max-width:700px;margin-left:auto;margin-right:auto;padding:0 24px}
+    .stat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 10px;text-align:center;animation:fadeUp .4s ease both}
+    .stat-number{font-family:'Poppins',sans-serif;font-size:22px;font-weight:800;color:var(--green-light)}
+    .stat-label{font-size:11px;color:var(--text-muted);margin-top:2px}
 
-    .avatar-wrap {
-      position: relative; display: inline-block;
-      margin-top: -52px; margin-bottom: 12px;
-    }
-    .avatar-big {
-      width: 100px; height: 100px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--green-light), var(--yellow));
-      border: 4px solid #0b3d2e;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 38px; font-weight: 900; color: #063521;
-      overflow: hidden; cursor: pointer; position: relative;
-    }
-    .avatar-big img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .avatar-big .avatar-letter { font-family: 'Poppins', sans-serif; }
-    .avatar-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0.5); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.2s; font-size: 22px;
-    }
-    .avatar-big:hover .avatar-overlay { opacity: 1; }
-    .avatar-badge {
-      position: absolute; bottom: 4px; right: 4px;
-      width: 26px; height: 26px; border-radius: 50%;
-      background: var(--green-mid); border: 3px solid #0b3d2e;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; cursor: pointer;
-    }
+    /* SECCIÓN */
+    .section-wrap{max-width:700px;margin:0 auto;padding:0 24px}
+    .edit-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;padding:22px;margin-bottom:20px;animation:fadeUp .5s ease both}
+    .edit-card-title{font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--card-border)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:480px){.form-row{grid-template-columns:1fr}}
+    label{display:block;font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:5px}
+    .field-wrap{margin-bottom:14px}
+    input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;padding:10px 13px;border-radius:10px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.06);color:var(--text-main);font-family:'Nunito',sans-serif;font-size:14px;outline:none;transition:border-color .2s;margin-bottom:14px}
+    input:focus,textarea:focus,select:focus{border-color:var(--green-light)}
+    textarea{resize:vertical;min-height:70px}
+    select option{background:#0b3d2e}
+    .btn-save-profile{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521;font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .btn-save-profile:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(52,211,153,.35)}
 
-    .profile-info { margin-bottom: 20px; }
-    .profile-name {
-      font-family: 'Poppins', sans-serif;
-      font-size: 22px; font-weight: 800;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .verified-badge {
-      background: var(--green-mid); color: #063521;
-      font-size: 10px; font-weight: 800;
-      padding: 2px 8px; border-radius: 50px;
-    }
-    .profile-email { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
-    .profile-bio { margin-top: 10px; font-size: 14px; color: var(--text-main); opacity: 0.85; line-height: 1.5; }
-    .profile-meta { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
-    .meta-item { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+    /* TABS HISTORIAL */
+    .tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab-btn{flex-shrink:0;padding:8px 16px;border-radius:50px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+    .tab-btn.active{background:var(--green-mid);color:#063521;border-color:var(--green-mid)}
 
-    .stats-row {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 12px; margin: 20px 0;
-      max-width: 700px; margin-left: auto; margin-right: auto;
-      padding: 0 24px;
-    }
-    .stat-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 14px; padding: 14px 10px; text-align: center;
-      animation: fadeUp 0.4s ease both;
-    }
-    .stat-number {
-      font-family: 'Poppins', sans-serif;
-      font-size: 22px; font-weight: 800; color: var(--green-light);
-    }
-    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    /* HISTORIAL ITEMS */
+    .history-list{display:flex;flex-direction:column;gap:10px}
+    .history-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:border-color .2s;animation:fadeUp .3s ease both}
+    .history-item:hover{border-color:var(--green-light)}
+    .history-emoji{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
+    .history-emoji img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+    .history-info{flex:1;min-width:0}
+    .history-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .history-date{font-size:11px;color:var(--text-muted);margin-top:2px}
+    .history-right{text-align:right;flex-shrink:0}
+    .history-price{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:var(--green-light)}
+    .history-price.trueque{color:var(--yellow);font-size:11px}
+    .history-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:50px;margin-top:3px;display:inline-block}
+    .status-vendido{background:rgba(52,211,153,.2);color:var(--green-light)}
+    .status-activo{background:rgba(230,212,76,.2);color:var(--yellow)}
+    .status-trueque{background:rgba(230,212,76,.15);color:var(--yellow)}
+    .empty-tab{text-align:center;padding:36px 20px;color:var(--text-muted)}
+    .empty-tab .icon{font-size:40px;margin-bottom:10px}
+    .empty-tab p{font-size:13px}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    /* MIS PUBLICACIONES */
+    .filtros{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}
+    .filtros::-webkit-scrollbar{display:none}
+    .filtro-btn{flex-shrink:0;padding:6px 14px;border-radius:50px;border:1.5px solid var(--card-border);background:transparent;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+    .filtro-btn.active{background:var(--green-mid);color:#063521;border-color:var(--green-mid)}
 
-    .section-wrap { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+    .mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .mini-stat{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:12px;text-align:center}
+    .mini-stat-num{font-family:'Poppins',sans-serif;font-size:18px;font-weight:800;color:var(--green-light)}
+    .mini-stat-label{font-size:10px;color:var(--text-muted);margin-top:2px}
 
-    .edit-card {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 18px; padding: 22px; margin-bottom: 20px;
-      animation: fadeUp 0.5s ease both;
-    }
-    .edit-card-title {
-      font-family: 'Poppins', sans-serif;
-      font-size: 15px; font-weight: 700; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
-      padding-bottom: 12px; border-bottom: 1px solid var(--card-border);
-    }
+    .listing-card{background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:16px;padding:16px;display:flex;gap:14px;align-items:flex-start;animation:fadeUp .4s ease both;transition:border-color .2s;margin-bottom:12px}
+    .listing-card:hover{border-color:var(--green-light)}
+    .listing-thumb{width:62px;height:62px;border-radius:12px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden}
+    .listing-thumb img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+    .listing-info{flex:1;min-width:0}
+    .listing-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+    .listing-name{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+    .listing-badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:50px;flex-shrink:0}
+    .badge-activo {background:rgba(52,211,153,.2);color:var(--green-light)}
+    .badge-vendido{background:rgba(100,180,255,.15);color:#7dd3fc}
+    .badge-pausado{background:rgba(230,212,76,.15);color:var(--yellow)}
+    .listing-desc{font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .listing-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .listing-price{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:var(--green-light)}
+    .listing-price.t{color:var(--yellow);font-size:12px}
+    .listing-date{font-size:11px;color:var(--text-muted)}
+    .listing-views{font-size:11px;color:var(--text-muted)}
 
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+    .listing-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .action-btn{padding:6px 12px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;border:1.5px solid}
+    .action-btn.edit{border-color:var(--card-border);background:transparent;color:var(--text-muted)}
+    .action-btn.edit:hover{border-color:var(--green-light);color:var(--green-light)}
+    .action-btn.pause{border-color:rgba(230,212,76,.3);background:transparent;color:var(--yellow)}
+    .action-btn.pause:hover{background:rgba(230,212,76,.1)}
+    .action-btn.delete{border-color:rgba(255,107,107,.3);background:transparent;color:var(--red)}
+    .action-btn.delete:hover{background:rgba(255,107,107,.1)}
+    .action-btn.sold{border-color:rgba(100,180,255,.3);background:transparent;color:#7dd3fc}
+    .action-btn.sold:hover{background:rgba(100,180,255,.1)}
+    .action-btn.activate{border-color:rgba(52,211,153,.3);background:transparent;color:var(--green-light)}
+    .action-btn.activate:hover{background:rgba(52,211,153,.1)}
 
-    label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; }
-    .field-wrap { margin-bottom: 14px; }
-    input[type=text], input[type=email], input[type=tel], textarea, select {
-      width: 100%; padding: 10px 13px; border-radius: 10px;
-      border: 1.5px solid var(--card-border);
-      background: rgba(255,255,255,0.06);
-      color: var(--text-main); font-family: 'Nunito', sans-serif;
-      font-size: 14px; outline: none; transition: border-color 0.2s;
-    }
-    input:focus, textarea:focus, select:focus { border-color: var(--green-light); }
-    textarea { resize: vertical; min-height: 70px; }
-    select option { background: #0b3d2e; }
+    .empty-pubs{text-align:center;padding:40px 20px;color:var(--text-muted)}
+    .empty-pubs .icon{font-size:48px;margin-bottom:12px}
+    .empty-pubs p{font-size:14px;margin-bottom:16px}
+    .btn-pub-empty{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;padding:11px 24px;border-radius:50px;border:none;cursor:pointer}
 
-    .btn-save-profile {
-      width: 100%; padding: 13px; border-radius: 12px; border: none;
-      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
-      color: #063521; font-family: 'Poppins', sans-serif;
-      font-weight: 700; font-size: 15px; cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s; margin-top: 4px;
-    }
-    .btn-save-profile:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(52,211,153,0.35); }
+    /* ZONA PELIGRO */
+    .danger-zone{background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.25);border-radius:18px;padding:20px 22px;margin-bottom:20px}
+    .danger-title{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;color:var(--red);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .btn-danger{padding:10px 18px;border-radius:10px;border:1px solid rgba(255,107,107,.4);background:transparent;color:var(--red);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s;margin-right:8px;margin-top:6px}
+    .btn-danger:hover{background:rgba(255,107,107,.1)}
 
-    .tabs {
-      display: flex; gap: 8px; margin-bottom: 16px;
-      overflow-x: auto; scrollbar-width: none;
-    }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      flex-shrink: 0; padding: 8px 18px; border-radius: 50px;
-      border: 1.5px solid var(--card-border); background: transparent;
-      color: var(--text-muted); font-family: 'Nunito', sans-serif;
-      font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    }
-    .tab-btn.active { background: var(--green-mid); color: #063521; border-color: var(--green-mid); }
+    /* MAIN TABS */
+    .main-tabs{display:flex;gap:0;margin-bottom:22px;border-radius:12px;overflow:hidden;border:1px solid var(--card-border);background:rgba(255,255,255,.04)}
+    .main-tab-btn{flex:1;padding:11px 8px;background:transparent;border:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all .2s}
+    .main-tab-btn.active{background:var(--green-mid);color:#063521}
+    .main-tab-panel{display:none}
+    .main-tab-panel.active{display:block}
 
-    .history-list { display: flex; flex-direction: column; gap: 12px; }
-    .history-item {
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 14px; padding: 14px 16px;
-      display: flex; align-items: center; gap: 14px;
-      transition: border-color 0.2s; animation: fadeUp 0.3s ease both;
-    }
-    .history-item:hover { border-color: var(--green-light); }
-    .history-emoji {
-      width: 48px; height: 48px; border-radius: 12px;
-      background: rgba(255,255,255,0.06);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 26px; flex-shrink: 0;
-    }
-    .history-info { flex: 1; min-width: 0; }
-    .history-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .history-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .history-right { text-align: right; flex-shrink: 0; }
-    .history-price { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 15px; color: var(--green-light); }
-    .history-price.trueque { color: var(--yellow); font-size: 12px; }
-    .history-status { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 50px; margin-top: 4px; display: inline-block; }
-    .status-vendido  { background: rgba(52,211,153,0.2); color: var(--green-light); }
-    .status-activo   { background: rgba(230,212,76,0.2); color: var(--yellow); }
-    .status-trueque  { background: rgba(230,212,76,0.15); color: var(--yellow); }
-    .status-comprado { background: rgba(100,180,255,0.2); color: #7dd3fc; }
+    /* NAV INFERIOR */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(11,61,46,0.97);border-top:1px solid var(--card-border);backdrop-filter:blur(14px);padding:10px 0 18px;z-index:100}
+    .bnav-inner{display:flex;justify-content:space-around}
+    .bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--text-muted);font-size:11px;font-weight:600;text-decoration:none;transition:color .2s}
+    .bnav-item.active{color:var(--green-light)}
+    .bnav-icon{font-size:22px}
+    .bnav-publish{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521!important;padding:10px 22px;border-radius:50px;margin-top:-18px;box-shadow:0 4px 20px rgba(52,211,153,.5)}
 
-    .empty-tab { text-align: center; padding: 40px 20px; color: var(--text-muted); }
-    .empty-tab .icon { font-size: 44px; margin-bottom: 10px; }
-    .empty-tab p { font-size: 14px; }
+    /* TOAST */
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-mid);color:#063521;font-weight:700;font-size:14px;padding:12px 24px;border-radius:50px;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    .danger-zone {
-      background: rgba(255,107,107,0.06);
-      border: 1px solid rgba(255,107,107,0.25);
-      border-radius: 18px; padding: 20px 22px; margin-bottom: 20px;
-    }
-    .danger-title { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; color: var(--red); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-    .btn-danger {
-      padding: 10px 20px; border-radius: 10px;
-      border: 1px solid rgba(255,107,107,0.4); background: transparent;
-      color: var(--red); font-family: 'Nunito', sans-serif;
-      font-weight: 700; font-size: 13px; cursor: pointer;
-      transition: background 0.2s; margin-right: 10px; margin-top: 6px;
-    }
-    .btn-danger:hover { background: rgba(255,107,107,0.1); }
-
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(11,61,46,0.97);
-      border-top: 1px solid var(--card-border);
-      backdrop-filter: blur(14px);
-      padding: 10px 0 18px; z-index: 100;
-    }
-    .bnav-inner { display: flex; justify-content: space-around; }
-    .bnav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      cursor: pointer; color: var(--text-muted);
-      font-size: 11px; font-weight: 600; text-decoration: none; transition: color 0.2s;
-    }
-    .bnav-item.active { color: var(--green-light); }
-    .bnav-icon { font-size: 22px; }
-    .bnav-publish {
-      background: linear-gradient(135deg, var(--green-light), var(--green-mid));
-      color: #063521 !important; padding: 10px 22px; border-radius: 50px;
-      margin-top: -18px; box-shadow: 0 4px 20px rgba(52,211,153,0.5);
-    }
-
-    .toast {
-      position: fixed; bottom: 90px; left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--green-mid); color: #063521;
-      font-weight: 700; font-size: 14px;
-      padding: 12px 24px; border-radius: 50px;
-      opacity: 0; transition: all 0.3s; z-index: 999;
-      white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-      z-index: 200; align-items: center; justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal-small {
-      background: linear-gradient(160deg, #0f4a32, #0b3d2e);
-      border: 1px solid var(--green-light);
-      border-radius: 20px; padding: 28px;
-      width: 90%; max-width: 340px; text-align: center;
-      animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.85); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    .modal-small h3 { font-family: 'Poppins', sans-serif; font-size: 17px; font-weight: 800; margin-bottom: 8px; }
-    .modal-small p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-    .modal-btn-row { display: flex; gap: 10px; }
-    .modal-btn { flex: 1; padding: 11px; border-radius: 10px; border: none; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; }
-    .modal-btn.primary { background: linear-gradient(135deg, var(--green-light), var(--green-mid)); color: #063521; }
-    .modal-btn.secondary { background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--text-muted); }
-
-    input[type=file] { display: none; }
+    /* MODALES */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:linear-gradient(160deg,#0f4a32,#0b3d2e);border:1px solid var(--green-light);border-radius:22px;padding:26px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both}
+    .modal-box h2{font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px}
+    .modal-box label{display:block;font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:5px}
+    .modal-box input,.modal-box textarea,.modal-box select{width:100%;padding:10px 13px;border-radius:10px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.07);color:var(--text-main);font-family:'Nunito',sans-serif;font-size:14px;outline:none;transition:border-color .2s;margin-bottom:14px}
+    .modal-box input:focus,.modal-box textarea:focus,.modal-box select:focus{border-color:var(--green-light)}
+    .modal-box textarea{resize:vertical;min-height:70px}
+    .modal-box select option{background:#0b3d2e}
+    .modal-actions{display:flex;gap:10px;margin-top:4px}
+    .btn-modal-cancel{flex:1;padding:12px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--text-muted);font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+    .btn-modal-save{flex:2;padding:12px;border-radius:10px;background:linear-gradient(135deg,var(--green-light),var(--green-mid));border:none;color:#063521;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+    .modal-small{background:linear-gradient(160deg,#0f4a32,#0b3d2e);border:1px solid var(--green-light);border-radius:20px;padding:26px;width:90%;max-width:340px;text-align:center;animation:popIn .3s cubic-bezier(.34,1.56,.64,1) both}
+    .modal-small h3{font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;margin-bottom:8px}
+    .modal-small p{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+    .modal-btn-row{display:flex;gap:10px}
+    .modal-btn{flex:1;padding:11px;border-radius:10px;border:none;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
+    .modal-btn.primary{background:linear-gradient(135deg,var(--green-light),var(--green-mid));color:#063521}
+    .modal-btn.secondary{background:rgba(255,255,255,.08);border:1px solid var(--card-border);color:var(--text-muted)}
+    input[type=file]{display:none}
   </style>
 </head>
 <body>
@@ -312,366 +205,567 @@
   <a href="home.html" class="nav-logo">
     <span class="yo">YO</span><span class="lo">lo</span><span class="vendo">VENDO</span>
   </a>
-  <a href="home.html" class="nav-back">← Volver al inicio</a>
+  <div class="nav-right">
+    <!-- Botón Admin: solo visible si es admin (se muestra vía JS) -->
+    <a href="admin.html" class="nav-link admin" id="btnAdminNav" style="display:none">⚙️ Admin</a>
+    <a href="help.html"  class="nav-link">🆘 Ayuda</a>
+    <a href="home.html"  class="nav-link">← Inicio</a>
+  </div>
 </nav>
 
-<div class="cover">
-  <button class="cover-edit-btn" onclick="showToast('✅ Función de portada próximamente')">✏️ Editar portada</button>
+<!-- PORTADA -->
+<div class="cover" id="coverDiv">
+  <img id="coverImg" class="cover-img" src="" alt="portada">
+  <div class="cover-uploading" id="coverUploading"><div class="spin"></div> Subiendo...</div>
+  <button class="cover-edit-btn" onclick="document.getElementById('fileCover').click()">🖼️ Editar portada</button>
 </div>
+<input type="file" id="fileCover" accept="image/*" onchange="uploadCover(event)">
 
+<!-- AVATAR -->
 <div class="profile-header">
   <div class="avatar-wrap">
-    <div class="avatar-big" onclick="openPhotoModal()" id="avatarBig">
+    <div class="avatar-big" onclick="openPhotoModal()">
       <img id="avatarImg" src="" alt="foto perfil">
       <span class="avatar-letter" id="avatarLetter">E</span>
       <div class="avatar-overlay">📷</div>
     </div>
     <div class="avatar-badge" onclick="openPhotoModal()">📷</div>
   </div>
-
   <div class="profile-info">
     <div class="profile-name">
       <span id="displayName">Estudiante INTEP</span>
       <span class="verified-badge">✓ Verificado</span>
     </div>
-    <div class="profile-email" id="displayEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ee8b9d9a9b8a878f809a8bae87809a8b9ec08b8a9bc08d81">[email&#160;protected]</a></div>
-    <div class="profile-bio" id="displayBio">¡Hola! Soy estudiante del INTEP. Aquí vendo y hago trueque de cosas que ya no uso.</div>
+    <div class="profile-email" id="displayEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="17747865657278577e7963726739727362397478">[email&#160;protected]</a></div>
+    <div class="profile-bio" id="displayBio"></div>
     <div class="profile-meta">
-      <span class="meta-item">📅 Miembro desde Marzo 2025</span>
-      <span class="meta-item">📍 Colombia</span>
-      <span class="meta-item" id="displayCarrera">🎓 Ingeniería de Sistemas</span>
+      <span class="meta-item" id="metaMiembro">📅 Miembro INTEP</span>
+      <span class="meta-item" id="displayCarrera"></span>
     </div>
   </div>
 </div>
 
+<!-- ESTADÍSTICAS -->
 <div class="stats-row">
-  <div class="stat-card" style="animation-delay:0.05s">
-    <div class="stat-number">3</div>
-    <div class="stat-label">Ventas</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.1s">
-    <div class="stat-number">2</div>
-    <div class="stat-label">Trueques</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.15s">
-    <div class="stat-number">4</div>
-    <div class="stat-label">Compras</div>
-  </div>
-  <div class="stat-card" style="animation-delay:0.2s">
-    <div class="stat-number">⭐ 5</div>
-    <div class="stat-label">Reputación</div>
-  </div>
+  <div class="stat-card" style="animation-delay:.05s"><div class="stat-number" id="statVentas">0</div><div class="stat-label">Ventas</div></div>
+  <div class="stat-card" style="animation-delay:.1s"> <div class="stat-number" id="statTrueques">0</div><div class="stat-label">Trueques</div></div>
+  <div class="stat-card" style="animation-delay:.15s"><div class="stat-number" id="statActivos">0</div><div class="stat-label">Activos</div></div>
+  <div class="stat-card" style="animation-delay:.2s"> <div class="stat-number" id="statVistas">0</div><div class="stat-label">Vistas</div></div>
 </div>
 
 <div class="section-wrap">
 
-  <div class="edit-card" style="animation-delay:0.1s">
-    <div class="edit-card-title">✏️ Editar información personal</div>
+  <!-- TABS PRINCIPALES -->
+  <div class="main-tabs" style="animation:fadeUp .3s ease both">
+    <button class="main-tab-btn active" onclick="switchMainTab('perfil',this)">👤 Perfil</button>
+    <button class="main-tab-btn"        onclick="switchMainTab('pubs',this)">📦 Publicaciones</button>
+    <button class="main-tab-btn"        onclick="switchMainTab('hist',this)">📋 Historial</button>
+  </div>
 
-    <!-- Nombre y correo: solo lectura, vienen de la sesión -->
-    <div class="form-row">
-      <div class="field-wrap">
-        <label>Nombre completo</label>
-        <div id="roNombre" style="
-          padding: 10px 13px; border-radius: 10px;
-          border: 1.5px solid var(--card-border);
-          background: rgba(255,255,255,0.03);
-          color: var(--text-muted); font-size: 14px;
-          margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-        ">
-          <span style="font-size:12px; opacity:.5">🔒</span>
-          <span id="roNombreVal">Cargando...</span>
+  <!-- ═══ PANEL PERFIL ═══ -->
+  <div class="main-tab-panel active" id="panelPerfil">
+
+    <div class="edit-card" style="animation-delay:.1s">
+      <div class="edit-card-title">✏️ Editar información personal</div>
+      <div class="form-row">
+        <div class="field-wrap">
+          <label>Nombre completo</label>
+          <div style="padding:10px 13px;border-radius:10px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text-muted);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;opacity:.5">🔒</span><span id="roNombreVal">Cargando...</span>
+          </div>
+        </div>
+        <div class="field-wrap">
+          <label>Correo institucional</label>
+          <div style="padding:10px 13px;border-radius:10px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text-muted);font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;opacity:.5">🔒</span><span id="roCorreoVal">Cargando...</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field-wrap">
+          <label>Carrera / Programa</label>
+          <select id="inputCarrera">
+            <option value="">— Selecciona tu carrera —</option>
+            <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+            <option value="Administración de Empresas">Administración de Empresas</option>
+            <option value="Contaduría Pública">Contaduría Pública</option>
+            <option value="Diseño Visual Digital">Diseño Visual Digital</option>
+            <option value="Especialización en Big Data">Especialización en Big Data</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="field-wrap">
+          <label>WhatsApp (opcional)</label>
+          <input type="tel" id="inputWA" placeholder="+57 300 0000000">
         </div>
       </div>
       <div class="field-wrap">
-        <label>Correo institucional</label>
-        <div id="roCorreo" style="
-          padding: 10px 13px; border-radius: 10px;
-          border: 1.5px solid var(--card-border);
-          background: rgba(255,255,255,0.03);
-          color: var(--text-muted); font-size: 14px;
-          margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-        ">
-          <span style="font-size:12px; opacity:.5">🔒</span>
-          <span id="roCorreoVal">Cargando...</span>
-        </div>
+        <label>Biografía</label>
+        <textarea id="inputBio" placeholder="¿Qué vendes? ¿Qué buscas? Cuéntale a otros estudiantes..."></textarea>
       </div>
+      <button class="btn-save-profile" id="btnSave" onclick="saveProfile()">💾 Guardar cambios</button>
     </div>
 
-    <!-- Campos editables -->
-    <div class="form-row">
-      <div class="field-wrap">
-        <label>Carrera / Programa</label>
-        <select id="inputCarrera">
-          <option value="">— Selecciona tu carrera —</option>
-          <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
-          <option value="Administración de Empresas">Administración de Empresas</option>
-          <option value="Contaduría Pública">Contaduría Pública</option>
-          <option value="Diseño Visual Digital">Diseño Visual Digital</option>
-          <option value="Especialización en Big Data">Especialización en Big Data</option>
-          <option value="Otro">Otro</option>
-        </select>
-      </div>
-      <div class="field-wrap">
-        <label>WhatsApp (opcional)</label>
-        <input type="tel" id="inputWA" placeholder="+57 300 0000000">
-      </div>
+    <div class="danger-zone">
+      <div class="danger-title">⚠️ Zona de peligro</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:4px">Estas acciones son permanentes y no se pueden deshacer.</p>
+      <button class="btn-danger" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
+      <button class="btn-danger" onclick="confirmarEliminar()">🗑️ Eliminar cuenta</button>
     </div>
-    <div class="field-wrap">
-      <label>Biografía</label>
-      <textarea id="inputBio" placeholder="Cuéntanos algo sobre ti... ¿qué vendes? ¿qué buscas?"></textarea>
-    </div>
-    <button class="btn-save-profile" id="btnSave" onclick="saveProfile()">💾 Guardar cambios</button>
+
   </div>
 
-  <div class="edit-card" style="animation-delay:0.2s">
-    <div class="edit-card-title">📋 Mi historial</div>
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('ventas', this)">💰 Mis ventas</button>
-      <button class="tab-btn" onclick="switchTab('trueques', this)">🔄 Mis trueques</button>
-      <button class="tab-btn" onclick="switchTab('compras', this)">🛒 Mis compras</button>
-      <button class="tab-btn" onclick="switchTab('activos', this)">📦 Activos</button>
+  <!-- ═══ PANEL MIS PUBLICACIONES ═══ -->
+  <div class="main-tab-panel" id="panelPubs">
+    <div style="animation:fadeUp .3s ease both">
+
+      <div class="mini-stats">
+        <div class="mini-stat"><div class="mini-stat-num" id="msActivas">0</div><div class="mini-stat-label">Activas</div></div>
+        <div class="mini-stat"><div class="mini-stat-num" id="msVendidas">0</div><div class="mini-stat-label">Vendidas</div></div>
+        <div class="mini-stat"><div class="mini-stat-num" id="msVistas">0</div><div class="mini-stat-label">Vistas totales</div></div>
+      </div>
+
+      <div class="filtros">
+        <button class="filtro-btn active" onclick="filtrarPubs('todas',this)">📋 Todas</button>
+        <button class="filtro-btn"        onclick="filtrarPubs('activo',this)">🟢 Activas</button>
+        <button class="filtro-btn"        onclick="filtrarPubs('vendido',this)">✅ Vendidas</button>
+        <button class="filtro-btn"        onclick="filtrarPubs('pausado',this)">⏸ Pausadas</button>
+      </div>
+
+      <div id="listingsList"></div>
+      <div class="empty-pubs" id="listingsEmpty" style="display:none">
+        <div class="icon">📭</div>
+        <p>No tienes publicaciones aún.</p>
+        <button class="btn-pub-empty" onclick="window.location.href='home.html'">➕ Crear publicación</button>
+      </div>
     </div>
-    <div id="tabContent" class="history-list"></div>
   </div>
 
-  <div class="danger-zone">
-    <div class="danger-title">⚠️ Zona de peligro</div>
-    <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">Estas acciones son permanentes y no se pueden deshacer.</p>
-    <button class="btn-danger" onclick="cerrarSesion()">🚪 Cerrar sesión</button>
-    <button class="btn-danger" onclick="confirmarEliminar()">🗑️ Eliminar cuenta</button>
+  <!-- ═══ PANEL HISTORIAL ═══ -->
+  <div class="main-tab-panel" id="panelHist">
+    <div style="animation:fadeUp .3s ease both">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchHistTab('activos',this)">📦 Activos</button>
+        <button class="tab-btn"        onclick="switchHistTab('ventas',this)">💰 Vendidos</button>
+        <button class="tab-btn"        onclick="switchHistTab('trueques',this)">🔄 Trueques</button>
+      </div>
+      <div id="histContent" class="history-list"></div>
+    </div>
   </div>
 
 </div>
 
+<!-- NAV INFERIOR -->
 <div class="bottom-nav">
   <div class="bnav-inner">
-    <a href="home.html" class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
-    <a href="home.html" class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
-    <a href="home.html" class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
-    <a href="#" class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
+    <a href="home.html"    class="bnav-item"><span class="bnav-icon">🏠</span><span>Inicio</span></a>
+    <a href="search.html"  class="bnav-item"><span class="bnav-icon">🔍</span><span>Buscar</span></a>
+    <a href="home.html"    class="bnav-item bnav-publish"><span class="bnav-icon">＋</span><span>Publicar</span></a>
+    <a href="chat.html"    class="bnav-item"><span class="bnav-icon">💬</span><span>Chats</span></a>
     <a href="profile.html" class="bnav-item active"><span class="bnav-icon">👤</span><span>Perfil</span></a>
   </div>
 </div>
 
+<!-- MODAL FOTO -->
 <div class="modal-overlay" id="photoModal">
   <div class="modal-small">
     <h3>📷 Foto de perfil</h3>
     <p>Sube una foto desde tu dispositivo para personalizar tu perfil.</p>
     <div class="modal-btn-row">
       <button class="modal-btn secondary" onclick="closePhotoModal()">Cancelar</button>
-      <button class="modal-btn primary" onclick="document.getElementById('fileAvatar').click()">📁 Elegir foto</button>
+      <button class="modal-btn primary"   onclick="document.getElementById('fileAvatar').click()">📁 Elegir foto</button>
     </div>
   </div>
 </div>
 <input type="file" id="fileAvatar" accept="image/*" onchange="uploadAvatar(event)">
 
+<!-- MODAL EDITAR PUBLICACIÓN -->
+<div class="modal-overlay" id="editModal" onclick="if(event.target===this)closeEdit()">
+  <div class="modal-box">
+    <h2>✏️ Editar publicación</h2>
+    <label>Nombre del producto</label>
+    <input type="text"   id="editNombre"  placeholder="Nombre del producto">
+    <label>Precio (COP) — 0 si es trueque</label>
+    <input type="number" id="editPrecio"  placeholder="0" min="0">
+    <label>Descripción</label>
+    <textarea            id="editDesc"    placeholder="Describe tu producto..."></textarea>
+    <label>Estado</label>
+    <select id="editEstado">
+      <option value="activo">🟢 Activo</option>
+      <option value="pausado">⏸ Pausado</option>
+      <option value="vendido">✅ Vendido</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeEdit()">Cancelar</button>
+      <button class="btn-modal-save"   onclick="guardarEdicion()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-  const supabase = createClient(
-    'https://uvkjerejhhbpgyvpmxur.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
-  )
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  // ── Verificar sesión ──────────────────────────────────────
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) { window.location.href = 'index.html'; }
-  const user = session.user
+// ── Verificar sesión ──────────────────────────────────────
+const { data:{ session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const user = session.user
 
-  // ── Cargar datos del perfil desde Supabase ────────────────
-  async function cargarPerfil() {
-    const { data: perfil } = await supabase
-      .from('users')
-      .select('nombre, correo, carrera, whatsapp, bio, avatar_url')
-      .eq('id', user.id)
-      .single()
+const catEmojis = { tecnologia:'💻', libros:'📚', ropa:'👕', videojuegos:'🎮', accesorios:'🎧', otros:'📦' }
+const fmt = iso => new Date(iso).toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'})
+const fmtRelativo = iso => {
+  const diff = Math.floor((Date.now() - new Date(iso)) / 86400000)
+  if (diff === 0) return 'Hoy'
+  if (diff === 1) return 'Ayer'
+  if (diff < 7)  return `Hace ${diff} días`
+  return new Date(iso).toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'})
+}
 
-    const nombre = perfil?.nombre || user.user_metadata?.nombre || user.email?.split('@')[0] || 'Sin nombre'
-    const correo = perfil?.correo || user.email || ''
-    const inicial = nombre[0].toUpperCase()
+// ── TABS PRINCIPALES ──────────────────────────────────────
+window.switchMainTab = (tab, btn) => {
+  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'))
+  document.querySelectorAll('.main-tab-panel').forEach(p => p.classList.remove('active'))
+  btn.classList.add('active')
+  const ids = { perfil:'panelPerfil', pubs:'panelPubs', hist:'panelHist' }
+  document.getElementById(ids[tab]).classList.add('active')
+  if (tab === 'pubs'  && publicaciones === null) cargarPublicaciones()
+  if (tab === 'hist'  && histData === null)      cargarHistorial()
+}
 
-    // Mostrar nombre y correo (solo lectura)
-    document.getElementById('roNombreVal').textContent = nombre
-    document.getElementById('roCorreoVal').textContent = correo
+// ─────────────────────────────────────────────────────────
+// PERFIL
+// ─────────────────────────────────────────────────────────
+async function cargarPerfil() {
+  const { data: p } = await supabase
+    .from('users')
+    .select('nombre,correo,carrera,whatsapp,bio,avatar_url,cover_url,role,created_at')
+    .eq('id', user.id).single()
 
-    // Mostrar en el header del perfil
-    document.getElementById('displayName').textContent = nombre
-    document.getElementById('displayEmail').textContent = correo
-    document.getElementById('avatarLetter').textContent = inicial
+  const nombre  = p?.nombre  || user.user_metadata?.nombre || user.email?.split('@')[0] || 'Sin nombre'
+  const correo  = p?.correo  || user.email || ''
+  const inicial = nombre[0]?.toUpperCase() || 'E'
+  const role    = p?.role    || user.user_metadata?.role || 'user'
 
-    // Si tiene bio guardada mostrarla
-    if (perfil?.bio) {
-      document.getElementById('displayBio').textContent = perfil.bio
-    } else {
-      document.getElementById('displayBio').textContent = ''
-    }
+  document.getElementById('roNombreVal').textContent  = nombre
+  document.getElementById('roCorreoVal').textContent  = correo
+  document.getElementById('displayName').textContent  = nombre
+  document.getElementById('displayEmail').textContent = correo
+  document.getElementById('avatarLetter').textContent = inicial
 
-    // Carrera
-    if (perfil?.carrera) {
-      document.getElementById('displayCarrera').textContent = '🎓 ' + perfil.carrera
-      document.getElementById('inputCarrera').value = perfil.carrera
-    }
-
-    // Prellenar campos editables
-    if (perfil?.whatsapp) document.getElementById('inputWA').value = perfil.whatsapp
-    if (perfil?.bio)      document.getElementById('inputBio').value = perfil.bio
-
-    // Foto de perfil si tiene
-    if (perfil?.avatar_url) {
-      const img = document.getElementById('avatarImg')
-      img.src = perfil.avatar_url
-      img.style.display = 'block'
-      document.getElementById('avatarLetter').style.display = 'none'
-    }
+  if (p?.created_at) {
+    document.getElementById('metaMiembro').textContent =
+      '📅 Miembro desde ' + new Date(p.created_at).toLocaleDateString('es-CO',{month:'long',year:'numeric'})
   }
 
-  // ── Guardar cambios en Supabase ───────────────────────────
-  window.saveProfile = async () => {
-    const carrera  = document.getElementById('inputCarrera').value
-    const whatsapp = document.getElementById('inputWA').value.trim()
-    const bio      = document.getElementById('inputBio').value.trim()
+  if (p?.bio)     { document.getElementById('displayBio').textContent = p.bio; document.getElementById('inputBio').value = p.bio }
+  if (p?.carrera) { document.getElementById('displayCarrera').textContent = '🎓 '+p.carrera; document.getElementById('inputCarrera').value = p.carrera }
+  if (p?.whatsapp)  document.getElementById('inputWA').value = p.whatsapp
 
-    const btn = document.getElementById('btnSave')
-    btn.textContent = '⏳ Guardando...'
-    btn.disabled = true
-
-    const { error } = await supabase
-      .from('users')
-      .update({ carrera, whatsapp, bio })
-      .eq('id', user.id)
-
-    btn.disabled = false
-    btn.textContent = '💾 Guardar cambios'
-
-    if (error) {
-      showToast('❌ Error al guardar: ' + error.message)
-      return
-    }
-
-    // Actualizar vista del header
-    if (bio)     document.getElementById('displayBio').textContent = bio
-    if (carrera) document.getElementById('displayCarrera').textContent = '🎓 ' + carrera
-    showToast('✅ Perfil actualizado correctamente')
-  }
-
-  // ── Cerrar sesión ─────────────────────────────────────────
-  window.cerrarSesion = async () => {
-    if (!confirm('¿Seguro que deseas cerrar sesión?')) return
-    await supabase.auth.signOut()
-    window.location.href = 'index.html'
-  }
-
-  window.confirmarEliminar = () => {
-    showToast('📩 Contacta a soporte@intep.edu.co para eliminar tu cuenta.')
-  }
-
-  // ── Foto de perfil ────────────────────────────────────────
-  window.uploadAvatar = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    const ext  = file.name.split('.').pop()
-    const path = `avatars/${user.id}.${ext}`
-
-    const { error: upErr } = await supabase.storage
-      .from('product-images')
-      .upload(path, file, { upsert: true })
-
-    if (upErr) { showToast('❌ Error subiendo foto'); return }
-
-    const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(path)
-    const avatar_url = urlData.publicUrl
-
-    await supabase.from('users').update({ avatar_url }).eq('id', user.id)
-
+  if (p?.avatar_url) {
     const img = document.getElementById('avatarImg')
-    img.src = avatar_url
-    img.style.display = 'block'
+    img.src = p.avatar_url; img.style.display = 'block'
     document.getElementById('avatarLetter').style.display = 'none'
-    closePhotoModal()
-    showToast('📸 Foto de perfil actualizada')
+  }
+  if (p?.cover_url) {
+    const ci = document.getElementById('coverImg'); ci.src = p.cover_url; ci.style.display = 'block'
   }
 
-  // ── Init ──────────────────────────────────────────────────
-  cargarPerfil()
-  const historialData = {
-    ventas: [
-      { nombre:'Audífonos JBL', emoji:'🎧', fecha:'15 Mar 2025', precio:95000, status:'vendido' },
-      { nombre:'Libro Álgebra Lineal', emoji:'📚', fecha:'02 Feb 2025', precio:40000, status:'vendido' },
-      { nombre:'Calculadora Casio', emoji:'🔢', fecha:'10 Ene 2025', precio:80000, status:'vendido' },
-    ],
-    trueques: [
-      { nombre:'Mouse por Teclado', emoji:'🖱️', fecha:'20 Mar 2025', precio:0, status:'trueque', desc:'Teclado mecánico' },
-      { nombre:'Libros Cálculo', emoji:'📚', fecha:'05 Mar 2025', precio:0, status:'trueque', desc:'Libros de física' },
-    ],
-    compras: [
-      { nombre:'Laptop HP 15"', emoji:'💻', fecha:'18 Mar 2025', precio:750000, status:'comprado' },
-      { nombre:'Sudadera INTEP', emoji:'👕', fecha:'12 Mar 2025', precio:65000, status:'comprado' },
-      { nombre:'Control PS5', emoji:'🎮', fecha:'28 Feb 2025', precio:180000, status:'comprado' },
-      { nombre:'Mochila Nike', emoji:'🎒', fecha:'14 Feb 2025', precio:90000, status:'comprado' },
-    ],
-    activos: [
-      { nombre:'Laptop Lenovo', emoji:'💻', fecha:'Publicado hoy', precio:650000, status:'activo' },
-      { nombre:'Ropa deportiva', emoji:'👟', fecha:'Publicado ayer', precio:45000, status:'activo' },
-    ]
-  };
+  // Mostrar botón admin solo si es admin
+  if (role === 'admin') {
+    document.getElementById('btnAdminNav').style.display = 'flex'
+  }
+}
 
-  function switchTab(tab, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderTab(tab);
+window.saveProfile = async () => {
+  const carrera  = document.getElementById('inputCarrera').value
+  const whatsapp = document.getElementById('inputWA').value.trim()
+  const bio      = document.getElementById('inputBio').value.trim()
+  const btn = document.getElementById('btnSave')
+  btn.textContent = '⏳ Guardando...'; btn.disabled = true
+  const { error } = await supabase.from('users').update({ carrera, whatsapp, bio }).eq('id', user.id)
+  btn.disabled = false; btn.textContent = '💾 Guardar cambios'
+  if (error) { showToast('❌ Error: ' + error.message); return }
+  if (bio)     document.getElementById('displayBio').textContent     = bio
+  if (carrera) document.getElementById('displayCarrera').textContent = '🎓 ' + carrera
+  showToast('✅ Perfil actualizado')
+}
+
+window.cerrarSesion = async () => {
+  if (!confirm('¿Seguro que deseas cerrar sesión?')) return
+  await supabase.auth.signOut(); window.location.href = 'index.html'
+}
+window.confirmarEliminar = () => showToast('📩 Escribe a soporte@intep.edu.co para eliminar tu cuenta.')
+
+// PORTADA
+window.uploadCover = async (e) => {
+  const file = e.target.files[0]; if (!file) return
+  document.getElementById('coverUploading').classList.add('show')
+  const path = `covers/${user.id}.${file.name.split('.').pop()}`
+  const { error } = await supabase.storage.from('product-images').upload(path, file, { upsert:true })
+  document.getElementById('coverUploading').classList.remove('show')
+  if (error) { showToast('❌ Error subiendo portada'); return }
+  const { data: u } = supabase.storage.from('product-images').getPublicUrl(path)
+  await supabase.from('users').update({ cover_url: u.publicUrl }).eq('id', user.id)
+  const ci = document.getElementById('coverImg'); ci.src = u.publicUrl; ci.style.display = 'block'
+  showToast('🖼️ Portada actualizada'); e.target.value = ''
+}
+
+// AVATAR
+window.uploadAvatar = async (e) => {
+  const file = e.target.files[0]; if (!file) return
+  const path = `avatars/${user.id}.${file.name.split('.').pop()}`
+  const { error } = await supabase.storage.from('product-images').upload(path, file, { upsert:true })
+  if (error) { showToast('❌ Error subiendo foto'); return }
+  const { data: u } = supabase.storage.from('product-images').getPublicUrl(path)
+  await supabase.from('users').update({ avatar_url: u.publicUrl }).eq('id', user.id)
+  const img = document.getElementById('avatarImg'); img.src = u.publicUrl; img.style.display = 'block'
+  document.getElementById('avatarLetter').style.display = 'none'
+  closePhotoModal(); showToast('📸 Foto actualizada')
+}
+
+window.openPhotoModal  = () => document.getElementById('photoModal').classList.add('open')
+window.closePhotoModal = () => document.getElementById('photoModal').classList.remove('open')
+document.getElementById('photoModal').addEventListener('click', e => { if (e.target === document.getElementById('photoModal')) closePhotoModal() })
+
+// ─────────────────────────────────────────────────────────
+// MIS PUBLICACIONES
+// ─────────────────────────────────────────────────────────
+let publicaciones = null
+let filtroPubs    = 'todas'
+let editandoId    = null
+
+async function cargarPublicaciones() {
+  const { data, error } = await supabase
+    .from('products').select('*').eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+  if (error) { showToast('❌ Error cargando publicaciones'); return }
+
+  publicaciones = (data || []).map(p => ({
+    id:       p.id,
+    nombre:   p.nombre,
+    emoji:    catEmojis[p.categoria] || '📦',
+    foto_url: p.foto_url || null,
+    tipo:     p.tipo,
+    precio:   p.precio || 0,
+    desc:     p.descripcion || '',
+    estado:   p.estado || 'activo',
+    fecha:    fmtRelativo(p.created_at),   // ← fecha real relativa
+    fechaFull:fmt(p.created_at),
+    vistas:   p.vistas || 0,
+  }))
+
+  actualizarMiniStats()
+  renderListings()
+  // Actualizar stats globales del header
+  document.getElementById('statActivos').textContent  = publicaciones.filter(p=>p.estado==='activo').length
+  document.getElementById('statVentas').textContent   = publicaciones.filter(p=>p.tipo==='venta'&&p.estado==='vendido').length
+  document.getElementById('statTrueques').textContent = publicaciones.filter(p=>p.tipo==='trueque'&&p.estado==='vendido').length
+  document.getElementById('statVistas').textContent   = publicaciones.reduce((a,p)=>a+p.vistas,0)
+}
+
+function actualizarMiniStats() {
+  document.getElementById('msActivas').textContent  = publicaciones.filter(p=>p.estado==='activo').length
+  document.getElementById('msVendidas').textContent = publicaciones.filter(p=>p.estado==='vendido').length
+  document.getElementById('msVistas').textContent   = publicaciones.reduce((a,p)=>a+p.vistas,0)
+}
+
+function renderListings() {
+  if (publicaciones === null) return
+  const lista = filtroPubs === 'todas'
+    ? publicaciones
+    : publicaciones.filter(p => p.estado === filtroPubs)
+  const container = document.getElementById('listingsList')
+  const empty     = document.getElementById('listingsEmpty')
+  container.innerHTML = ''
+  if (!lista.length) { empty.style.display = 'block'; return }
+  empty.style.display = 'none'
+
+  const badgeMap = {
+    activo:  { cls:'badge-activo',  txt:'🟢 Activo' },
+    vendido: { cls:'badge-vendido', txt:'✅ Vendido' },
+    pausado: { cls:'badge-pausado', txt:'⏸ Pausado' },
   }
 
-  function renderTab(tab) {
-    const list = historialData[tab];
-    const container = document.getElementById('tabContent');
-    container.innerHTML = '';
-    if (!list || list.length === 0) {
-      container.innerHTML = `<div class="empty-tab"><div class="icon">📭</div><p>No hay registros aún.</p></div>`;
-      return;
-    }
-    list.forEach((item, i) => {
-      const div = document.createElement('div');
-      div.className = 'history-item';
-      div.style.animationDelay = `${i * 0.06}s`;
-      const statusLabels = {
-        vendido:  { cls:'status-vendido',  txt:'✅ Vendido' },
-        activo:   { cls:'status-activo',   txt:'🟡 Activo' },
-        trueque:  { cls:'status-trueque',  txt:'🔄 Trueque' },
-        comprado: { cls:'status-comprado', txt:'🛒 Comprado' },
-      };
-      const s = statusLabels[item.status] || { cls:'', txt: item.status };
-      const precioTxt = item.precio > 0
-        ? `<div class="history-price">$${item.precio.toLocaleString('es-CO')}</div>`
-        : `<div class="history-price trueque">🔄 Trueque</div>`;
-      div.innerHTML = `
-        <div class="history-emoji">${item.emoji}</div>
-        <div class="history-info">
-          <div class="history-name">${item.nombre}</div>
-          <div class="history-date">${item.fecha}${item.desc ? ' · ' + item.desc : ''}</div>
+  lista.forEach((p, i) => {
+    const b = badgeMap[p.estado] || badgeMap.activo
+    const card = document.createElement('div')
+    card.className = 'listing-card'; card.style.animationDelay = `${i*.05}s`
+
+    const imgHtml = p.foto_url
+      ? `<div class="listing-thumb"><img src="${p.foto_url}" alt="${p.nombre}"></div>`
+      : `<div class="listing-thumb">${p.emoji}</div>`
+
+    const btns = `
+      <button class="action-btn edit"   onclick="abrirEditar('${p.id}')">✏️ Editar</button>
+      ${p.estado !== 'vendido' ? `<button class="action-btn sold"     onclick="marcarVendido('${p.id}')">✅ Vendido</button>` : ''}
+      ${p.estado === 'activo'  ? `<button class="action-btn pause"    onclick="pausar('${p.id}')">⏸ Pausar</button>` : ''}
+      ${p.estado === 'pausado' ? `<button class="action-btn activate" onclick="activar('${p.id}')">▶ Activar</button>` : ''}
+      <button class="action-btn delete" onclick="eliminar('${p.id}')">🗑 Eliminar</button>`
+
+    card.innerHTML = `
+      ${imgHtml}
+      <div class="listing-info">
+        <div class="listing-top">
+          <div class="listing-name">${p.nombre}</div>
+          <span class="listing-badge ${b.cls}">${b.txt}</span>
         </div>
-        <div class="history-right">
-          ${precioTxt}
-          <span class="history-status ${s.cls}">${s.txt}</span>
-        </div>`;
-      container.appendChild(div);
-    });
+        <div class="listing-desc">${p.desc || 'Sin descripción'}</div>
+        <div class="listing-meta">
+          <span class="listing-price ${p.tipo==='trueque'?'t':''}">
+            ${p.tipo==='venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
+          </span>
+          <span class="listing-date">📅 ${p.fecha}</span>
+          <span class="listing-views">👁 ${p.vistas}</span>
+        </div>
+        <div class="listing-actions">${btns}</div>
+      </div>`
+    container.appendChild(card)
+  })
+}
+
+window.filtrarPubs = (f, btn) => {
+  filtroPubs = f
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  if (publicaciones === null) cargarPublicaciones(); else renderListings()
+}
+
+async function cambiarEstado(id, estado) {
+  const { error } = await supabase.from('products').update({ estado }).eq('id', id).eq('user_id', user.id)
+  if (error) { showToast('❌ Error: ' + error.message); return false }
+  return true
+}
+
+window.marcarVendido = async id => {
+  if (!await cambiarEstado(id, 'vendido')) return
+  publicaciones.find(p=>p.id===id).estado = 'vendido'
+  actualizarMiniStats(); renderListings(); showToast('✅ Marcado como vendido')
+}
+window.pausar = async id => {
+  if (!await cambiarEstado(id, 'pausado')) return
+  publicaciones.find(p=>p.id===id).estado = 'pausado'
+  actualizarMiniStats(); renderListings(); showToast('⏸ Publicación pausada')
+}
+window.activar = async id => {
+  if (!await cambiarEstado(id, 'activo')) return
+  publicaciones.find(p=>p.id===id).estado = 'activo'
+  actualizarMiniStats(); renderListings(); showToast('🟢 Publicación activada')
+}
+window.eliminar = async id => {
+  if (!confirm('¿Eliminar esta publicación? Esta acción no se puede deshacer.')) return
+  const { error } = await supabase.from('products').delete().eq('id', id).eq('user_id', user.id)
+  if (error) { showToast('❌ Error: ' + error.message); return }
+  publicaciones = publicaciones.filter(p => p.id !== id)
+  actualizarMiniStats(); renderListings(); showToast('🗑 Publicación eliminada')
+}
+
+window.abrirEditar = id => {
+  editandoId = id
+  const p = publicaciones.find(p => p.id === id)
+  document.getElementById('editNombre').value = p.nombre
+  document.getElementById('editPrecio').value = p.precio
+  document.getElementById('editDesc').value   = p.desc
+  document.getElementById('editEstado').value = p.estado
+  document.getElementById('editModal').classList.add('open')
+}
+window.closeEdit = () => document.getElementById('editModal').classList.remove('open')
+
+window.guardarEdicion = async () => {
+  const p      = publicaciones.find(p => p.id === editandoId)
+  const nombre = document.getElementById('editNombre').value.trim() || p.nombre
+  const precio = parseInt(document.getElementById('editPrecio').value) || 0
+  const desc   = document.getElementById('editDesc').value.trim() || p.desc
+  const estado = document.getElementById('editEstado').value
+  const { error } = await supabase.from('products')
+    .update({ nombre, precio, descripcion: desc, estado })
+    .eq('id', editandoId).eq('user_id', user.id)
+  if (error) { showToast('❌ Error: ' + error.message); return }
+  p.nombre = nombre; p.precio = precio; p.desc = desc; p.estado = estado
+  window.closeEdit(); actualizarMiniStats(); renderListings(); showToast('💾 Publicación actualizada')
+}
+
+// ─────────────────────────────────────────────────────────
+// HISTORIAL
+// ─────────────────────────────────────────────────────────
+let histData     = null
+let histTabActual = 'activos'
+
+async function cargarHistorial() {
+  if (publicaciones === null) await cargarPublicaciones()
+  const { data } = await supabase
+    .from('products')
+    .select('id,nombre,foto_url,tipo,precio,estado,created_at,categoria')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+  const all = data || []
+  histData = {
+    activos:  all.filter(p=>p.estado==='activo').map(p=>({...p,fecha:fmt(p.created_at),status:'activo'})),
+    ventas:   all.filter(p=>p.estado==='vendido'&&p.tipo==='venta').map(p=>({...p,fecha:fmt(p.created_at),status:'vendido'})),
+    trueques: all.filter(p=>p.estado==='vendido'&&p.tipo==='trueque').map(p=>({...p,fecha:fmt(p.created_at),status:'trueque'})),
   }
+  renderHistTab(histTabActual)
+}
 
-  function openPhotoModal()  { document.getElementById('photoModal').classList.add('open'); }
-  function closePhotoModal() { document.getElementById('photoModal').classList.remove('open'); }
-  document.getElementById('photoModal').addEventListener('click', function(e) {
-    if (e.target === this) closePhotoModal();
-  });
+window.switchHistTab = (tab, btn) => {
+  histTabActual = tab
+  document.querySelectorAll('#panelHist .tab-btn').forEach(b=>b.classList.remove('active'))
+  btn.classList.add('active')
+  if (histData === null) cargarHistorial(); else renderHistTab(tab)
+}
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+function renderHistTab(tab) {
+  const lista = histData?.[tab] || []
+  const container = document.getElementById('histContent')
+  container.innerHTML = ''
+  if (!lista.length) {
+    container.innerHTML = `<div class="empty-tab"><div class="icon">📭</div><p>No hay registros en esta categoría.</p></div>`
+    return
   }
+  const sMap = {
+    vendido:{cls:'status-vendido',txt:'✅ Vendido'},
+    activo: {cls:'status-activo', txt:'🟡 Activo'},
+    trueque:{cls:'status-trueque',txt:'🔄 Trueque'},
+  }
+  lista.forEach((item, i) => {
+    const s = sMap[item.status] || {cls:'',txt:item.status}
+    const div = document.createElement('div')
+    div.className = 'history-item'; div.style.animationDelay = `${i*.05}s`
+    div.innerHTML = `
+      <div class="history-emoji">
+        ${item.foto_url ? `<img src="${item.foto_url}" alt="">` : (catEmojis[item.categoria]||'📦')}
+      </div>
+      <div class="history-info">
+        <div class="history-name">${item.nombre}</div>
+        <div class="history-date">${item.fecha}</div>
+      </div>
+      <div class="history-right">
+        <div class="history-price ${item.tipo==='trueque'?'trueque':''}">
+          ${item.tipo==='venta' ? '$'+(item.precio||0).toLocaleString('es-CO') : '🔄 Trueque'}
+        </div>
+        <span class="history-status ${s.cls}">${s.txt}</span>
+      </div>`
+    container.appendChild(div)
+  })
+}
 
+// ─────────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────────
+window.showToast = msg => {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(()=>t.classList.remove('show'), 3000)
+}
+
+// ─────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────
+await cargarPerfil()
+await cargarPublicaciones()
 </script>
 </body>
 </html>

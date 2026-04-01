@@ -2,374 +2,184 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login | Yo Lo Vendo</title>
+  <title>Iniciar sesión | Yo Lo Vendo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --yellow:#e6d44c; --yellow-dark:#7a6a00; --green-light:#34d399; --green-mid:#1fbf75; --red:#ff6b6b; --text-muted:#9fffd8; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Nunito', sans-serif;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #1fbf75, #0b3d2e);
-      display: flex; justify-content: center; align-items: center; padding: 20px;
+      font-family:'Nunito',sans-serif; min-height:100vh;
+      background:radial-gradient(circle at 20% 10%,#1fbf75 0%,#0b3d2e 45%,#071f17 100%);
+      display:flex; justify-content:center; align-items:center; padding:20px;
     }
-    :root { --yellow: #e6d44c; --yellow-dark: #7a6a00; --green-light: #34d399; --green-mid: #1fbf75; --red: #ff6b6b; }
+    .login-container { width:100%; max-width:420px; text-align:center; }
 
-    .login-container { width: 100%; max-width: 420px; text-align: center; }
-
+    /* LOGO */
     .title-frame {
-      background: linear-gradient(135deg, #2dbb7a, #198f5c);
-      border-radius: 25px; padding: 20px; margin-bottom: 30px;
-      box-shadow: inset 0 0 0 4px #0b5c3d, inset 0 0 0 7px #34d399;
+      background:linear-gradient(135deg,#2dbb7a,#198f5c);
+      border-radius:25px; padding:22px 20px 18px; margin-bottom:24px;
+      box-shadow:inset 0 0 0 4px #0b5c3d,inset 0 0 0 7px #34d399;
     }
-    .title-frame h1 { font-family: 'Poppins', sans-serif; font-size: 34px; font-weight: 900; }
-    .yo { color: white; } .lo { color: white; font-weight: 400; }
-    .vendo { color: var(--yellow); text-shadow: 0 3px 0 var(--yellow-dark); }
-    .line { width: 75%; height: 2px; background: #0b5c3d; margin: 10px auto; }
-    .slogan { font-size: 14px; color: #eafff5; }
+    .title-frame h1 { font-family:'Poppins',sans-serif; font-size:36px; font-weight:900; letter-spacing:-1px; }
+    .yo{color:#fff} .lo{color:rgba(255,255,255,0.75);font-weight:400} .vendo{color:var(--yellow);text-shadow:0 3px 0 var(--yellow-dark)}
+    .line{width:70%;height:2px;background:#0b5c3d;margin:10px auto}
+    .slogan{font-size:13px;color:#c0ffe8;letter-spacing:.3px}
 
+    /* CAJA */
     .login-box {
-      background: rgba(0,0,0,0.3); padding: 25px;
-      border-radius: 20px; backdrop-filter: blur(10px);
+      background:rgba(0,0,0,0.35); padding:26px;
+      border-radius:22px; backdrop-filter:blur(14px);
+      border:1px solid rgba(52,211,153,0.15);
     }
 
-    /* Campos con feedback */
-    .field-wrap { position: relative; margin-bottom: 6px; }
+    /* CAMPOS */
+    .field-wrap { position:relative; margin-bottom:12px; }
     .field-wrap input {
-      width: 100%; padding: 12px 40px 12px 14px;
-      border: 1.5px solid rgba(52,211,153,0.25);
-      border-radius: 10px; outline: none;
-      font-family: 'Nunito', sans-serif; font-size: 14px;
-      background: rgba(255,255,255,0.92); color: #063521;
-      transition: border-color .2s;
+      width:100%; padding:13px 16px;
+      border:1.5px solid rgba(52,211,153,0.25); border-radius:11px; outline:none;
+      font-family:'Nunito',sans-serif; font-size:14px;
+      background:rgba(255,255,255,0.93); color:#063521;
+      transition:border-color .2s;
     }
-    .field-wrap input:focus { border-color: var(--green-light); }
-    .field-wrap input.err { border-color: var(--red); }
-    .field-icon { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); font-size: 15px; opacity: 0; }
-    .field-msg { font-size: 11px; min-height: 16px; margin-bottom: 10px; padding-left: 2px; display: block; }
-    .field-msg.err { color: var(--red); }
-    .field-msg.ok  { color: var(--green-light); }
+    .field-wrap input:focus { border-color:var(--green-light); }
 
-    /* Tabs registro / login */
-    .tabs { display: flex; gap: 0; margin-bottom: 20px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(52,211,153,0.25); }
-    .tab-btn {
-      flex: 1; padding: 10px; background: transparent;
-      border: none; font-family: 'Nunito', sans-serif;
-      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.5);
-      cursor: pointer; transition: all .2s;
+    /* BOTÓN PRINCIPAL */
+    .btn-main {
+      width:100%; padding:14px; margin-top:4px;
+      background:linear-gradient(135deg,#5cffb1,#22d389);
+      border:none; border-radius:12px; font-weight:800; font-size:15px;
+      cursor:pointer; font-family:'Poppins',sans-serif; color:#063521;
+      transition:opacity .2s,transform .15s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
-    .tab-btn.active { background: var(--green-mid); color: #063521; }
+    .btn-main:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 20px rgba(52,211,153,.35); }
+    .btn-main:disabled { opacity:.5; cursor:not-allowed; }
 
-    .tab-panel { display: none; } .tab-panel.active { display: block; }
+    .spinner { width:16px;height:16px;border:2px solid #063521;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;display:none; }
+    @keyframes spin { to{transform:rotate(360deg)} }
 
-    button.btn-main {
-      width: 100%; padding: 14px;
-      background: linear-gradient(to right, #5cffb1, #22d389);
-      border: none; border-radius: 12px;
-      font-weight: bold; font-size: 15px; cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      transition: opacity .2s, transform .15s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    button.btn-main:hover { transform: translateY(-1px); }
-    button.btn-main:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-    .spinner {
-      width: 16px; height: 16px; border: 2px solid #063521;
-      border-top-color: transparent; border-radius: 50%;
-      animation: spin .7s linear infinite; display: none;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
+    /* MENSAJE */
     .msg-box {
-      padding: 10px 14px; border-radius: 10px;
-      font-size: 13px; margin-bottom: 14px;
-      display: none; line-height: 1.5;
+      padding:10px 14px; border-radius:10px; font-size:13px;
+      margin-bottom:16px; display:none; line-height:1.5; text-align:left;
     }
-    .msg-box.error { background: rgba(255,107,107,0.15); color: #ff9999; border: 1px solid rgba(255,107,107,0.3); }
-    .msg-box.success { background: rgba(52,211,153,0.15); color: #9fffd8; border: 1px solid rgba(52,211,153,0.3); }
+    .msg-box.error   { background:rgba(255,107,107,0.15); color:#ffaaaa; border:1px solid rgba(255,107,107,0.3); }
+    .msg-box.success { background:rgba(52,211,153,0.15); color:#9fffd8;  border:1px solid rgba(52,211,153,0.3); }
 
-    .links { margin-top: 14px; font-size: 13px; }
-    .links a { color: #9fffd8; text-decoration: none; font-weight: bold; }
-    .links a:hover { text-decoration: underline; }
-    .terms { margin-top: 10px; font-size: 12px; color: #9fffd8; }
-    .terms a { color: #34d399; text-decoration: none; }
+    /* LINKS */
+    .link-row { margin-top:14px; display:flex; justify-content:space-between; font-size:13px; }
+    .link-row a { color:var(--text-muted); text-decoration:none; font-weight:700; transition:color .2s; }
+    .link-row a:hover { color:var(--green-light); }
 
-    /* Barra de fortaleza */
-    .strength-bar { display: flex; gap: 4px; margin-bottom: 4px; }
-    .strength-seg { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.1); transition: background .3s; }
-    .strength-label { font-size: 11px; margin-bottom: 10px; padding-left: 2px; min-height: 14px; }
-    .req-list { list-style: none; padding: 0; margin-bottom: 10px; }
-    .req-list li { font-size: 11px; color: rgba(159,255,216,0.5); display: flex; align-items: center; gap: 5px; margin-bottom: 2px; transition: color .2s; }
-    .req-list li.met { color: var(--green-light); }
-    .req-list li::before { content: '○'; font-size: 10px; }
-    .req-list li.met::before { content: '✓'; }
+    /* DIVISOR */
+    .divider { display:flex;align-items:center;gap:10px;margin:20px 0 16px;color:rgba(159,255,216,0.4);font-size:12px; }
+    .divider::before,.divider::after { content:'';flex:1;height:1px;background:rgba(52,211,153,0.15); }
+
+    /* BOTÓN REGISTRAR */
+    .btn-secondary {
+      width:100%; padding:13px;
+      background:transparent; border:2px solid rgba(52,211,153,0.35);
+      border-radius:12px; font-weight:700; font-size:15px;
+      cursor:pointer; font-family:'Poppins',sans-serif; color:var(--green-light);
+      transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .btn-secondary:hover { background:rgba(52,211,153,0.08); border-color:var(--green-light); }
   </style>
 </head>
 <body>
 <div class="login-container">
+
   <div class="title-frame">
     <h1><span class="yo">YO</span><span class="lo"> lo </span><span class="vendo">VENDO</span></h1>
     <div class="line"></div>
-    <p class="slogan">Compra, vende e intercambia fácil y seguro</p>
+    <p class="slogan">🎓 Compra, vende e intercambia entre estudiantes INTEP</p>
   </div>
 
   <div class="login-box">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('login')">Iniciar sesión</button>
-      <button class="tab-btn" onclick="switchTab('register')">Crear cuenta</button>
-    </div>
 
     <div class="msg-box" id="msgBox"></div>
 
-    <!-- ── LOGIN ── -->
-    <div class="tab-panel active" id="panelLogin">
-      <div class="field-wrap">
-        <input type="email" id="loginEmail" placeholder="Correo institucional (@intep.edu.co)"
-          oninput="clearMsg()">
-      </div>
-      <div class="field-wrap">
-        <input type="password" id="loginPass" placeholder="Contraseña"
-          oninput="clearMsg()" onkeydown="if(event.key==='Enter') doLogin()">
-      </div>
-      <button class="btn-main" id="btnLogin" onclick="doLogin()">
-        <div class="spinner" id="spinLogin"></div>
-        <span id="lblLogin">Iniciar sesión</span>
-      </button>
-      <div class="links" style="margin-top:14px; display:flex; justify-content:space-between">
-        <a href="forgot-password.html">¿Olvidaste tu contraseña?</a>
-        <a href="#" onclick="switchTab('register')">Crear cuenta</a>
-      </div>
+    <div class="field-wrap">
+      <input type="email" id="loginEmail" placeholder="Correo (@intep.edu.co)"
+        oninput="clearMsg()" autocomplete="email">
     </div>
 
-    <!-- ── REGISTRO ── -->
-    <div class="tab-panel" id="panelRegister">
-      <div class="field-wrap">
-        <input type="text" id="regNombre" placeholder="Nombre completo"
-          oninput="valNombre()" autocomplete="name">
-        <span class="field-icon" id="iNombre"></span>
-      </div>
-      <span class="field-msg" id="mNombre"></span>
-
-      <div class="field-wrap">
-        <input type="email" id="regEmail" placeholder="Correo institucional (@intep.edu.co)"
-          oninput="valCorreo()" autocomplete="email">
-        <span class="field-icon" id="iCorreo"></span>
-      </div>
-      <span class="field-msg" id="mCorreo"></span>
-
-      <div class="field-wrap">
-        <input type="password" id="regPass" placeholder="Contraseña"
-          oninput="valPass()" autocomplete="new-password">
-        <span class="field-icon" id="iPass"></span>
-      </div>
-      <div class="strength-bar">
-        <div class="strength-seg" id="s1"></div><div class="strength-seg" id="s2"></div>
-        <div class="strength-seg" id="s3"></div><div class="strength-seg" id="s4"></div>
-      </div>
-      <div class="strength-label" id="strengthLabel"></div>
-      <ul class="req-list">
-        <li id="req-len">Mínimo 8 caracteres</li>
-        <li id="req-num">Al menos un número</li>
-        <li id="req-upper">Al menos una mayúscula</li>
-        <li id="req-special">Al menos un símbolo (!@#...)</li>
-      </ul>
-
-      <div class="field-wrap">
-        <input type="password" id="regPass2" placeholder="Confirmar contraseña"
-          oninput="valPass2()" autocomplete="new-password">
-        <span class="field-icon" id="iPass2"></span>
-      </div>
-      <span class="field-msg" id="mPass2"></span>
-
-      <button class="btn-main" id="btnRegister" onclick="doRegister()" disabled>
-        <div class="spinner" id="spinRegister"></div>
-        <span id="lblRegister">Crear cuenta</span>
-      </button>
-      <div class="terms">Al registrarte aceptas nuestros <a href="terms.html">Términos y Condiciones</a></div>
+    <div class="field-wrap">
+      <input type="password" id="loginPass" placeholder="Contraseña"
+        oninput="clearMsg()"
+        onkeydown="if(event.key==='Enter') doLogin()" autocomplete="current-password">
     </div>
+
+    <button class="btn-main" id="btnLogin" onclick="doLogin()">
+      <div class="spinner" id="spinLogin"></div>
+      <span id="lblLogin">🔑 Iniciar sesión</span>
+    </button>
+
+    <div class="link-row">
+      <a href="forgot-password.html">¿Olvidaste tu contraseña?</a>
+      <a href="help.html">Ayuda</a>
+    </div>
+
+    <div class="divider">¿No tienes cuenta aún?</div>
+
+    <button class="btn-secondary" onclick="window.location.href='register.html'">
+      ✨ Crear cuenta nueva
+    </button>
+
   </div>
 </div>
 
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  const supabase = createClient(
-    'https://uvkjerejhhbpgyvpmxur.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
-  )
+// Sesión activa → redirigir
+const { data: { session } } = await supabase.auth.getSession()
+if (session) {
+  const { data: uRow } = await supabase.from('users').select('role').eq('id', session.user.id).single()
+  const isAdmin = session.user.user_metadata?.role === 'admin' || uRow?.role === 'admin'
+  window.location.href = isAdmin ? 'admin.html' : 'home.html'
+}
 
-  // Si ya hay sesión activa → ir directo al home
-  const { data: { session } } = await supabase.auth.getSession()
-  if (session) window.location.href = 'home.html'
+window.clearMsg = () => {
+  const b = document.getElementById('msgBox'); b.style.display = 'none'; b.className = 'msg-box'
+}
+function showMsg(txt, type = 'error') {
+  const b = document.getElementById('msgBox'); b.textContent = txt; b.className = `msg-box ${type}`; b.style.display = 'block'
+}
+function setLoading(on) {
+  document.getElementById('btnLogin').disabled = on
+  document.getElementById('spinLogin').style.display = on ? 'block' : 'none'
+  document.getElementById('lblLogin').style.display  = on ? 'none'  : 'inline'
+}
 
-  // ── TABS ─────────────────────────────────────────────────
-  window.switchTab = (tab) => {
-    document.getElementById('panelLogin').classList.toggle('active', tab === 'login')
-    document.getElementById('panelRegister').classList.toggle('active', tab === 'register')
-    document.querySelectorAll('.tab-btn').forEach((b, i) =>
-      b.classList.toggle('active', (i === 0) === (tab === 'login'))
-    )
-    clearMsg()
-  }
+window.doLogin = async () => {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase()
+  const pass  = document.getElementById('loginPass').value
+  if (!email || !pass) { showMsg('⚠ Completa todos los campos.'); return }
 
-  // ── HELPERS UI ────────────────────────────────────────────
-  window.clearMsg = () => {
-    const b = document.getElementById('msgBox')
-    b.style.display = 'none'; b.className = 'msg-box'
-  }
+  setLoading(true)
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass })
+  setLoading(false)
 
-  function showMsg(txt, type = 'error') {
-    const b = document.getElementById('msgBox')
-    b.textContent = txt; b.className = `msg-box ${type}`; b.style.display = 'block'
-  }
-
-  function setLoading(btnId, spinId, lblId, loading) {
-    document.getElementById(btnId).disabled = loading
-    document.getElementById(spinId).style.display = loading ? 'block' : 'none'
-    document.getElementById(lblId).style.display = loading ? 'none' : 'inline'
-  }
-
-  // ── LOGIN ─────────────────────────────────────────────────
-  window.doLogin = async () => {
-    const email = document.getElementById('loginEmail').value.trim()
-    const pass  = document.getElementById('loginPass').value
-
-    if (!email || !pass) { showMsg('Completa todos los campos.'); return }
-    if (!email.endsWith('@intep.edu.co')) {
-      showMsg('Debes usar tu correo institucional @intep.edu.co'); return
+  if (error) {
+    const msgs = {
+      'Invalid login credentials': '❌ Correo o contraseña incorrectos.',
+      'Email not confirmed': '📧 Confirma tu correo antes de iniciar sesión.',
     }
-
-    setLoading('btnLogin', 'spinLogin', 'lblLogin', true)
-    const { error } = await supabase.auth.signInWithPassword({ email, password: pass })
-    setLoading('btnLogin', 'spinLogin', 'lblLogin', false)
-
-    if (error) {
-      const msgs = {
-        'Invalid login credentials': 'Correo o contraseña incorrectos.',
-        'Email not confirmed': 'Confirma tu correo antes de iniciar sesión. Revisa tu bandeja.',
-      }
-      showMsg(msgs[error.message] || error.message)
-    } else {
-      window.location.href = 'home.html'
-    }
+    showMsg(msgs[error.message] || ('❌ ' + error.message)); return
   }
 
-  // ── REGISTRO ──────────────────────────────────────────────
-  const regState = { nombre: false, correo: false, pass: false, pass2: false }
-
-  function setField(inputId, iconId, msgId, ok, msg) {
-    const input = document.getElementById(inputId)
-    const icon  = document.getElementById(iconId)
-    const msgEl = document.getElementById(msgId)
-    if (!icon || !msgEl) return
-    input.className = ok ? '' : (msg ? 'err' : '')
-    icon.textContent = ok ? '✅' : (msg ? '❌' : '')
-    icon.style.opacity = (ok || msg) ? '1' : '0'
-    msgEl.textContent = msg || (ok ? '' : '')
-    msgEl.className = 'field-msg ' + (ok ? 'ok' : (msg ? 'err' : ''))
-  }
-
-  window.valNombre = () => {
-    const v = document.getElementById('regNombre').value.trim()
-    const words = v.split(/\s+/).filter(Boolean)
-    if (!v) { setField('regNombre','iNombre','mNombre', false, ''); regState.nombre = false }
-    else if (words.length < 2) { setField('regNombre','iNombre','mNombre', false, '⚠ Escribe nombre y apellido'); regState.nombre = false }
-    else { setField('regNombre','iNombre','mNombre', true, '✓ Nombre válido'); regState.nombre = true }
-    checkBtn()
-  }
-
-  window.valCorreo = () => {
-    const v = document.getElementById('regEmail').value.trim().toLowerCase()
-    if (!v) { setField('regEmail','iCorreo','mCorreo', false, ''); regState.correo = false }
-    else if (!v.endsWith('@intep.edu.co')) { setField('regEmail','iCorreo','mCorreo', false, '⚠ Debe ser correo @intep.edu.co'); regState.correo = false }
-    else { setField('regEmail','iCorreo','mCorreo', true, '✓ Correo institucional válido'); regState.correo = true }
-    checkBtn()
-  }
-
-  const strengthColors = ['#ff6b6b','#f59e0b','#34d399','#1fbf75']
-  const strengthNames  = ['Muy débil','Débil','Buena','Muy segura']
-  function getStrength(p) {
-    let s = 0
-    if (p.length >= 8) s++
-    if (/[0-9]/.test(p)) s++
-    if (/[A-Z]/.test(p)) s++
-    if (/[^A-Za-z0-9]/.test(p)) s++
-    return s
-  }
-
-  window.valPass = () => {
-    const v = document.getElementById('regPass').value
-    const score = getStrength(v)
-    document.getElementById('req-len').classList.toggle('met', v.length >= 8)
-    document.getElementById('req-num').classList.toggle('met', /[0-9]/.test(v))
-    document.getElementById('req-upper').classList.toggle('met', /[A-Z]/.test(v))
-    document.getElementById('req-special').classList.toggle('met', /[^A-Za-z0-9]/.test(v))
-    for (let i = 1; i <= 4; i++) {
-      document.getElementById(`s${i}`).style.background =
-        i <= score ? strengthColors[score-1] : 'rgba(255,255,255,0.1)'
-    }
-    const lbl = document.getElementById('strengthLabel')
-    lbl.textContent = v ? (strengthNames[score-1] || 'Muy débil') : ''
-    if (v) lbl.style.color = strengthColors[score-1] || '#ff6b6b'
-    document.getElementById('regPass').className = !v ? '' : score < 3 ? 'err' : ''
-    document.getElementById('iPass').textContent = !v ? '' : score < 3 ? '❌' : '✅'
-    document.getElementById('iPass').style.opacity = v ? '1' : '0'
-    regState.pass = v && score >= 3
-    if (document.getElementById('regPass2').value) valPass2()
-    checkBtn()
-  }
-
-  window.valPass2 = () => {
-    const p1 = document.getElementById('regPass').value
-    const p2 = document.getElementById('regPass2').value
-    if (!p2) { setField('regPass2','iPass2','mPass2', false, ''); regState.pass2 = false }
-    else if (p2 !== p1) { setField('regPass2','iPass2','mPass2', false, '⚠ Las contraseñas no coinciden'); regState.pass2 = false }
-    else { setField('regPass2','iPass2','mPass2', true, '✓ Coinciden'); regState.pass2 = true }
-    checkBtn()
-  }
-
-  function checkBtn() {
-    document.getElementById('btnRegister').disabled =
-      !(regState.nombre && regState.correo && regState.pass && regState.pass2)
-  }
-
-  window.doRegister = async () => {
-    const nombre = document.getElementById('regNombre').value.trim()
-    const email  = document.getElementById('regEmail').value.trim().toLowerCase()
-    const pass   = document.getElementById('regPass').value
-
-    setLoading('btnRegister', 'spinRegister', 'lblRegister', true)
-
-    // 1. Crear usuario en Auth
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: pass,
-      options: { data: { nombre } }   // se guarda en auth.users metadata
-    })
-
-    if (error) {
-      setLoading('btnRegister', 'spinRegister', 'lblRegister', false)
-      const msgs = {
-        'User already registered': 'Este correo ya tiene una cuenta. Inicia sesión.',
-        'Password should be at least 6 characters': 'La contraseña debe tener al menos 6 caracteres.',
-      }
-      showMsg(msgs[error.message] || error.message)
-      return
-    }
-
-    // 2. Insertar perfil en tabla public.users
-    if (data.user) {
-      await supabase.from('users').insert({
-        id: data.user.id,
-        nombre,
-        correo: email,
-      })
-    }
-
-    setLoading('btnRegister', 'spinRegister', 'lblRegister', false)
-    showMsg('✅ Cuenta creada. Revisa tu correo para confirmarla antes de iniciar sesión.', 'success')
-  }
+  // Verificar rol admin (metadata Y tabla users)
+  const meta = data.user?.user_metadata || {}
+  const { data: uRow } = await supabase.from('users').select('role').eq('id', data.user.id).single()
+  const isAdmin = meta.role === 'admin' || uRow?.role === 'admin'
+  window.location.href = isAdmin ? 'admin.html' : 'home.html'
+}
 </script>
 </body>
 </html>

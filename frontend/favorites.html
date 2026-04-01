@@ -90,65 +90,87 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  let favoritos = [
-    { id:1, nombre:'Laptop HP 15"', desc:'Intel i5, 8GB RAM, cargador incluido.', precio:850000, tipo:'venta', emoji:'💻' },
-    { id:2, nombre:'Audífonos Sony', desc:'Bluetooth, cancelación de ruido.', precio:220000, tipo:'venta', emoji:'🎧' },
-    { id:3, nombre:'Cálculo Integral', desc:'Larson 9a edición, sin rayones.', precio:0, tipo:'trueque', emoji:'📚' },
-  ];
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabase = createClient(
+  'https://uvkjerejhhbpgyvpmxur.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2a2plcmVqaGhicGd5dnBteHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTA0ODEsImV4cCI6MjA5MDQyNjQ4MX0.bWQEBRsrxeEdtMRAyOfTZsGKI526Ig629APP21saUVI'
+)
 
-  function renderFavs() {
-    const grid  = document.getElementById('favGrid');
-    const empty = document.getElementById('emptyState');
-    grid.innerHTML = '';
-    if (favoritos.length === 0) { empty.style.display = 'block'; return; }
-    empty.style.display = 'none';
-    favoritos.forEach((p, i) => {
-      const card = document.createElement('div');
-      card.className = 'fav-card';
-      card.style.animationDelay = `${i * 0.06}s`;
-      card.innerHTML = `
-        <div class="fav-img">
-          ${p.emoji}
-          <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
-          <button class="btn-unfav" onclick="event.stopPropagation(); quitarFav(${p.id})">❤️</button>
+const { data: { session } } = await supabase.auth.getSession()
+if (!session) { window.location.href = 'index.html' }
+const currentUser = session.user
+
+// Guardamos favoritos en localStorage por usuario (clave única por user_id)
+const FAV_KEY = `favorites_${currentUser.id}`
+
+function getFavs() {
+  try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]') } catch { return [] }
+}
+function saveFavs(list) {
+  localStorage.setItem(FAV_KEY, JSON.stringify(list))
+}
+
+let favoritos = getFavs()
+
+function renderFavs() {
+  const grid  = document.getElementById('favGrid')
+  const empty = document.getElementById('emptyState')
+  grid.innerHTML = ''
+  if (favoritos.length === 0) { empty.style.display = 'block'; return }
+  empty.style.display = 'none'
+  favoritos.forEach((p, i) => {
+    const card = document.createElement('div')
+    card.className = 'fav-card'
+    card.style.animationDelay = `${i * 0.06}s`
+    card.onclick = () => window.location.href = 'product-detail.html'
+    const imgHtml = p.foto_url
+      ? `<img src="${p.foto_url}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:0">`
+      : (p.emoji || '📦')
+    card.innerHTML = `
+      <div class="fav-img">
+        ${imgHtml}
+        <span class="badge-tipo badge-${p.tipo}">${p.tipo === 'venta' ? 'Venta' : 'Trueque'}</span>
+        <button class="btn-unfav" onclick="event.stopPropagation(); quitarFav('${p.id}')">❤️</button>
+      </div>
+      <div class="fav-body">
+        <div class="fav-name">${p.nombre}</div>
+        <div class="fav-desc">${p.descripcion || ''}</div>
+        <div class="fav-footer">
+          <span class="fav-price ${p.tipo==='trueque'?'t':''}">
+            ${p.tipo === 'venta' ? '$'+(p.precio||0).toLocaleString('es-CO') : '🔄 Trueque'}
+          </span>
+          <button class="btn-contact" onclick="event.stopPropagation(); window.location.href='product-detail.html'">Ver</button>
         </div>
-        <div class="fav-body">
-          <div class="fav-name">${p.nombre}</div>
-          <div class="fav-desc">${p.desc}</div>
-          <div class="fav-footer">
-            <span class="fav-price ${p.tipo==='trueque'?'t':''}">
-              ${p.tipo === 'venta' ? '$'+p.precio.toLocaleString('es-CO') : '🔄 Trueque'}
-            </span>
-            <button class="btn-contact" onclick="window.location.href='product-detail.html'">Ver</button>
-          </div>
-        </div>`;
-      grid.appendChild(card);
-    });
-  }
+      </div>`
+    grid.appendChild(card)
+  })
+}
 
-  function quitarFav(id) {
-    favoritos = favoritos.filter(p => p.id !== id);
-    renderFavs();
-    showToast('🤍 Eliminado de favoritos');
-  }
+window.quitarFav = (id) => {
+  favoritos = favoritos.filter(p => p.id !== id)
+  saveFavs(favoritos)
+  renderFavs()
+  showToast('🤍 Eliminado de favoritos')
+}
 
-  function limpiarTodos() {
-    if (favoritos.length === 0) return;
-    if (confirm('¿Eliminar todos los favoritos?')) {
-      favoritos = [];
-      renderFavs();
-      showToast('🗑 Favoritos eliminados');
-    }
+window.limpiarTodos = () => {
+  if (favoritos.length === 0) return
+  if (confirm('¿Eliminar todos los favoritos?')) {
+    favoritos = []
+    saveFavs(favoritos)
+    renderFavs()
+    showToast('🗑 Favoritos eliminados')
   }
+}
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
-  }
+function showToast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg; t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2500)
+}
 
-  renderFavs();
+renderFavs()
 </script>
 </body>
 </html>
